@@ -11,7 +11,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
 | ✅ | FE-01-setup-01 | 開発環境の構築 | Node.js、Next.js 15、TypeScript、必要な開発ツールのセットアップ | 3時間 | 🔴 |
-| ◻️ | FE-01-setup-02 | プロジェクト初期化とFSD構造作成 | Next.js初期化、FSDディレクトリ構造の作成、基本設定ファイル | 4時間 | 🔴 |
+| ✅ | FE-01-setup-02 | プロジェクト初期化とFSD構造作成 | Next.js初期化、FSDディレクトリ構造の作成、基本設定ファイル | 4時間 | 🔴 |
 | ◻️ | FE-01-setup-03 | 開発ツール・Linter設定 | ESLint、Prettier、FSD boundaries、pre-commit hooks設定 | 2時間 | 🔴 |
 
 ## 🔧 Shared層（共有基盤）
