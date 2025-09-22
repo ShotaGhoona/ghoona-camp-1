@@ -2,51 +2,54 @@ package main
 
 import (
 	"log"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"gorm.io/gorm"
+
+	"ghoona-camp-backend/internal/di"
+	"ghoona-camp-backend/internal/infrastructure/config"
+	"ghoona-camp-backend/internal/infrastructure/database"
+	"ghoona-camp-backend/internal/interface/router"
 )
 
 func main() {
-	// 環境変数読み込み
+	// Load environment variables
 	if err := godotenv.Load(); err != nil {
-		log.Println("環境変数ファイルが見つかりませんでした")
+		log.Println("⚙️ .envファイルが見つかりません（環境変数から取得します）")
 	}
 
-	// Ginエンジン初期化
-	r := gin.Default()
-
-	// ヘルスチェックエンドポイント
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status":  "ok",
-			"service": "ghoona-camp-backend",
-			"version": "1.0.0",
-		})
-	})
-
-	// API v1 ルートグループ
-	v1 := r.Group("/api/v1")
-	{
-		v1.GET("/ping", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message": "pong",
-			})
-		})
+	// Initialize application configuration
+	appConfig, err := config.LoadConfig()
+	if err != nil {
+		log.Fatal("🚨 設定の読み込みに失敗しました:", err)
 	}
 
-	// サーバー起動
-	port := getEnv("PORT", "8080")
-	log.Printf("Ghoona Camp Backendサーバーをポート%sで起動します", port)
-	if err := r.Run(":" + port); err != nil {
-		log.Fatal("サーバーの起動に失敗しました:", err)
+	// Set Gin mode based on environment
+	if appConfig.IsProduction() {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	// Setup database connection
+	db, err := setupDatabase(appConfig)
+	if err != nil {
+		log.Fatal("🚨 データベースへの接続に失敗しました:", err)
+	}
+
+	// Initialize dependency injection container
+	container := di.NewContainer(db, appConfig)
+
+	// Setup routes
+	r := router.NewRouter(container)
+	engine := r.Setup()
+
+	// Create and start server
+	server := config.NewServer(engine, appConfig)
+	if err := server.Start(); err != nil {
+		log.Fatal("🚨 サーバーの起動に失敗しました:", err)
 	}
 }
 
-func getEnv(key, defaultValue string) string {
-	if value := os.Getenv(key); value != "" {
-		return value
-	}
-	return defaultValue
+func setupDatabase(cfg *config.Config) (*gorm.DB, error) {
+	return database.NewDatabase(cfg)
 }
