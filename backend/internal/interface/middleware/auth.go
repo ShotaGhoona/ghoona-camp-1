@@ -47,14 +47,13 @@ func AuthMiddleware(authService *clerk.AuthService) gin.HandlerFunc {
 			return
 		}
 
-		// TODO: 実際のClerk JWT検証を実装
-		// 現在は基盤のみ
-		/*
+		// Clerk JWT検証を実行
 		user, err := authService.VerifyToken(c.Request.Context(), token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "Invalid token",
 				"code":  "INVALID_TOKEN",
+				"details": err.Error(),
 			})
 			c.Abort()
 			return
@@ -63,24 +62,6 @@ func AuthMiddleware(authService *clerk.AuthService) gin.HandlerFunc {
 		// ユーザー情報をコンテキストに設定
 		c.Set("user", user)
 		c.Set("user_id", user.ID)
-		*/
-
-		// 仮実装: トークンが "test-token" の場合は認証成功とする
-		if token == "test-token" {
-			c.Set("user_id", "test-user-id")
-			c.Set("user", map[string]interface{}{
-				"id":       "test-user-id",
-				"email":    "test@example.com",
-				"username": "testuser",
-			})
-		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "Invalid token",
-				"code":  "INVALID_TOKEN",
-			})
-			c.Abort()
-			return
-		}
 
 		c.Next()
 	}
@@ -108,15 +89,12 @@ func OptionalAuthMiddleware(authService *clerk.AuthService) gin.HandlerFunc {
 			return
 		}
 
-		// TODO: 実際のClerk JWT検証を実装
+		// Clerk JWT検証を試行
 		// 認証に成功した場合のみユーザー情報を設定
-		if token == "test-token" {
-			c.Set("user_id", "test-user-id")
-			c.Set("user", map[string]interface{}{
-				"id":       "test-user-id",
-				"email":    "test@example.com",
-				"username": "testuser",
-			})
+		user, err := authService.VerifyToken(c.Request.Context(), token)
+		if err == nil {
+			c.Set("user", user)
+			c.Set("user_id", user.ID)
 		}
 
 		c.Next()

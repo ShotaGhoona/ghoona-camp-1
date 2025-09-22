@@ -5,20 +5,22 @@ import (
 )
 
 // Config はアプリケーション設定
-// 使用予定: BE-02-arch-02でDB設定追加、BE-02-arch-03でClerk設定追加
+// 使用予定: BE-02-arch-02でDB設定追加
 type Config struct {
-	Port      string
-	JWTSecret string
-	Env       string
+	Port               string
+	ClerkSecretKey     string // Clerk JWT検証用秘密鍵
+	ClerkWebhookSecret string // Clerk Webhook検証用秘密鍵
+	Env                string
 }
 
 // LoadConfig は設定を読み込み
 // 使用予定: main.goでアプリケーション起動時
 func LoadConfig() (*Config, error) {
 	config := &Config{
-		Port:      getEnv("PORT", "8080"),
-		JWTSecret: getEnv("JWT_SECRET", "default-secret-key"),
-		Env:       getEnv("APP_ENV", "development"),
+		Port:               getEnv("PORT", "8080"),
+		ClerkSecretKey:     getEnv("CLERK_SECRET_KEY", ""),
+		ClerkWebhookSecret: getEnv("CLERK_WEBHOOK_SECRET", ""),
+		Env:                getEnv("APP_ENV", "development"),
 	}
 
 	return config, nil
