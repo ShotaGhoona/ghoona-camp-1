@@ -67,37 +67,20 @@ func (r *Router) healthCheck(c *gin.Context) {
 		"environment": r.container.Config.Env,
 	}
 	
-	// データベースヘルスチェック
 	if r.container.DB != nil {
 		dbHealth := database.CheckHealth(r.container.DB)
 		response["database"] = dbHealth
 		
-		// データベースに問題がある場合はステータスを調整
 		if dbHealth.Status == "error" {
 			response["status"] = "error"
 			c.JSON(503, response)
 			return
-		} else if dbHealth.Status == "degraded" {
-			response["status"] = "degraded"
 		}
 	} else {
-		response["database"] = gin.H{
-			"status": "not_configured",
-			"error":  "database connection not initialized",
-		}
-		response["status"] = "degraded"
+		response["database"] = gin.H{"status": "not_configured"}
 	}
 	
-	// ステータスに応じたHTTPステータスコードを返す
-	status := response["status"].(string)
-	switch status {
-	case "ok":
-		c.JSON(200, response)
-	case "degraded":
-		c.JSON(200, response) // degradedでも200で返す
-	default:
-		c.JSON(503, response)
-	}
+	c.JSON(200, response)
 }
 
 // metrics handles metrics requests

@@ -10,20 +10,19 @@ import (
 	"ghoona-camp-backend/internal/di"
 	"ghoona-camp-backend/internal/infrastructure/config"
 	"ghoona-camp-backend/internal/infrastructure/database"
-	"ghoona-camp-backend/internal/infrastructure/database/migrations"
 	"ghoona-camp-backend/internal/interface/router"
 )
 
 func main() {
 	// Load environment variables
 	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found")
+		log.Println("⚙️ .envファイルが見つかりません（環境変数から取得します）")
 	}
 
 	// Initialize application configuration
 	appConfig, err := config.LoadConfig()
 	if err != nil {
-		log.Fatal("Failed to load configuration:", err)
+		log.Fatal("🚨 設定の読み込みに失敗しました:", err)
 	}
 
 	// Set Gin mode based on environment
@@ -34,7 +33,7 @@ func main() {
 	// Setup database connection
 	db, err := setupDatabase(appConfig)
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		log.Fatal("🚨 データベースへの接続に失敗しました:", err)
 	}
 
 	// Initialize dependency injection container
@@ -47,22 +46,10 @@ func main() {
 	// Create and start server
 	server := config.NewServer(engine, appConfig)
 	if err := server.Start(); err != nil {
-		log.Fatal("Server failed to start:", err)
+		log.Fatal("🚨 サーバーの起動に失敗しました:", err)
 	}
 }
 
 func setupDatabase(cfg *config.Config) (*gorm.DB, error) {
-	// データベース接続を確立
-	db, err := database.NewDatabase(cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	// マイグレーション実行
-	if err := migrations.RunMigrations(db); err != nil {
-		log.Printf("Migration warning: %v", err)
-		// マイグレーション失敗でもアプリを停止しない
-	}
-
-	return db, nil
+	return database.NewDatabase(cfg)
 }
