@@ -10,6 +10,7 @@ import (
 	"ghoona-camp-backend/internal/di"
 	"ghoona-camp-backend/internal/infrastructure/config"
 	"ghoona-camp-backend/internal/infrastructure/database"
+	"ghoona-camp-backend/internal/infrastructure/database/migrations"
 	"ghoona-camp-backend/internal/interface/router"
 )
 
@@ -51,7 +52,17 @@ func main() {
 }
 
 func setupDatabase(cfg *config.Config) (*gorm.DB, error) {
-	// TODO: BE-02-arch-02で実際のSupabase接続を実装
-	// 現在は基盤のみ
-	return database.NewDatabase(cfg)
+	// データベース接続を確立
+	db, err := database.NewDatabase(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	// マイグレーション実行
+	if err := migrations.RunMigrations(db); err != nil {
+		log.Printf("Migration warning: %v", err)
+		// マイグレーション失敗でもアプリを停止しない
+	}
+
+	return db, nil
 }

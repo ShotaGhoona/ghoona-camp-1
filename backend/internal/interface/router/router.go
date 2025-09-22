@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"ghoona-camp-backend/internal/di"
+	"ghoona-camp-backend/internal/infrastructure/database"
 	"ghoona-camp-backend/internal/interface/middleware"
 )
 
@@ -59,7 +60,6 @@ func (r *Router) Setup() *gin.Engine {
 
 // healthCheck handles health check requests
 func (r *Router) healthCheck(c *gin.Context) {
-	// TODO: BE-02-arch-02でDB接続チェックを追加
 	response := gin.H{
 		"status":      "ok",
 		"service":     "ghoona-camp-backend",
@@ -67,16 +67,37 @@ func (r *Router) healthCheck(c *gin.Context) {
 		"environment": r.container.Config.Env,
 	}
 	
-	// TODO: データベース接続チェック
-	// if err := r.container.DB.DB().Ping(); err != nil {
-	//     response["status"] = "error"
-	//     response["database"] = "disconnected"
-	//     c.JSON(503, response)
-	//     return
-	// }
-	// response["database"] = "connected"
+	// データベースヘルスチェック
+	if r.container.DB != nil {
+		dbHealth := database.CheckHealth(r.container.DB)
+		response["database"] = dbHealth
+		
+		// データベースに問題がある場合はステータスを調整
+		if dbHealth.Status == "error" {
+			response["status"] = "error"
+			c.JSON(503, response)
+			return
+		} else if dbHealth.Status == "degraded" {
+			response["status"] = "degraded"
+		}
+	} else {
+		response["database"] = gin.H{
+			"status": "not_configured",
+			"error":  "database connection not initialized",
+		}
+		response["status"] = "degraded"
+	}
 	
-	c.JSON(200, response)
+	// ステータスに応じたHTTPステータスコードを返す
+	status := response["status"].(string)
+	switch status {
+	case "ok":
+		c.JSON(200, response)
+	case "degraded":
+		c.JSON(200, response) // degradedでも200で返す
+	default:
+		c.JSON(503, response)
+	}
 }
 
 // metrics handles metrics requests
