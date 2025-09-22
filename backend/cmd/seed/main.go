@@ -9,9 +9,9 @@ import (
 func main() {
 	// 環境変数読み込み
 	if err := godotenv.Load(); err != nil {
-		log.Println("環境変数ファイルが見つかりませんでした")
+		log.Println("⚙️ 環境変数ファイルが見つかりませんでした")
 	}
 
-	log.Println("Seed data tool - まもなく提供予定")
+	log.Println("🌱 Seed data tool - まもなく提供予定")
 	// TODO: シードデータ投入機能を実装
 }

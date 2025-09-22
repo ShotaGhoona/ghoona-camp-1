@@ -39,10 +39,10 @@ func (s *Server) Start() error {
 
 	// Server run in goroutine
 	go func() {
-		log.Printf("Ghoona Camp バックエンドサーバーをポート%sで起動します", s.config.Port)
-		log.Printf("環境: %s", s.config.Env)
+		log.Printf("🚀 Ghoona Camp バックエンドサーバーをポート%sで起動します", s.config.Port)
+		log.Printf("⚙️ 環境: %s", s.config.Env)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("サーバーの起動に失敗しました: %v", err)
+			log.Fatalf("🚨 サーバーの起動に失敗しました: %v", err)
 		}
 	}()
 
@@ -51,16 +51,16 @@ func (s *Server) Start() error {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("サーバーを停止します...")
+	log.Println("⏹️ サーバーを停止します...")
 
 	// Graceful shutdown with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		return fmt.Errorf("サーバーを強制的に停止できませんでした: %w", err)
+		return fmt.Errorf("🚨 サーバーを強制的に停止できませんでした: %w", err)
 	}
 
-	log.Println("サーバーが停止しました")
+	log.Println("✅ サーバーが停止しました")
 	return nil
 }

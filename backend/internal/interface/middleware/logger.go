@@ -82,7 +82,7 @@ func RequestLoggerMiddleware() gin.HandlerFunc {
 		}
 
 		// リクエスト情報をログ
-		fmt.Printf("[REQUEST] %s %s %s - User: %s\n",
+		fmt.Printf("📡 [REQUEST] %s %s %s - ユーザー: %s\n",
 			start.Format("2006/01/02 15:04:05"),
 			c.Request.Method,
 			c.Request.URL.Path,
@@ -93,7 +93,7 @@ func RequestLoggerMiddleware() gin.HandlerFunc {
 
 		// レスポンス情報をログ
 		latency := time.Since(start)
-		fmt.Printf("[RESPONSE] %s %s %s %d %s - User: %s\n",
+		fmt.Printf("✅ [RESPONSE] %s %s %s %d %s - ユーザー: %s\n",
 			time.Now().Format("2006/01/02 15:04:05"),
 			c.Request.Method,
 			c.Request.URL.Path,
@@ -112,7 +112,7 @@ func ErrorLogMiddleware() gin.HandlerFunc {
 		// エラーがある場合のみログ
 		if len(c.Errors) > 0 {
 			for _, err := range c.Errors {
-				fmt.Printf("[ERROR] %s %s %s - %s\n",
+				fmt.Printf("❌ [ERROR] %s %s %s - %s\n",
 					time.Now().Format("2006/01/02 15:04:05"),
 					c.Request.Method,
 					c.Request.URL.Path,

@@ -12,7 +12,7 @@ func RunMigrations(db *gorm.DB) error {
 	// 現在は基盤のみ実装
 	
 	if err := createMigrationTable(db); err != nil {
-		return fmt.Errorf("failed to create migration table: %w", err)
+		return fmt.Errorf("🚨 マイグレーションテーブルの作成に失敗しました: %w", err)
 	}
 	
 	return nil
@@ -27,7 +27,7 @@ func createMigrationTable(db *gorm.DB) error {
 	);`
 	
 	if err := db.Exec(migrationSQL).Error; err != nil {
-		return fmt.Errorf("failed to create schema_migrations table: %w", err)
+		return fmt.Errorf("🚨 schema_migrationsテーブルの作成に失敗しました: %w", err)
 	}
 	
 	var count int64
@@ -35,7 +35,7 @@ func createMigrationTable(db *gorm.DB) error {
 	
 	if count == 0 {
 		if err := db.Exec("INSERT INTO schema_migrations (version) VALUES (?)", "001_initial").Error; err != nil {
-			return fmt.Errorf("failed to insert initial migration record: %w", err)
+			return fmt.Errorf("🚨 初期マイグレーションレコードの挿入に失敗しました: %w", err)
 		}
 	}
 	

@@ -16,7 +16,7 @@ func ErrorHandlerMiddleware() gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				// パニックをキャッチしてエラーレスポンスを返す
-				log.Printf("Panic recovered: %v\n%s", err, debug.Stack())
+				log.Printf("🚨 パニックが回復されました: %v\n%s", err, debug.Stack())
 				
 				errorResponse := common.NewErrorResponse(
 					"INTERNAL_ERROR",
