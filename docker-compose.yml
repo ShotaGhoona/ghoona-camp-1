@@ -1,0 +1,52 @@
+services:
+  backend:
+    build: ./backend
+    container_name: ghoona_backend
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: go run cmd/api/main.go
+    depends_on:
+      - db
+    networks:
+      - ghoona_network
+
+  frontend:
+    build: ./frontend
+    container_name: ghoona_frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/.next
+    depends_on:
+      - backend
+    networks:
+      - ghoona_network
+
+  db:
+    image: postgres:16-alpine
+    container_name: ghoona_postgres
+    environment:
+      - POSTGRES_DB=ghoona_camp
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ghoona_network
+
+volumes:
+  postgres_data:
+
+networks:
+  ghoona_network:
+    driver: bridge
