@@ -64,7 +64,7 @@ func (r *Router) healthCheck(c *gin.Context) {
 		"status":      "ok",
 		"service":     "ghoona-camp-backend",
 		"version":     "1.0.0",
-		"environment": r.container.Config.Server.Environment,
+		"environment": r.container.Config.Env,
 	}
 	
 	// TODO: データベース接続チェック

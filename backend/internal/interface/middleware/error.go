@@ -10,6 +10,7 @@ import (
 )
 
 // ErrorHandlerMiddleware はエラーハンドリングミドルウェア
+// 使用予定: router.goで全ルートに適用
 func ErrorHandlerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
@@ -17,7 +18,7 @@ func ErrorHandlerMiddleware() gin.HandlerFunc {
 				// パニックをキャッチしてエラーレスポンスを返す
 				log.Printf("Panic recovered: %v\n%s", err, debug.Stack())
 				
-				errorResponse := common.NewAPIErrorResponse(
+				errorResponse := common.NewErrorResponse(
 					"INTERNAL_ERROR",
 					"内部エラーが発生しました",
 					nil,
@@ -39,43 +40,20 @@ func ErrorHandlerMiddleware() gin.HandlerFunc {
 }
 
 // handleError はエラーをHTTPレスポンスに変換
+// 使用予定: BE-03-*で各コントローラーエラー処理時
 func handleError(c *gin.Context, err error) {
-	// アプリケーションエラーの場合
-	if appErr, ok := err.(*common.ApplicationError); ok {
-		errorResponse := common.NewAPIErrorResponse(
-			appErr.Code,
-			appErr.Message,
-			nil,
-		)
-		c.JSON(appErr.HTTPStatus, errorResponse)
-		return
-	}
-
-	// ドメインエラーの場合はアプリケーションエラーに変換
-	appErr := common.ConvertDomainError(err)
-	if appErr != nil {
-		errorResponse := common.NewAPIErrorResponse(
-			appErr.Code,
-			appErr.Message,
-			nil,
-		)
-		c.JSON(appErr.HTTPStatus, errorResponse)
-		return
-	}
-
-	// その他のエラーは内部エラーとして処理
-	log.Printf("Unexpected error: %v", err)
-	errorResponse := common.NewAPIErrorResponse(
-		"INTERNAL_ERROR",
-		"予期しないエラーが発生しました",
-		nil,
-	)
-	c.JSON(http.StatusInternalServerError, errorResponse)
+	// HTTPステータスとエラーコードを取得
+	status := common.ConvertToHTTPStatus(err)
+	code := common.ConvertToErrorCode(err)
+	
+	errorResponse := common.NewErrorResponse(code, err.Error(), nil)
+	c.JSON(status, errorResponse)
 }
 
 // ValidationErrorHandler はバリデーションエラー専用ハンドラー
+// 使用予定: BE-03-*でリクエストバリデーション時
 func ValidationErrorHandler(c *gin.Context, errors []common.ValidationErrorDetail) {
-	errorResponse := common.NewAPIErrorResponse(
+	errorResponse := common.NewErrorResponse(
 		"VALIDATION_ERROR",
 		"バリデーションエラーが発生しました",
 		map[string]interface{}{
@@ -86,9 +64,10 @@ func ValidationErrorHandler(c *gin.Context, errors []common.ValidationErrorDetai
 }
 
 // NotFoundHandler は404エラーハンドラー
+// 使用予定: router.goで未定義ルート処理
 func NotFoundHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		errorResponse := common.NewAPIErrorResponse(
+		errorResponse := common.NewErrorResponse(
 			"NOT_FOUND",
 			"リクエストされたリソースが見つかりません",
 			map[string]interface{}{
@@ -101,9 +80,10 @@ func NotFoundHandler() gin.HandlerFunc {
 }
 
 // MethodNotAllowedHandler は405エラーハンドラー
+// 使用予定: router.goで未対応メソッド処理
 func MethodNotAllowedHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		errorResponse := common.NewAPIErrorResponse(
+		errorResponse := common.NewErrorResponse(
 			"METHOD_NOT_ALLOWED",
 			"このHTTPメソッドは許可されていません",
 			map[string]interface{}{

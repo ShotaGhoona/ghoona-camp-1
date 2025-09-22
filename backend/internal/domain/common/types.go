@@ -1,51 +1,29 @@
 package common
 
 import (
-	"database/sql/driver"
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 // UUID は共通UUID型
+// 使用予定: 全エンティティのID (User, Attendance, Goal, Event, Title, Notification)
 type UUID = uuid.UUID
 
-// NullUUID はnull許可UUID型
-type NullUUID struct {
-	UUID  UUID
-	Valid bool
-}
-
-// Scan implements the Scanner interface
-func (nu *NullUUID) Scan(value interface{}) error {
-	if value == nil {
-		nu.UUID, nu.Valid = UUID{}, false
-		return nil
-	}
-	nu.Valid = true
-	return nu.UUID.Scan(value)
-}
-
-// Value implements the driver Valuer interface
-func (nu NullUUID) Value() (driver.Value, error) {
-	if !nu.Valid {
-		return nil, nil
-	}
-	return nu.UUID.Value()
-}
-
 // NewUUID は新しいUUIDを生成
+// 使用予定: 全エンティティ作成時 (BE-03-user-*, BE-04-attend-*, BE-06-goal-*, BE-07-event-*, BE-08-title-*, BE-09-notify-*)
 func NewUUID() UUID {
 	return uuid.New()
 }
 
 // ParseUUID は文字列からUUIDを解析
+// 使用予定: API リクエストパラメータからUUID変換 (BE-03-user-*, BE-04-attend-*, BE-06-goal-*, BE-07-event-*, BE-08-title-*, BE-09-notify-*)
 func ParseUUID(s string) (UUID, error) {
 	return uuid.Parse(s)
 }
 
 // BaseEntity は基本エンティティ
+// 使用予定: 全ドメインエンティティの基底構造 (User, Attendance, Goal, Event, Title, Notification)
 type BaseEntity struct {
 	ID        UUID      `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
@@ -53,6 +31,7 @@ type BaseEntity struct {
 }
 
 // NewBaseEntity は基本エンティティを作成
+// 使用予定: 全エンティティのコンストラクタ内 (BE-03-user-*, BE-04-attend-*, BE-06-goal-*, BE-07-event-*, BE-08-title-*, BE-09-notify-*)
 func NewBaseEntity() BaseEntity {
 	now := time.Now()
 	return BaseEntity{
@@ -63,21 +42,28 @@ func NewBaseEntity() BaseEntity {
 }
 
 // UpdateTimestamp は更新タイムスタンプを設定
+// 使用予定: エンティティ更新処理 (BE-03-user-*, BE-04-attend-*, BE-06-goal-*, BE-07-event-*, BE-08-title-*, BE-09-notify-*)
 func (e *BaseEntity) UpdateTimestamp() {
 	e.UpdatedAt = time.Now()
 }
 
 // Pagination はページネーション情報
+// 使用予定: 
+//   - 通知一覧API (BE-09-notify-04)
+//   - 目標一覧API (BE-06-goal-04) 
+//   - イベント一覧API (BE-07-event-04)
+//   - ユーザー一覧API (BE-03-user-04)
+//   - 称号一覧API (BE-08-title-04)
+//   - 出席ログ一覧API (BE-04-attend-04)
 type Pagination struct {
-	Page      int `json:"page"`
-	Limit     int `json:"limit"`
-	Total     int `json:"total"`
-	TotalPage int `json:"total_page"`
-	HasNext   bool `json:"has_next"`
-	HasPrev   bool `json:"has_prev"`
+	CurrentPage int `json:"current_page"`
+	TotalPages  int `json:"total_pages"`
+	Total       int `json:"total"`
+	Limit       int `json:"limit"`
 }
 
 // NewPagination はページネーション情報を作成
+// 使用予定: 全リスト取得ユースケース (BE-03-user-*, BE-04-attend-*, BE-06-goal-*, BE-07-event-*, BE-08-title-*, BE-09-notify-*)
 func NewPagination(page, limit, total int) *Pagination {
 	if page <= 0 {
 		page = 1
@@ -86,74 +72,21 @@ func NewPagination(page, limit, total int) *Pagination {
 		limit = 20
 	}
 
-	totalPage := (total + limit - 1) / limit
-	if totalPage == 0 {
-		totalPage = 1
+	totalPages := (total + limit - 1) / limit
+	if totalPages == 0 {
+		totalPages = 1
 	}
 
 	return &Pagination{
-		Page:      page,
-		Limit:     limit,
-		Total:     total,
-		TotalPage: totalPage,
-		HasNext:   page < totalPage,
-		HasPrev:   page > 1,
+		CurrentPage: page,
+		TotalPages:  totalPages,
+		Total:       total,
+		Limit:       limit,
 	}
 }
 
 // GetOffset はオフセット値を取得
+// 使用予定: GORM クエリでのOFFSET計算 (BE-03-user-*, BE-04-attend-*, BE-06-goal-*, BE-07-event-*, BE-08-title-*, BE-09-notify-*)
 func (p *Pagination) GetOffset() int {
-	return (p.Page - 1) * p.Limit
-}
-
-// SortOrder はソート順序
-type SortOrder string
-
-const (
-	SortOrderAsc  SortOrder = "asc"
-	SortOrderDesc SortOrder = "desc"
-)
-
-// IsValid はソート順序が有効かチェック
-func (s SortOrder) IsValid() bool {
-	return s == SortOrderAsc || s == SortOrderDesc
-}
-
-// String はstring型に変換
-func (s SortOrder) String() string {
-	return string(s)
-}
-
-// FilterOptions は共通フィルターオプション
-type FilterOptions struct {
-	Page      int       `json:"page"`
-	Limit     int       `json:"limit"`
-	SortBy    string    `json:"sort_by"`
-	SortOrder SortOrder `json:"sort_order"`
-	Search    string    `json:"search"`
-}
-
-// Validate はフィルターオプションをバリデート
-func (f *FilterOptions) Validate() error {
-	if f.Page <= 0 {
-		f.Page = 1
-	}
-	if f.Limit <= 0 {
-		f.Limit = 20
-	}
-	if f.Limit > 100 {
-		f.Limit = 100
-	}
-	if f.SortOrder != "" && !f.SortOrder.IsValid() {
-		return fmt.Errorf("invalid sort order: %s", f.SortOrder)
-	}
-	if f.SortOrder == "" {
-		f.SortOrder = SortOrderDesc
-	}
-	return nil
-}
-
-// GetOffset はオフセット値を取得
-func (f *FilterOptions) GetOffset() int {
-	return (f.Page - 1) * f.Limit
+	return (p.CurrentPage - 1) * p.Limit
 }

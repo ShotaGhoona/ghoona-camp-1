@@ -53,5 +53,5 @@ func main() {
 func setupDatabase(cfg *config.Config) (*gorm.DB, error) {
 	// TODO: BE-02-arch-02で実際のSupabase接続を実装
 	// 現在は基盤のみ
-	return database.NewDatabase(&cfg.Database)
+	return database.NewDatabase(cfg)
 }

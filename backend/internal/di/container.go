@@ -77,8 +77,11 @@ func NewContainer(db *gorm.DB, cfg *config.Config) *Container {
 }
 
 func (c *Container) initExternalServices() {
-	c.ClerkService = clerk.NewAuthService(&c.Config.Clerk)
-	c.DiscordService = discord.NewWebhookService(&c.Config.Discord)
+	// TODO: BE-02-arch-03でClerk設定追加時に実装
+	c.ClerkService = clerk.NewAuthService(c.Config)
+	
+	// TODO: BE-05-discord-*でDiscord設定追加時に実装
+	c.DiscordService = discord.NewWebhookService(c.Config)
 }
 
 // TODO: BE-03-* で実装予定

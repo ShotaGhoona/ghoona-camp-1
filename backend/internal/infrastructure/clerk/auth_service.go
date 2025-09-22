@@ -16,9 +16,11 @@ type AuthService struct {
 }
 
 // NewAuthService は新しいClerk認証サービスを作成
-func NewAuthService(cfg *config.ClerkConfig) *AuthService {
+// 使用予定: BE-02-arch-03で実際のClerk連携実装
+func NewAuthService(cfg *config.Config) *AuthService {
+	// TODO: BE-02-arch-03でClerk設定追加時に実装
 	return &AuthService{
-		secretKey: cfg.SecretKey,
+		secretKey: cfg.JWTSecret, // 現在は仮でJWTSecretを使用
 	}
 }
 
@@ -33,43 +35,43 @@ type ClerkUser struct {
 // VerifyToken はJWTトークンを検証
 func (s *AuthService) VerifyToken(ctx context.Context, token string) (*ClerkUser, error) {
 	// TODO: 実際のClerk JWT検証ロジックを実装
-	return nil, errors.New("not implemented: Clerk JWT verification")
+	return nil, errors.New("Clerk JWT 検証が未実装です")
 }
 
 // GetUser はユーザー情報を取得
 func (s *AuthService) GetUser(ctx context.Context, userID string) (*ClerkUser, error) {
 	// TODO: Clerk APIからユーザー情報を取得
-	return nil, errors.New("not implemented: Clerk user fetch")
+	return nil, errors.New("Clerk ユーザー取得が未実装です")
 }
 
 // CreateUser はユーザーを作成
 func (s *AuthService) CreateUser(ctx context.Context, email, password string) (*ClerkUser, error) {
 	// TODO: Clerk APIでユーザーを作成
-	return nil, errors.New("not implemented: Clerk user creation")
+	return nil, errors.New("Clerk ユーザー作成が未実装です")
 }
 
 // UpdateUser はユーザー情報を更新
 func (s *AuthService) UpdateUser(ctx context.Context, userID string, updates map[string]interface{}) (*ClerkUser, error) {
 	// TODO: Clerk APIでユーザー情報を更新
-	return nil, errors.New("not implemented: Clerk user update")
+	return nil, errors.New("Clerk ユーザー更新が未実装です")
 }
 
 // DeleteUser はユーザーを削除
 func (s *AuthService) DeleteUser(ctx context.Context, userID string) error {
 	// TODO: Clerk APIでユーザーを削除
-	return errors.New("not implemented: Clerk user deletion")
+	return errors.New("Clerk ユーザー削除が未実装です")
 }
 
 // ParseWebhook はClerk Webhookを解析
 func (s *AuthService) ParseWebhook(payload []byte, signature string) (map[string]interface{}, error) {
 	// TODO: Clerk Webhook検証と解析を実装
-	return nil, errors.New("not implemented: Clerk webhook parsing")
+	return nil, errors.New("Clerk Webhook解析が未実装です")
 }
 
 // validateTokenFormat はトークンフォーマットを検証（ヘルパー）
 func (s *AuthService) validateTokenFormat(token string) error {
 	if token == "" {
-		return fmt.Errorf("token is empty")
+		return fmt.Errorf("トークンが空です")
 	}
 	// TODO: より詳細な検証ロジック
 	return nil

@@ -26,11 +26,13 @@ type WebhookService struct {
 }
 
 // NewWebhookService は新しいDiscord Webhookサービスを作成
-func NewWebhookService(cfg *config.DiscordConfig) *WebhookService {
+// 使用予定: BE-05-discord-*で実際のDiscord連携実装
+func NewWebhookService(cfg *config.Config) *WebhookService {
+	// TODO: BE-05-discord-*でDiscord設定追加時に実装
 	return &WebhookService{
-		webhookURL: cfg.WebhookURL,
-		botToken:   cfg.BotToken,
-		guildID:    cfg.GuildID,
+		webhookURL: "", // TODO: Discord設定から取得
+		botToken:   "", // TODO: Discord設定から取得
+		guildID:    "", // TODO: Discord設定から取得
 		client: &http.Client{
 			Timeout: 10 * time.Second,
 		},

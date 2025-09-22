@@ -14,35 +14,35 @@ import (
 )
 
 // Server represents HTTP server configuration
+// 使用予定: main.goでサーバー起動・停止制御
 type Server struct {
-	httpServer *http.Server
-	config     *Config
+	engine *gin.Engine
+	config *Config
 }
 
 // NewServer creates a new server instance
+// 使用予定: main.goでサーバーインスタンス作成時
 func NewServer(engine *gin.Engine, config *Config) *Server {
-	srv := &http.Server{
-		Addr:         ":" + config.Server.Port,
-		Handler:      engine,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 15 * time.Second,
-		IdleTimeout:  60 * time.Second,
-	}
-
 	return &Server{
-		httpServer: srv,
-		config:     config,
+		engine: engine,
+		config: config,
 	}
 }
 
 // Start starts the HTTP server with graceful shutdown
+// 使用予定: main.goでサーバー起動時
 func (s *Server) Start() error {
-	// Start server in a goroutine
+	srv := &http.Server{
+		Addr:    ":" + s.config.Port,
+		Handler: s.engine,
+	}
+
+	// Server run in goroutine
 	go func() {
-		log.Printf("Ghoona Camp Backend server starting on port %s", s.config.Server.Port)
-		log.Printf("Environment: %s", s.config.Server.Environment)
-		if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Server failed to start: %v", err)
+		log.Printf("Ghoona Camp バックエンドサーバーをポート%sで起動します", s.config.Port)
+		log.Printf("環境: %s", s.config.Env)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("サーバーの起動に失敗しました: %v", err)
 		}
 	}()
 
@@ -50,21 +50,17 @@ func (s *Server) Start() error {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Println("Shutting down server...")
 
-	// Give outstanding requests a deadline for completion
+	log.Println("サーバーを停止します...")
+
+	// Graceful shutdown with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := s.httpServer.Shutdown(ctx); err != nil {
-		return fmt.Errorf("server forced to shutdown: %w", err)
+	if err := srv.Shutdown(ctx); err != nil {
+		return fmt.Errorf("サーバーを強制的に停止できませんでした: %w", err)
 	}
 
-	log.Println("Server exited")
+	log.Println("サーバーが停止しました")
 	return nil
-}
-
-// Stop stops the HTTP server
-func (s *Server) Stop() error {
-	return s.httpServer.Close()
 }
