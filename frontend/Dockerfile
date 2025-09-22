@@ -11,7 +11,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY package*.json ./
 
 # 依存関係をインストール（devDependencies も含む）
-RUN npm ci || npm install
+RUN npm install
 
 # ポートを解放
 EXPOSE 3000
