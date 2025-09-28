@@ -22,6 +22,10 @@ func (r *Router) setupUserRoutes(v1 *gin.RouterGroup) {
 	usersGroup := v1.Group("/users")
 	usersGroup.Use(auth)
 	{
+		// ユーザー一覧・作成
+		usersGroup.GET("", r.container.UserController.GetUsers)
+		usersGroup.POST("", r.container.UserController.CreateUser)
+		
 		// ユーザー基本操作
 		usersGroup.GET("/:userId", r.container.UserController.GetUser)
 		usersGroup.PUT("/:userId", r.container.UserController.UpdateUser)

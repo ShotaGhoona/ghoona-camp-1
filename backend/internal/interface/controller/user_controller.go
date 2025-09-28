@@ -130,7 +130,7 @@ func respondWithSuccess(ctx *gin.Context, statusCode int, data interface{}) {
 }
 
 // requireSelfAccess 本人のみアクセス可能かチェック（ClerkIDベース）
-func requireSelfAccess(ctx *gin.Context, targetUserID uuid.UUID) bool {
+func requireSelfAccess(ctx *gin.Context, targetUserID uuid.UUID, userRepo repository.UserRepository) bool {
 	clerkID, err := getCurrentClerkID(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
@@ -143,10 +143,30 @@ func requireSelfAccess(ctx *gin.Context, targetUserID uuid.UUID) bool {
 		return false
 	}
 	
-	// TODO: ClerkIDから内部UUIDへの変換を実装する必要がある
-	// 現在は簡易的にスキップ
-	_ = clerkID
-	_ = targetUserID
+	// ClerkIDから内部UUIDへの変換
+	currentUser, err := userRepo.GetByClerkID(ctx.Request.Context(), clerkID)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": gin.H{
+				"code":    "USER_NOT_FOUND",
+				"message": "Current user not found",
+			},
+			"timestamp": time.Now().UTC().Format(time.RFC3339),
+		})
+		return false
+	}
+	
+	// 本人確認
+	if currentUser.ID != targetUserID {
+		ctx.JSON(http.StatusForbidden, gin.H{
+			"error": gin.H{
+				"code":    "FORBIDDEN",
+				"message": "Access denied: can only access own resources",
+			},
+			"timestamp": time.Now().UTC().Format(time.RFC3339),
+		})
+		return false
+	}
 	
 	return true
 }
@@ -211,7 +231,7 @@ func (c *UserController) UpdateUser(ctx *gin.Context) {
 	}
 	
 	// 本人のみアクセス可能
-	if !requireSelfAccess(ctx, userID) {
+	if !requireSelfAccess(ctx, userID, c.userUseCase.GetUserRepo()) {
 		return
 	}
 	
@@ -269,7 +289,7 @@ func (c *UserController) CreateUserMetadata(ctx *gin.Context) {
 	}
 	
 	// 本人のみアクセス可能
-	if !requireSelfAccess(ctx, userID) {
+	if !requireSelfAccess(ctx, userID, c.userUseCase.GetUserRepo()) {
 		return
 	}
 	
@@ -303,7 +323,7 @@ func (c *UserController) UpdateUserMetadata(ctx *gin.Context) {
 	}
 	
 	// 本人のみアクセス可能
-	if !requireSelfAccess(ctx, userID) {
+	if !requireSelfAccess(ctx, userID, c.userUseCase.GetUserRepo()) {
 		return
 	}
 	
@@ -361,7 +381,7 @@ func (c *UserController) CreateSocialLink(ctx *gin.Context) {
 	}
 	
 	// 本人のみアクセス可能
-	if !requireSelfAccess(ctx, userID) {
+	if !requireSelfAccess(ctx, userID, c.userUseCase.GetUserRepo()) {
 		return
 	}
 	
@@ -407,7 +427,7 @@ func (c *UserController) UpdateSocialLink(ctx *gin.Context) {
 	}
 	
 	// 本人のみアクセス可能
-	if !requireSelfAccess(ctx, userID) {
+	if !requireSelfAccess(ctx, userID, c.userUseCase.GetUserRepo()) {
 		return
 	}
 	
@@ -453,7 +473,7 @@ func (c *UserController) DeleteSocialLink(ctx *gin.Context) {
 	}
 	
 	// 本人のみアクセス可能
-	if !requireSelfAccess(ctx, userID) {
+	if !requireSelfAccess(ctx, userID, c.userUseCase.GetUserRepo()) {
 		return
 	}
 	
@@ -482,7 +502,7 @@ func (c *UserController) GetUserRivals(ctx *gin.Context) {
 	}
 	
 	// 本人のみアクセス可能
-	if !requireSelfAccess(ctx, userID) {
+	if !requireSelfAccess(ctx, userID, c.userUseCase.GetUserRepo()) {
 		return
 	}
 	
@@ -511,7 +531,7 @@ func (c *UserController) AddRival(ctx *gin.Context) {
 	}
 	
 	// 本人のみアクセス可能
-	if !requireSelfAccess(ctx, userID) {
+	if !requireSelfAccess(ctx, userID, c.userUseCase.GetUserRepo()) {
 		return
 	}
 	
@@ -557,7 +577,7 @@ func (c *UserController) RemoveRival(ctx *gin.Context) {
 	}
 	
 	// 本人のみアクセス可能
-	if !requireSelfAccess(ctx, userID) {
+	if !requireSelfAccess(ctx, userID, c.userUseCase.GetUserRepo()) {
 		return
 	}
 	
@@ -568,4 +588,33 @@ func (c *UserController) RemoveRival(ctx *gin.Context) {
 	}
 	
 	ctx.Status(http.StatusNoContent)
+}
+
+// GetUsers 全ユーザー一覧を取得
+// GET /users
+func (c *UserController) GetUsers(ctx *gin.Context) {
+	response, err := c.userUseCase.GetUsers(ctx.Request.Context())
+	if err != nil {
+		respondWithError(ctx, err)
+		return
+	}
+	
+	respondWithSuccess(ctx, http.StatusOK, response)
+}
+
+// CreateUser 新しいユーザーを作成
+// POST /users
+func (c *UserController) CreateUser(ctx *gin.Context) {
+	var req userDto.CreateUserRequest
+	if !bindJSON(ctx, &req) {
+		return
+	}
+	
+	response, err := c.userUseCase.CreateUser(ctx.Request.Context(), &req)
+	if err != nil {
+		respondWithError(ctx, err)
+		return
+	}
+	
+	respondWithSuccess(ctx, http.StatusCreated, response)
 }

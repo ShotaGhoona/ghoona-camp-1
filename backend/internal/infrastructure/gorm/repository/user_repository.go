@@ -87,6 +87,30 @@ func (r *userRepository) Update(ctx context.Context, user *entity.User) error {
 	return db.Save(gormUser).Error
 }
 
+// GetAll は全ユーザーを取得する
+func (r *userRepository) GetAll(ctx context.Context) ([]*entity.User, error) {
+	var gormUsers []model.User
+	db := r.GetDB(ctx)
+	
+	// 基本クエリ（アクティブなユーザーのみ）
+	err := db.Where("is_active = ?", true).Order("created_at DESC").Find(&gormUsers).Error
+	if err != nil {
+		return nil, err
+	}
+	
+	// エンティティに変換
+	users := make([]*entity.User, len(gormUsers))
+	for i, gormUser := range gormUsers {
+		entityUser, err := gormUser.ToEntity()
+		if err != nil {
+			return nil, err
+		}
+		users[i] = entityUser
+	}
+	
+	return users, nil
+}
+
 // Delete はユーザーを削除する
 func (r *userRepository) Delete(ctx context.Context, id uuid.UUID) error {
 	db := r.GetDB(ctx)
