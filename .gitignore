@@ -44,6 +44,12 @@ vendor/
 *.test
 *.out
 *.prof
+# Go binaries (compiled executables)
+backend/bin/
+backend/main
+backend/migrate
+backend/seed
+backend/api
 
 # IDE
 .vscode/
@@ -72,3 +78,5 @@ Thumbs.db
 *.db
 *.sqlite
 *.sqlite3
+
+backend/bin
