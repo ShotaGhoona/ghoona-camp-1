@@ -8,20 +8,20 @@ import (
 	"github.com/google/uuid"
 )
 
-// User represents a user account in the system
+// User はシステム内のユーザーアカウントを表す
 type User struct {
-	ID        uuid.UUID
-	ClerkID   string
-	Email     string
-	Username  *string
-	AvatarURL *string
-	DiscordID *string
-	Status    value.UserStatus
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uuid.UUID        // ユーザーID
+	ClerkID   string           // Clerk認証ID
+	Email     string           // メールアドレス
+	Username  *string          // ユーザー名（オプショナル）
+	AvatarURL *string          // アバター画像URL（オプショナル）
+	DiscordID *string          // Discord ID（オプショナル）
+	Status    value.UserStatus // ユーザーステータス
+	CreatedAt time.Time        // 作成日時
+	UpdatedAt time.Time        // 更新日時
 }
 
-// NewUser creates a new User entity
+// NewUser は新しいUserエンティティを作成する
 func NewUser(clerkID, email string) *User {
 	return &User{
 		ID:        uuid.New(),
@@ -33,7 +33,7 @@ func NewUser(clerkID, email string) *User {
 	}
 }
 
-// IsActive checks if the user is in active state
+// IsActive はユーザーがアクティブ状態かどうかを確認する
 func (u *User) IsActive() bool {
 	return u.Status.IsActiveState()
 }

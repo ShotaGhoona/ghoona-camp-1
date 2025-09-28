@@ -8,19 +8,19 @@ import (
 	"github.com/google/uuid"
 )
 
-// UserSocialLink represents a user's social media link
+// UserSocialLink はユーザーのソーシャルメディアリンクを表す
 type UserSocialLink struct {
-	ID        uuid.UUID
-	UserID    uuid.UUID
-	Platform  value.Platform
-	URL       string
-	Title     *string
-	IsPublic  value.PublicFlag
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uuid.UUID        // リンクID
+	UserID    uuid.UUID        // ユーザーID（外部キー）
+	Platform  value.Platform   // プラットフォーム
+	URL       string           // リンクURL
+	Title     *string          // リンクタイトル（オプショナル）
+	IsPublic  value.PublicFlag // 公開設定
+	CreatedAt time.Time        // 作成日時
+	UpdatedAt time.Time        // 更新日時
 }
 
-// NewUserSocialLink creates a new UserSocialLink entity
+// NewUserSocialLink は新しいUserSocialLinkエンティティを作成する
 func NewUserSocialLink(userID uuid.UUID, platform value.Platform, url string) *UserSocialLink {
 	return &UserSocialLink{
 		ID:        uuid.New(),

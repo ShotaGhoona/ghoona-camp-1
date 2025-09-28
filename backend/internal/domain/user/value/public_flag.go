@@ -1,7 +1,7 @@
 package value
 
-// PublicFlag represents a simple public/private visibility flag
-// This aligns with the API requirements where fields like vision_public and is_public are boolean
+// PublicFlag はシンプルな公開/非公開の可視性フラグを表す
+// vision_publicやis_publicなどのフィールドがbooleanであるAPI要件に対応
 type PublicFlag bool
 
 const (
@@ -9,7 +9,7 @@ const (
 	PublicFalse PublicFlag = false // 非公開
 )
 
-// String returns the string representation of the public flag
+// String は公開フラグの文字列表現を返す
 func (p PublicFlag) String() string {
 	if bool(p) {
 		return "public"
@@ -17,7 +17,7 @@ func (p PublicFlag) String() string {
 	return "private"
 }
 
-// Bool returns the boolean representation
+// Bool はboolean表現を返す
 func (p PublicFlag) Bool() bool {
 	return bool(p)
 }

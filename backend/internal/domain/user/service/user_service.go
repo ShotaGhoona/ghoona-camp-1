@@ -9,15 +9,15 @@ import (
 	"ghoona-camp-backend/internal/domain/user/value"
 )
 
-// UserService handles user-related business logic
+// UserService はユーザー関連のビジネスロジックを処理する
 type UserService struct{}
 
-// NewUserService creates a new UserService
+// NewUserService は新しいUserServiceを作成する
 func NewUserService() *UserService {
 	return &UserService{}
 }
 
-// ValidateUsername validates username format and constraints
+// ValidateUsername はユーザー名の形式と制約をバリデートする
 func (s *UserService) ValidateUsername(username string) error {
 	if len(username) < 3 || len(username) > 50 {
 		return user.ErrInvalidUsername
@@ -25,7 +25,7 @@ func (s *UserService) ValidateUsername(username string) error {
 	return nil
 }
 
-// GenerateDefaultDisplayName generates a default display name from user info
+// GenerateDefaultDisplayName はユーザー情報からデフォルトの表示名を生成する
 func (s *UserService) GenerateDefaultDisplayName(user *entity.User) string {
 	if user.Username != nil && *user.Username != "" {
 		return *user.Username
@@ -33,7 +33,7 @@ func (s *UserService) GenerateDefaultDisplayName(user *entity.User) string {
 	return strings.Split(user.Email, "@")[0]
 }
 
-// ValidateSocialLinkURL validates URL format based on platform
+// ValidateSocialLinkURL はプラットフォームに基づいてURL形式をバリデートする
 func (s *UserService) ValidateSocialLinkURL(platform value.Platform, urlStr string) error {
 	parsedURL, err := url.Parse(urlStr)
 	if err != nil {

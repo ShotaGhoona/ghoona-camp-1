@@ -8,19 +8,19 @@ import (
 	"ghoona-camp-backend/internal/domain/user/repository"
 )
 
-// RivalService handles rival-related business logic
+// RivalService はライバル関連のビジネスロジックを処理する
 type RivalService struct {
 	userRivalRepo repository.UserRivalRepository
 }
 
-// NewRivalService creates a new RivalService
+// NewRivalService は新しいRivalServiceを作成する
 func NewRivalService(userRivalRepo repository.UserRivalRepository) *RivalService {
 	return &RivalService{
 		userRivalRepo: userRivalRepo,
 	}
 }
 
-// CanSetRival checks if a user can set another user as rival
+// CanSetRival はユーザーが他のユーザーをライバルに設定できるかチェックする
 func (s *RivalService) CanSetRival(ctx context.Context, userID, rivalUserID uuid.UUID) error {
 	if userID == rivalUserID {
 		return user.ErrCannotRivalSelf

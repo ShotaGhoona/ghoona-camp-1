@@ -6,16 +6,16 @@ import (
 	"github.com/google/uuid"
 )
 
-// UserRival represents a rival relationship between users
+// UserRival はユーザー間のライバル関係を表す
 type UserRival struct {
-	ID          uuid.UUID
-	UserID      uuid.UUID
-	RivalUserID uuid.UUID
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID          uuid.UUID // 関係ID
+	UserID      uuid.UUID // ユーザーID（外部キー）
+	RivalUserID uuid.UUID // ライバルのユーザーID（外部キー）
+	CreatedAt   time.Time // 作成日時
+	UpdatedAt   time.Time // 更新日時
 }
 
-// NewUserRival creates a new UserRival entity
+// NewUserRival は新しいUserRivalエンティティを作成する
 func NewUserRival(userID, rivalUserID uuid.UUID) *UserRival {
 	return &UserRival{
 		ID:          uuid.New(),

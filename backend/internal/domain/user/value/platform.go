@@ -1,19 +1,19 @@
 package value
 
-// Platform represents supported social media platforms
+// Platform はサポートされているソーシャルメディアプラットフォームを表す
 type Platform string
 
 const (
-	PlatformTwitter   Platform = "twitter"
-	PlatformGitHub    Platform = "github"
-	PlatformLinkedIn  Platform = "linkedin"
-	PlatformWebsite   Platform = "website"
-	PlatformBlog      Platform = "blog"
-	PlatformYouTube   Platform = "youtube"
-	PlatformInstagram Platform = "instagram"
+	PlatformTwitter   Platform = "twitter"   // Twitter
+	PlatformGitHub    Platform = "github"    // GitHub
+	PlatformLinkedIn  Platform = "linkedin"  // LinkedIn
+	PlatformWebsite   Platform = "website"   // ウェブサイト
+	PlatformBlog      Platform = "blog"      // ブログ
+	PlatformYouTube   Platform = "youtube"   // YouTube
+	PlatformInstagram Platform = "instagram" // Instagram
 )
 
-// IsValid checks if the platform is supported
+// IsValid はプラットフォームがサポートされているかどうかを確認する
 func (p Platform) IsValid() bool {
 	switch p {
 	case PlatformTwitter, PlatformGitHub, PlatformLinkedIn, 
@@ -24,7 +24,7 @@ func (p Platform) IsValid() bool {
 	}
 }
 
-// String returns the string representation of the platform
+// String はプラットフォームの文字列表現を返す
 func (p Platform) String() string {
 	return string(p)
 }

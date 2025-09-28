@@ -7,12 +7,12 @@ import (
 	"ghoona-camp-backend/internal/domain/user/entity"
 )
 
-// UserRepository defines the interface for user data access
+// UserRepository はユーザーデータアクセスのインターフェースを定義する
 type UserRepository interface {
-	GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error)
-	GetByClerkID(ctx context.Context, clerkID string) (*entity.User, error)
-	GetByEmail(ctx context.Context, email string) (*entity.User, error)
-	Create(ctx context.Context, user *entity.User) error
-	Update(ctx context.Context, user *entity.User) error
-	Delete(ctx context.Context, id uuid.UUID) error
+	GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error)         // IDでユーザーを取得
+	GetByClerkID(ctx context.Context, clerkID string) (*entity.User, error)  // Clerk IDでユーザーを取得
+	GetByEmail(ctx context.Context, email string) (*entity.User, error)      // メールアドレスでユーザーを取得
+	Create(ctx context.Context, user *entity.User) error                     // ユーザーを作成
+	Update(ctx context.Context, user *entity.User) error                     // ユーザーを更新
+	Delete(ctx context.Context, id uuid.UUID) error                          // ユーザーを削除
 }

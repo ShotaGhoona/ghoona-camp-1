@@ -7,11 +7,11 @@ import (
 	"ghoona-camp-backend/internal/domain/user/entity"
 )
 
-// UserSocialLinkRepository defines the interface for user social link data access
+// UserSocialLinkRepository はユーザーソーシャルリンクのデータアクセスインターフェースを定義する
 type UserSocialLinkRepository interface {
-	GetByUserID(ctx context.Context, userID uuid.UUID) ([]*entity.UserSocialLink, error)
-	GetByID(ctx context.Context, id uuid.UUID) (*entity.UserSocialLink, error)
-	Create(ctx context.Context, link *entity.UserSocialLink) error
-	Update(ctx context.Context, link *entity.UserSocialLink) error
-	Delete(ctx context.Context, id uuid.UUID) error
+	GetByUserID(ctx context.Context, userID uuid.UUID) ([]*entity.UserSocialLink, error) // ユーザーIDでソーシャルリンク一覧を取得
+	GetByID(ctx context.Context, id uuid.UUID) (*entity.UserSocialLink, error)            // IDでソーシャルリンクを取得
+	Create(ctx context.Context, link *entity.UserSocialLink) error                        // ソーシャルリンクを作成
+	Update(ctx context.Context, link *entity.UserSocialLink) error                        // ソーシャルリンクを更新
+	Delete(ctx context.Context, id uuid.UUID) error                                       // ソーシャルリンクを削除
 }

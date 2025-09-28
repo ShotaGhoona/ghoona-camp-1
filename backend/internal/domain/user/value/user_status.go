@@ -1,16 +1,16 @@
 package value
 
-// UserStatus represents the status of a user account
+// UserStatus はユーザーアカウントの状態を表す
 type UserStatus string
 
 const (
-	UserStatusActive    UserStatus = "active"
-	UserStatusInactive  UserStatus = "inactive"
-	UserStatusSuspended UserStatus = "suspended"
-	UserStatusDeleted   UserStatus = "deleted"
+	UserStatusActive    UserStatus = "active"    // アクティブ
+	UserStatusInactive  UserStatus = "inactive"  // 非アクティブ
+	UserStatusSuspended UserStatus = "suspended" // 停止中
+	UserStatusDeleted   UserStatus = "deleted"   // 削除済み
 )
 
-// IsValid checks if the user status is valid
+// IsValid はユーザーステータスが有効かどうかを確認する
 func (s UserStatus) IsValid() bool {
 	switch s {
 	case UserStatusActive, UserStatusInactive, UserStatusSuspended, UserStatusDeleted:
@@ -20,12 +20,12 @@ func (s UserStatus) IsValid() bool {
 	}
 }
 
-// String returns the string representation of the user status
+// String はユーザーステータスの文字列表現を返す
 func (s UserStatus) String() string {
 	return string(s)
 }
 
-// IsActiveState checks if the user can perform actions (login, use features)
+// IsActiveState はユーザーがアクション（ログイン、機能利用）を実行できるかどうかを確認する
 func (s UserStatus) IsActiveState() bool {
 	return s == UserStatusActive
 }

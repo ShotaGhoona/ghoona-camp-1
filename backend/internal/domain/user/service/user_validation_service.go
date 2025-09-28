@@ -9,19 +9,19 @@ import (
 	"ghoona-camp-backend/internal/domain/user/repository"
 )
 
-// UserValidationService handles all validation logic for user domain
+// UserValidationService はユーザードメインの全てのバリデーションロジックを処理する
 type UserValidationService struct {
 	socialLinkRepo repository.UserSocialLinkRepository
 }
 
-// NewUserValidationService creates a new UserValidationService
+// NewUserValidationService は新しいUserValidationServiceを作成する
 func NewUserValidationService(socialLinkRepo repository.UserSocialLinkRepository) *UserValidationService {
 	return &UserValidationService{
 		socialLinkRepo: socialLinkRepo,
 	}
 }
 
-// ValidateUser validates the user entity
+// ValidateUser はユーザーエンティティをバリデートする
 func (s *UserValidationService) ValidateUser(u *entity.User) error {
 	if u.ClerkID == "" {
 		return user.ErrInvalidClerkID
@@ -35,7 +35,7 @@ func (s *UserValidationService) ValidateUser(u *entity.User) error {
 	return nil
 }
 
-// ValidateUserMetadata validates the user metadata entity
+// ValidateUserMetadata はユーザーメタデータエンティティをバリデートする
 func (s *UserValidationService) ValidateUserMetadata(um *entity.UserMetadata) error {
 	if um.DisplayName != nil && len(*um.DisplayName) > 100 {
 		return user.ErrInvalidDisplayName
@@ -58,7 +58,7 @@ func (s *UserValidationService) ValidateUserMetadata(um *entity.UserMetadata) er
 	return nil
 }
 
-// ValidateUserSocialLink validates the user social link entity
+// ValidateUserSocialLink はユーザーソーシャルリンクエンティティをバリデートする
 func (s *UserValidationService) ValidateUserSocialLink(usl *entity.UserSocialLink) error {
 	if !usl.Platform.IsValid() {
 		return user.ErrInvalidPlatform
@@ -72,7 +72,7 @@ func (s *UserValidationService) ValidateUserSocialLink(usl *entity.UserSocialLin
 	return nil
 }
 
-// ValidateUserRival validates the user rival entity
+// ValidateUserRival はユーザーライバルエンティティをバリデートする
 func (s *UserValidationService) ValidateUserRival(ur *entity.UserRival) error {
 	if ur.UserID == ur.RivalUserID {
 		return user.ErrCannotRivalSelf
@@ -80,7 +80,7 @@ func (s *UserValidationService) ValidateUserRival(ur *entity.UserRival) error {
 	return nil
 }
 
-// ValidateUserSocialLinkUniqueness checks if user can add a social link for the platform
+// ValidateUserSocialLinkUniqueness はユーザーがプラットフォーム用のソーシャルリンクを追加できるかチェックする
 func (s *UserValidationService) ValidateUserSocialLinkUniqueness(ctx context.Context, userID uuid.UUID, platform string) error {
 	existingLinks, err := s.socialLinkRepo.GetByUserID(ctx, userID)
 	if err != nil {
