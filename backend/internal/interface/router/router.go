@@ -43,8 +43,10 @@ func (r *Router) Setup() *gin.Engine {
 	{
 		v1.GET("/ping", r.ping)
 
-		// TODO: BE-03-* で各ドメインのルート追加（BE-03-user-01, BE-03-attendance-01, BE-03-goal-01, BE-03-event-01, BE-03-title-01, BE-03-notification-01）
-		// r.setupUserRoutes(v1)
+		// BE-03-user-04で実装済み
+		r.setupUserRoutes(v1)
+		
+		// TODO: 他のドメインのルート追加
 		// r.setupAttendanceRoutes(v1)
 		// r.setupGoalRoutes(v1)
 		// r.setupEventRoutes(v1)
