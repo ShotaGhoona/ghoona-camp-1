@@ -11,7 +11,11 @@ var (
 	ErrInvalidEmail        = errors.New("無効なメールアドレスです")
 	ErrInvalidClerkID      = errors.New("無効なClerk IDです")
 
+	// User metadata errors
+	ErrUserMetadataNotFound = errors.New("ユーザーメタデータが見つかりません")
+
 	// Social link errors
+	ErrUserSocialLinkNotFound = errors.New("ソーシャルリンクが見つかりません")
 	ErrInvalidURL          = errors.New("無効なURL形式です")
 	ErrInvalidURLScheme    = errors.New("URLはhttp またはhttpsスキームを使用してください")
 	ErrInvalidTwitterURL   = errors.New("無効なTwitter URLです")
