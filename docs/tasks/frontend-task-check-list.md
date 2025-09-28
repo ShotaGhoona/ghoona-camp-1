@@ -6,7 +6,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 
 ---
 
-## 📋 開発環境セットアップ
+## 01. 📋 開発環境セットアップ
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -14,7 +14,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ✅ | FE-01-setup-02 | プロジェクト初期化とFSD構造作成 | Next.js初期化、FSDディレクトリ構造の作成、基本設定ファイル | 4時間 | 🔴 |
 | ✅ | FE-01-setup-03 | 開発ツール・Linter設定 | ESLint、Prettier、FSD boundaries、pre-commit hooks設定 | 2時間 | 🔴 |
 
-## 🔧 Shared層（共有基盤）
+## 02. 🔧 Shared層（共有基盤）
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -25,228 +25,51 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ◻️ | FE-02-shared-05 | 共通フック・ユーティリティ | 共通カスタムフック、日付・フォーマット・バリデーション関数 | 5時間 | 🔴 |
 | ◻️ | FE-02-shared-06 | エラーハンドリング基盤 | Error Boundary、Toast通知、エラーページ実装 | 4時間 | 🔴 |
 
-## 🏗️ Entities層（ドメインエンティティ）
-
-### User Entity
+## 03. 🏗️ Entities層（ドメインエンティティ）
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
-| ◻️ | FE-03-user-01 | User型定義・モデル | ユーザー関連の型定義、インターフェース、バリデーションスキーマ | 3時間 | 🔴 |
-| ◻️ | FE-03-user-02 | User API クライアント | ユーザー情報取得・更新、プロフィール管理のAPI呼び出し | 4時間 | 🔴 |
-| ◻️ | FE-03-user-03 | User クエリキー管理 | React Queryのクエリキー一元管理、無効化戦略 | 2時間 | 🔴 |
+| ✅ | FE-03-entity-01 | User Entity 完全実装 | User型定義、API、クエリキー、Metadata、Social Links、Rivals | 18時間 | 🔴 |
+| ✅ | FE-03-entity-02 | Title Entity 完全実装 | Title型定義、API、クエリキー、Achievements | 12時間 | 🔴 |
+| ◻️ | FE-03-entity-03 | Attendance Entity 完全実装 | Attendance型定義、API、クエリキー、統計・ランキング | 11時間 | 🔴 |
+| ◻️ | FE-03-entity-04 | Goal Entity 完全実装 | Goal型定義、API、クエリキー、進捗管理 | 9時間 | 🟡 |
+| ◻️ | FE-03-entity-05 | Event Entity 完全実装 | Event型定義、API、クエリキー、参加者管理 | 9時間 | 🟡 |
+| ◻️ | FE-03-entity-06 | Notification Entity 完全実装 | Notification型定義、API、クエリキー、設定管理 | 8時間 | 🟡 |
 
-### Attendance Entity
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-03-attend-01 | Attendance型定義・モデル | 出席ログ、統計、ランキング関連の型定義とバリデーション | 4時間 | 🔴 |
-| ◻️ | FE-03-attend-02 | Attendance API クライアント | 出席ログ取得、統計取得、ランキング取得のAPI呼び出し | 5時間 | 🔴 |
-| ◻️ | FE-03-attend-03 | Attendance クエリキー管理 | 出席関連データのクエリキー管理、リアルタイム更新 | 2時間 | 🔴 |
-
-### Goal Entity
+## 04. ⚙️ Features層（機能実装）
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
-| ◻️ | FE-03-goal-01 | Goal型定義・モデル | 目標、進捗関連の型定義とバリデーションスキーマ | 3時間 | 🟡 |
-| ◻️ | FE-03-goal-02 | Goal API クライアント | 目標CRUD、進捗管理のAPI呼び出し | 4時間 | 🟡 |
-| ◻️ | FE-03-goal-03 | Goal クエリキー管理 | 目標関連データのクエリキー管理 | 2時間 | 🟡 |
+| ◻️ | FE-04-user | User Features 完全実装 | プロフィール取得・更新、ライバル管理、ソーシャルリンク | 15時間 | 🔴 |
+| ◻️ | FE-04-title | Title Features 完全実装 | 称号取得、実績管理、称号変更機能 | 8時間 | 🟡 |
+| ◻️ | FE-04-attendance | Attendance Features 完全実装 | 出席ログ・統計・ランキング取得機能 | 13時間 | 🔴 |
+| ◻️ | FE-04-goal | Goal Features 完全実装 | 目標CRUD、進捗管理、一覧表示機能 | 13時間 | 🟡 |
+| ◻️ | FE-04-event | Event Features 完全実装 | イベントCRUD、参加管理、検索機能 | 15時間 | 🟡 |
+| ◻️ | FE-04-notification | Notification Features 完全実装 | 通知取得・既読処理・設定管理機能 | 11時間 | 🟡 |
+| ◻️ | FE-04-auth | Auth Features 完全実装 | Clerk認証統合、ガード機能、状態管理 | 12時間 | 🔴 |
 
-### Event Entity
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-03-event-01 | Event型定義・モデル | イベント、参加者関連の型定義とバリデーション | 3時間 | 🟡 |
-| ◻️ | FE-03-event-02 | Event API クライアント | イベントCRUD、参加管理のAPI呼び出し | 4時間 | 🟡 |
-| ◻️ | FE-03-event-03 | Event クエリキー管理 | イベント関連データのクエリキー管理 | 2時間 | 🟡 |
-
-### Title Entity
+## 05. 🧩 Widgets層（複合UIブロック）
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
-| ◻️ | FE-03-title-01 | Title型定義・モデル | 称号、実績関連の型定義とバリデーション | 3時間 | 🟡 |
-| ◻️ | FE-03-title-02 | Title API クライアント | 称号取得、実績管理のAPI呼び出し | 3時間 | 🟡 |
-| ◻️ | FE-03-title-03 | Title クエリキー管理 | 称号関連データのクエリキー管理 | 2時間 | 🟡 |
+| ◻️ | FE-05-layout | Layout Widgets 完全実装 | Header、Sidebar、Footer widget | 12時間 | 🔴 |
+| ◻️ | FE-05-user | User Widgets 完全実装 | UserCard、ProfileForm、RivalsList widget | 12時間 | 🔴 |
+| ◻️ | FE-05-attendance | Attendance Widgets 完全実装 | AttendanceCard、StreakBadge、Chart、Calendar、Ranking widget | 26時間 | 🔴 |
+| ◻️ | FE-05-title | Title Widgets 完全実装 | TitleCard、TitleBadge、AchievementModal、TitleGrid widget | 16時間 | 🟡 |
+| ◻️ | FE-05-goal | Goal Widgets 完全実装 | GoalCard、ProgressBar、GoalForm、GoalList widget | 16時間 | 🟡 |
+| ◻️ | FE-05-event | Event Widgets 完全実装 | EventCard、EventList、ParticipantList、EventForm widget | 18時間 | 🟡 |
+| ◻️ | FE-05-notification | Notification Widgets 完全実装 | NotificationList、NotificationBadge、NotificationSettings widget | 11時間 | 🟡 |
 
-### Notification Entity
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-03-notify-01 | Notification型定義・モデル | 通知、設定関連の型定義とバリデーション | 3時間 | 🟡 |
-| ◻️ | FE-03-notify-02 | Notification API クライアント | 通知CRUD、設定管理のAPI呼び出し | 3時間 | 🟡 |
-| ◻️ | FE-03-notify-03 | Notification クエリキー管理 | 通知関連データのクエリキー管理 | 2時間 | 🟡 |
-
-## ⚙️ Features層（機能実装）
-
-### Attendance Features
+## 06. 📄 Page-components層（ページ統合）
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
-| ◻️ | FE-04-attend-01 | attendance-log-get feature | 出席ログ取得機能、カスタムフック、エラーハンドリング | 4時間 | 🔴 |
-| ◻️ | FE-04-attend-02 | attendance-stats-get feature | 出席統計取得機能、連続日数計算、進捗表示 | 5時間 | 🔴 |
-| ◻️ | FE-04-attend-03 | attendance-ranking-get feature | ランキング取得機能、フィルタリング、ソート | 4時間 | 🔴 |
-| ◻️ | FE-04-attend-04 | attendance-streak-get feature | 連続記録取得機能、アチーブメント判定 | 3時間 | 🟡 |
+| ◻️ | FE-06-auth | Authentication Pages 完全実装 | Landing、Sign In、Sign Up page component | 11時間 | 🔴 |
+| ◻️ | FE-06-main | Main Application Pages 完全実装 | Dashboard、Ranking、Activity、Events、Goals、Titles、Members page | 27時間 | 🔴 |
+| ◻️ | FE-06-settings | Settings Pages 完全実装 | Profile、Vision、Notification、Account settings page | 13時間 | 🔴 |
+| ◻️ | FE-06-error | Error Pages 完全実装 | 404、500 error page component | 4時間 | 🟡 |
 
-### User Features
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-04-user-01 | user-profile-get feature | ユーザープロフィール取得機能、メタデータ管理 | 3時間 | 🔴 |
-| ◻️ | FE-04-user-02 | user-profile-update feature | プロフィール更新機能、画像アップロード、バリデーション | 5時間 | 🔴 |
-| ◻️ | FE-04-user-03 | user-rivals-manage feature | ライバル管理機能、追加・削除、最大3人制限 | 4時間 | 🟡 |
-| ◻️ | FE-04-user-04 | user-social-links feature | ソーシャルリンク管理機能、CRUD操作 | 3時間 | 🟡 |
-
-### Goal Features
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-04-goal-01 | goal-create feature | 目標作成機能、フォーム、バリデーション | 4時間 | 🟡 |
-| ◻️ | FE-04-goal-02 | goal-update feature | 目標更新機能、進捗管理、公開設定 | 4時間 | 🟡 |
-| ◻️ | FE-04-goal-03 | goal-delete feature | 目標削除機能、確認ダイアログ、データ整合性 | 2時間 | 🟡 |
-| ◻️ | FE-04-goal-04 | goal-list-get feature | 目標一覧取得機能、フィルタリング、ソート | 3時間 | 🟡 |
-
-### Event Features
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-04-event-01 | event-create feature | イベント作成機能、日時選択、参加者設定 | 5時間 | 🟡 |
-| ◻️ | FE-04-event-02 | event-participate feature | イベント参加機能、申込・キャンセル、定員管理 | 4時間 | 🟡 |
-| ◻️ | FE-04-event-03 | event-list-get feature | イベント一覧取得機能、検索・フィルター | 3時間 | 🟡 |
-| ◻️ | FE-04-event-04 | event-update feature | イベント更新機能、作成者権限チェック | 3時間 | 🟡 |
-
-### Title Features
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-04-title-01 | title-get feature | 全称号取得機能、獲得条件表示 | 3時間 | 🟡 |
-| ◻️ | FE-04-title-02 | achievement-get feature | 獲得履歴取得機能、現在設定中の称号 | 3時間 | 🟡 |
-| ◻️ | FE-04-title-03 | title-change feature | 称号変更機能、獲得済み称号から選択 | 2時間 | 🟡 |
-
-### Notification Features
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-04-notify-01 | notification-get feature | 通知取得機能、未読管理、ページネーション | 4時間 | 🟡 |
-| ◻️ | FE-04-notify-02 | notification-read feature | 既読処理機能、一括既読、自動既読 | 3時間 | 🟡 |
-| ◻️ | FE-04-notify-03 | notification-settings feature | 通知設定機能、カテゴリ別ON/OFF、時刻設定 | 4時間 | 🟡 |
-
-### Auth Features
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-04-auth-01 | clerk-auth-integration | Clerk認証統合、ログイン・サインアップフロー | 5時間 | 🔴 |
-| ◻️ | FE-04-auth-02 | auth-guard feature | 認証ガード機能、ルート保護、リダイレクト | 3時間 | 🔴 |
-| ◻️ | FE-04-auth-03 | auth-state-manage | 認証状態管理、React Query統合、Zustand連携 | 4時間 | 🔴 |
-
-## 🧩 Widgets層（複合UIブロック）
-
-### Attendance Widgets
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-05-attend-01 | AttendanceCard widget | 出席カード表示、統計サマリー、連続日数 | 4時間 | 🔴 |
-| ◻️ | FE-05-attend-02 | StreakBadge widget | 連続日数バッジ、レベル表示、アニメーション | 3時間 | 🔴 |
-| ◻️ | FE-05-attend-03 | AttendanceChart widget | 出席グラフ、月次表示、データ可視化 | 6時間 | 🟡 |
-| ◻️ | FE-05-attend-04 | CalendarView widget | カレンダー表示、出席状況、日付選択 | 8時間 | 🟡 |
-| ◻️ | FE-05-attend-05 | RankingList widget | ランキング一覧、ライバル強調、フィルタリング | 5時間 | 🟡 |
-
-### Goal Widgets
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-05-goal-01 | GoalCard widget | 目標カード表示、進捗バー、期限表示 | 4時間 | 🟡 |
-| ◻️ | FE-05-goal-02 | ProgressBar widget | 進捗バー、パーセンテージ、アニメーション | 3時間 | 🟡 |
-| ◻️ | FE-05-goal-03 | GoalForm widget | 目標フォーム、バリデーション、公開設定 | 5時間 | 🟡 |
-| ◻️ | FE-05-goal-04 | GoalList widget | 目標一覧表示、フィルタリング、ソート | 4時間 | 🟡 |
-
-### Event Widgets
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-05-event-01 | EventCard widget | イベントカード、参加状況、詳細リンク | 4時間 | 🟡 |
-| ◻️ | FE-05-event-02 | EventList widget | イベント一覧、検索・フィルター、ページネーション | 5時間 | 🟡 |
-| ◻️ | FE-05-event-03 | ParticipantList widget | 参加者一覧、アバター表示、参加状況 | 3時間 | 🟡 |
-| ◻️ | FE-05-event-04 | EventForm widget | イベントフォーム、日時選択、画像アップロード | 6時間 | 🟡 |
-
-### Title Widgets
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-05-title-01 | TitleCard widget | 称号カード、詳細情報、ストーリー | 4時間 | 🟡 |
-| ◻️ | FE-05-title-02 | TitleBadge widget | 称号バッジ、レベル表示、テーマカラー | 3時間 | 🟡 |
-| ◻️ | FE-05-title-03 | AchievementModal widget | 称号獲得モーダル、アニメーション、お祝い演出 | 5時間 | 🟢 |
-| ◻️ | FE-05-title-04 | TitleGrid widget | 称号一覧グリッド、カテゴリ別表示、進捗表示 | 4時間 | 🟡 |
-
-### Notification Widgets
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-05-notify-01 | NotificationList widget | 通知一覧、未読表示、アクション | 4時間 | 🟡 |
-| ◻️ | FE-05-notify-02 | NotificationBadge widget | 通知バッジ、未読件数、リアルタイム更新 | 3時間 | 🟡 |
-| ◻️ | FE-05-notify-03 | NotificationSettings widget | 通知設定フォーム、カテゴリ別設定 | 4時間 | 🟡 |
-
-### Layout Widgets
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-05-layout-01 | Header widget | グローバルヘッダー、ユーザーメニュー、ナビゲーション | 5時間 | 🔴 |
-| ◻️ | FE-05-layout-02 | Sidebar widget | サイドナビゲーション、メニュー状態管理、モバイル対応 | 5時間 | 🔴 |
-| ◻️ | FE-05-layout-03 | Footer widget | フッター、リンク集、会社情報 | 2時間 | 🟡 |
-
-## 📄 Page-components層（ページ統合）
-
-### Dashboard Pages
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-06-dash-01 | Dashboard page component | ダッシュボードページ統合、widgetsオーケストレーション | 4時間 | 🔴 |
-| ◻️ | FE-06-dash-02 | Dashboard hooks | ダッシュボード専用フック、データ統合、状態管理 | 3時間 | 🔴 |
-
-### Attendance Pages
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-06-attend-01 | Attendance page component | 出席記録ページ統合、カレンダー・統計表示 | 4時間 | 🔴 |
-| ◻️ | FE-06-attend-02 | Attendance hooks | 出席ページ専用フック、データフィルタリング | 3時間 | 🔴 |
-
-### Goal Pages
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-06-goal-01 | Goals page component | 目標一覧ページ統合、CRUD操作統合 | 4時間 | 🟡 |
-| ◻️ | FE-06-goal-02 | Goal detail page component | 目標詳細ページ、編集・削除機能統合 | 3時間 | 🟡 |
-| ◻️ | FE-06-goal-03 | Goals page hooks | 目標ページ専用フック、フィルタリング・ソート | 3時間 | 🟡 |
-
-### Event Pages
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-06-event-01 | Events page component | イベント一覧ページ統合、検索・フィルター統合 | 4時間 | 🟡 |
-| ◻️ | FE-06-event-02 | Event detail page component | イベント詳細ページ、参加管理統合 | 3時間 | 🟡 |
-| ◻️ | FE-06-event-03 | Events page hooks | イベントページ専用フック、参加状況管理 | 3時間 | 🟡 |
-
-### Title Pages
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-06-title-01 | Titles page component | 称号一覧ページ統合、獲得状況表示 | 3時間 | 🟡 |
-| ◻️ | FE-06-title-02 | Titles page hooks | 称号ページ専用フック、進捗計算 | 2時間 | 🟡 |
-
-### Settings Pages
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-06-settings-01 | Profile settings page component | プロフィール設定ページ統合、フォーム管理 | 4時間 | 🔴 |
-| ◻️ | FE-06-settings-02 | Notification settings page component | 通知設定ページ統合、設定管理 | 3時間 | 🟡 |
-| ◻️ | FE-06-settings-03 | Account settings page component | アカウント設定ページ統合、Clerk連携 | 3時間 | 🟡 |
-
-### Landing Pages
-
-| ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
-|---|---|---|---|---|---|
-| ◻️ | FE-06-landing-01 | Landing page component | ランディングページ、未認証ユーザー向け | 5時間 | 🟡 |
-| ◻️ | FE-06-landing-02 | Landing page hooks | ランディング専用フック、アニメーション管理 | 3時間 | 🟡 |
-
-## 🔗 App層（Next.js統合）
+## 07. 🔗 App層（Next.js統合）
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -256,7 +79,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ◻️ | FE-07-app-04 | Providers設定 | Clerk、React Query、Zustand等のプロバイダー統合 | 4時間 | 🔴 |
 | ◻️ | FE-07-app-05 | Metadata設定 | SEO・メタタグ最適化、OGP設定 | 3時間 | 🟡 |
 
-## 🎨 高度なUI機能
+## 08. 🎨 高度なUI機能
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -264,7 +87,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ◻️ | FE-08-ui-02 | アニメーション・トランジション | ページ遷移、カード表示、モーダルアニメーション | 6時間 | 🟢 |
 | ◻️ | FE-08-ui-03 | リアルタイム機能 | WebSocket接続、リアルタイム通知、即座更新 | 8時間 | 🟢 |
 
-## 📱 レスポンシブ・PWA
+## 09. 📱 レスポンシブ・PWA
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -272,7 +95,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ◻️ | FE-09-mobile-02 | PWA設定 | Service Worker、マニフェスト、オフライン対応 | 6時間 | 🟢 |
 | ◻️ | FE-09-mobile-03 | プッシュ通知対応 | ブラウザプッシュ通知、権限管理、設定UI | 8時間 | 🟢 |
 
-## ♿ アクセシビリティ
+## 10. ♿ アクセシビリティ
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -280,7 +103,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ◻️ | FE-10-access-02 | スクリーンリーダー対応 | ARIA属性、セマンティックHTML、音声読み上げ対応 | 6時間 | 🟢 |
 | ◻️ | FE-10-access-03 | キーボードナビゲーション | Tab順序最適化、ショートカットキー対応 | 4時間 | 🟢 |
 
-## 🧪 テスト実装
+## 11. 🧪 テスト実装
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -289,7 +112,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ◻️ | FE-11-test-03 | 統合テスト（Pages） | page-components層のテスト、ページ統合テスト | 8時間 | 🟡 |
 | ◻️ | FE-11-test-04 | E2Eテスト | Playwright、主要フローのテスト | 10時間 | 🟢 |
 
-## 🚀 パフォーマンス最適化
+## 12. 🚀 パフォーマンス最適化
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -298,7 +121,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ◻️ | FE-12-perf-03 | キャッシュ戦略最適化 | React Query設定調整、キャッシュ最適化 | 4時間 | 🟢 |
 | ◻️ | FE-12-perf-04 | Core Web Vitals最適化 | LCP、FID、CLS改善、パフォーマンス監視 | 6時間 | 🟢 |
 
-## 🔒 セキュリティ対応
+## 13. 🔒 セキュリティ対応
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -306,7 +129,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 | ◻️ | FE-13-security-02 | 認証セキュリティ強化 | トークン管理、セッション管理、CSRF対策 | 4時間 | 🟡 |
 | ◻️ | FE-13-security-03 | 入力検証強化 | フロントエンド検証、サニタイゼーション、型安全性 | 4時間 | 🟡 |
 
-## 📝 ドキュメント作成
+## 14. 📝 ドキュメント作成
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
@@ -316,9 +139,9 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 ---
 
 ## 📊 総工数見積
-- **総タスク数**: 114タスク
-- **総見積工数**: 485時間
-- **想定開発期間**: 約14-16週間（1人）
+- **総タスク数**: 56タスク
+- **総見積工数**: 540時間
+- **想定開発期間**: 約16-18週間（1人）
 
 ## 🔄 ステータス説明
 - **◻️**: 未着手
@@ -331,12 +154,12 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 - **🟢**: 低（後回しOK）
 
 ## 🎯 FSDマイルストーン
-1. **基盤構築（Shared層）**: FE-01-setup-01〜FE-02-shared-06（約3週間）
-2. **エンティティ層**: FE-03-user-01〜FE-03-notify-03（約4週間）
-3. **機能層（Features）**: FE-04-attend-01〜FE-04-auth-03（約5週間）
-4. **ウィジェット層**: FE-05-attend-01〜FE-05-layout-03（約4週間）
-5. **ページ統合**: FE-06-dash-01〜FE-07-app-05（約3週間）
-6. **品質向上・最適化**: FE-08-ui-01〜FE-14-docs-02（約3週間）
+1. **基盤構築（01-02）**: セットアップ〜Shared層（約4週間）
+2. **エンティティ層（03）**: 全エンティティ実装（約4週間）
+3. **機能層（04）**: Features層実装（約5週間）
+4. **ウィジェット層（05）**: Widgets層実装（約4週間）
+5. **ページ統合（06-07）**: Page-components〜App層（約3週間）
+6. **品質向上・最適化（08-14）**: 高度機能〜ドキュメント（約4週間）
 
 ## 🏗️ FSD依存関係
 ```
@@ -347,4 +170,4 @@ page-components ← widgets ← features ← entities ← shared
 
 ---
 
-_最終更新: 2025-01-21_
+_最終更新: 2025-01-28_
