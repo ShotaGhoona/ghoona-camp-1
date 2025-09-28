@@ -31,19 +31,19 @@ func (r *Router) setupUserRoutes(v1 *gin.RouterGroup) {
 		usersGroup.PUT("/:userId", r.container.UserController.UpdateUser)
 		
 		// ユーザーメタデータ
-		usersGroup.GET("/:userId/metadata", r.container.UserController.GetUserMetadata)
-		usersGroup.POST("/:userId/metadata", r.container.UserController.CreateUserMetadata)
-		usersGroup.PUT("/:userId/metadata", r.container.UserController.UpdateUserMetadata)
+		usersGroup.GET("/:userId/metadata", r.container.UserMetadataController.GetUserMetadata)
+		usersGroup.POST("/:userId/metadata", r.container.UserMetadataController.CreateUserMetadata)
+		usersGroup.PUT("/:userId/metadata", r.container.UserMetadataController.UpdateUserMetadata)
 		
 		// ソーシャルリンク
-		usersGroup.GET("/:userId/social-links", r.container.UserController.GetUserSocialLinks)
-		usersGroup.POST("/:userId/social-links", r.container.UserController.CreateSocialLink)
-		usersGroup.PUT("/:userId/social-links/:linkId", r.container.UserController.UpdateSocialLink)
-		usersGroup.DELETE("/:userId/social-links/:linkId", r.container.UserController.DeleteSocialLink)
+		usersGroup.GET("/:userId/social-links", r.container.UserSocialController.GetUserSocialLinks)
+		usersGroup.POST("/:userId/social-links", r.container.UserSocialController.CreateSocialLink)
+		usersGroup.PUT("/:userId/social-links/:linkId", r.container.UserSocialController.UpdateSocialLink)
+		usersGroup.DELETE("/:userId/social-links/:linkId", r.container.UserSocialController.DeleteSocialLink)
 		
 		// ライバル管理
-		usersGroup.GET("/:userId/rivals", r.container.UserController.GetUserRivals)
-		usersGroup.POST("/:userId/rivals", r.container.UserController.AddRival)
-		usersGroup.DELETE("/:userId/rivals/:rivalId", r.container.UserController.RemoveRival)
+		usersGroup.GET("/:userId/rivals", r.container.UserRivalController.GetUserRivals)
+		usersGroup.POST("/:userId/rivals", r.container.UserRivalController.AddRival)
+		usersGroup.DELETE("/:userId/rivals/:rivalId", r.container.UserRivalController.RemoveRival)
 	}
 }

@@ -4,14 +4,14 @@ import (
 	"gorm.io/gorm"
 
 	"ghoona-camp-backend/internal/application/transaction"
-	"ghoona-camp-backend/internal/application/usecase"
+	userUsecase "ghoona-camp-backend/internal/application/usecase/user"
 	"ghoona-camp-backend/internal/domain/user/repository"
 	"ghoona-camp-backend/internal/domain/user/service"
 	"ghoona-camp-backend/internal/infrastructure/clerk"
 	"ghoona-camp-backend/internal/infrastructure/config"
 	"ghoona-camp-backend/internal/infrastructure/discord"
 	gormRepo "ghoona-camp-backend/internal/infrastructure/gorm/repository"
-	"ghoona-camp-backend/internal/interface/controller"
+	userController "ghoona-camp-backend/internal/interface/controller/user"
 )
 
 // Container holds all dependencies
@@ -37,10 +37,16 @@ type Container struct {
 	RivalRepo        repository.UserRivalRepository
 
 	// Services/UseCases
-	UserUseCase usecase.UserUseCase
+	UserUseCase         userUsecase.UserUseCase
+	UserMetadataUseCase userUsecase.UserMetadataUseCase
+	UserSocialUseCase   userUsecase.UserSocialUseCase
+	UserRivalUseCase    userUsecase.UserRivalUseCase
 
 	// Controllers
-	UserController *controller.UserController
+	UserController         *userController.UserController
+	UserMetadataController *userController.UserMetadataController
+	UserSocialController   *userController.UserSocialController
+	UserRivalController    *userController.UserRivalController
 
 	// TODO: 他のドメインで追加予定
 	// AttendanceRepo   attendanceRepo.AttendanceRepository
@@ -115,13 +121,35 @@ func (c *Container) initUserServices() {
 	rivalService := service.NewRivalService(c.RivalRepo)
 	validationService := service.NewUserValidationService(c.SocialLinkRepo)
 
-	// UseCase
-	c.UserUseCase = usecase.NewUserUseCase(
+	// UseCases
+	c.UserUseCase = userUsecase.NewUserUseCase(
 		c.UserRepo,
 		c.UserMetadataRepo,
 		c.SocialLinkRepo,
 		c.RivalRepo,
 		userService,
+		validationService,
+		c.TxManager,
+	)
+	
+	c.UserMetadataUseCase = userUsecase.NewUserMetadataUseCase(
+		c.UserRepo,
+		c.UserMetadataRepo,
+		validationService,
+		c.TxManager,
+	)
+	
+	c.UserSocialUseCase = userUsecase.NewUserSocialUseCase(
+		c.UserRepo,
+		c.SocialLinkRepo,
+		userService,
+		validationService,
+		c.TxManager,
+	)
+	
+	c.UserRivalUseCase = userUsecase.NewUserRivalUseCase(
+		c.UserRepo,
+		c.RivalRepo,
 		rivalService,
 		validationService,
 		c.TxManager,
@@ -129,7 +157,10 @@ func (c *Container) initUserServices() {
 }
 
 func (c *Container) initUserControllers() {
-	c.UserController = controller.NewUserController(c.UserUseCase)
+	c.UserController = userController.NewUserController(c.UserUseCase)
+	c.UserMetadataController = userController.NewUserMetadataController(c.UserMetadataUseCase, c.UserRepo)
+	c.UserSocialController = userController.NewUserSocialController(c.UserSocialUseCase, c.UserRepo)
+	c.UserRivalController = userController.NewUserRivalController(c.UserRivalUseCase, c.UserRepo)
 }
 
 // TODO: 他のドメインで実装予定
