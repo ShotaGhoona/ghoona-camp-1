@@ -8,9 +8,6 @@ import (
 	"ghoona-camp-backend/internal/infrastructure/clerk"
 )
 
-// TODO: BE-02-arch-02で実際のClerk認証を実装
-// 現在は基盤のみ実装
-
 // AuthMiddleware はClerk認証ミドルウェア
 func AuthMiddleware(authService *clerk.AuthService) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -113,14 +110,14 @@ func GetUserID(c *gin.Context) (string, bool) {
 }
 
 // GetUser はコンテキストからユーザー情報を取得
-func GetUser(c *gin.Context) (map[string]interface{}, bool) {
+func GetUser(c *gin.Context) (*clerk.ClerkUser, bool) {
 	user, exists := c.Get("user")
 	if !exists {
 		return nil, false
 	}
 	
-	userMap, ok := user.(map[string]interface{})
-	return userMap, ok
+	clerkUser, ok := user.(*clerk.ClerkUser)
+	return clerkUser, ok
 }
 
 // RequireUserID はユーザーIDが必要な場合のヘルパー

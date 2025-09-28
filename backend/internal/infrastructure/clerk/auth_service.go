@@ -3,8 +3,9 @@ package clerk
 import (
 	"context"
 	"errors"
-	"strings"
 
+	"github.com/clerk/clerk-sdk-go/v2"
+	"github.com/clerk/clerk-sdk-go/v2/jwt"
 	"ghoona-camp-backend/internal/infrastructure/config"
 )
 
@@ -36,17 +37,12 @@ func (s *AuthService) VerifyToken(ctx context.Context, token string) (*ClerkUser
 		return nil, errors.New("Clerk secret key が設定されていません")
 	}
 
-	// Bearer プレフィックスを削除
-	token = strings.TrimPrefix(token, "Bearer ")
-	token = strings.TrimSpace(token)
-
 	if token == "" {
 		return nil, errors.New("トークンが空です")
 	}
 
 	// 開発環境用のモック処理
 	if !s.enabled {
-		// テスト用のモックユーザーを返す
 		if token == "mock-clerk-token" {
 			return &ClerkUser{
 				ID:       "user_mock123",
@@ -57,51 +53,20 @@ func (s *AuthService) VerifyToken(ctx context.Context, token string) (*ClerkUser
 		return nil, errors.New("無効なモックトークンです")
 	}
 
-	// 実際のClerk JWT検証
-	// 注: 簡略化したJWT検証。実際の環境ではClerkのJWKSから公開鍵を取得して検証する必要があります
-	// TODO: 本格実装時にClerkのJWKSエンドポイントから公開鍵を取得
-	claims := make(map[string]interface{})
-	claims["sub"] = "mock_user_id" // 仮実装
-	claims["email"] = "test@example.com"
-	claims["username"] = "testuser"
+	// Clerk SDK v2使用
+	clerk.SetKey(s.secretKey)
 
-	// クレームからユーザー情報を抽出
-	userID, ok := claims["sub"].(string)
-	if !ok || userID == "" {
-		return nil, errors.New("ユーザーIDが見つかりません")
+	claims, err := jwt.Verify(ctx, &jwt.VerifyParams{
+		Token: token,
+	})
+	if err != nil {
+		return nil, err
 	}
 
-	email, _ := claims["email"].(string)
-	username, _ := claims["username"].(string)
-
 	return &ClerkUser{
-		ID:       userID,
-		Email:    email,
-		Username: username,
+		ID:       claims.Subject,
+		Email:    "clerk-user@example.com", // TODO: 実際のユーザー情報取得APIを使用
+		Username: "clerk-user",            // TODO: 実際のユーザー情報取得APIを使用
 	}, nil
 }
 
-// GetUser はユーザー情報を取得
-func (s *AuthService) GetUser(ctx context.Context, userID string) (*ClerkUser, error) {
-	// TODO: BE-03-user-*で実際のClerk API連携を実装
-	// 現在はモック実装
-	return &ClerkUser{
-		ID:       userID,
-		Email:    "test@example.com",
-		Username: "testuser",
-	}, nil
-}
-
-// ParseWebhook はClerk Webhookを解析
-// 使用予定: BE-05-notification-*でWebhookイベント処理実装
-func (s *AuthService) ParseWebhook(payload []byte, signature string) (map[string]interface{}, error) {
-	// TODO: BE-05-notification-*でClerk Webhook検証と解析を実装
-	return nil, errors.New("Clerk Webhook解析は後続タスクで実装予定です")
-}
-
-// IsValidToken はトークンの基本的なフォーマットを検証
-func (s *AuthService) IsValidToken(token string) bool {
-	token = strings.TrimPrefix(token, "Bearer ")
-	token = strings.TrimSpace(token)
-	return token != ""
-}

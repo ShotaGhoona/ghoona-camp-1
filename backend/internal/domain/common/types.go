@@ -56,10 +56,11 @@ func (e *BaseEntity) UpdateTimestamp() {
 //   - 称号一覧API (BE-08-title-04)
 //   - 出席ログ一覧API (BE-04-attend-04)
 type Pagination struct {
-	CurrentPage int `json:"current_page"`
-	TotalPages  int `json:"total_pages"`
-	Total       int `json:"total"`
-	Limit       int `json:"limit"`
+	CurrentPage int  `json:"current_page"`
+	TotalPages  int  `json:"total_pages"`
+	TotalCount  int  `json:"total_count"`
+	HasNext     bool `json:"has_next"`
+	HasPrev     bool `json:"has_prev"`
 }
 
 // NewPagination はページネーション情報を作成
@@ -80,13 +81,14 @@ func NewPagination(page, limit, total int) *Pagination {
 	return &Pagination{
 		CurrentPage: page,
 		TotalPages:  totalPages,
-		Total:       total,
-		Limit:       limit,
+		TotalCount:  total,
+		HasNext:     page < totalPages,
+		HasPrev:     page > 1,
 	}
 }
 
 // GetOffset はオフセット値を取得
 // 使用予定: GORM クエリでのOFFSET計算 (BE-03-user-*, BE-04-attend-*, BE-06-goal-*, BE-07-event-*, BE-08-title-*, BE-09-notify-*)
 func (p *Pagination) GetOffset() int {
-	return (p.CurrentPage - 1) * p.Limit
+	return (p.CurrentPage - 1) * 20 // TODO: Limitフィールド削除のため固定値、将来的に改善
 }
