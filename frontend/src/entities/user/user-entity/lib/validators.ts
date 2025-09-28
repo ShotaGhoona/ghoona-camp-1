@@ -1,5 +1,13 @@
+/**
+ * User Validators
+ * 
+ * ユーザー関連のバリデーション機能を提供します。
+ * このファイルは内部実装のため、外部からは直接インポートせず、
+ * user-entity/index.ts からエクスポートされた関数を使用してください。
+ */
+
 import { z } from 'zod';
-import type { User, UpdateUserDto } from '../model/types';
+import type { User, UpdateUserDto } from '../model/user-types';
 
 // === Zodスキーマ ===
 

@@ -1,3 +1,11 @@
+/**
+ * User API Functions
+ * 
+ * ユーザー関連のAPI呼び出しを提供します。
+ * このファイルは内部実装のため、外部からは直接インポートせず、
+ * user-entity/index.ts からエクスポートされた関数を使用してください。
+ */
+
 import { apiClient } from '@/shared/api';
 import type { 
   AuthMeResponse,
@@ -6,32 +14,31 @@ import type {
   UserUpdateResponse,
   UpdateUserDto,
   UsersQueryParams
-} from '../model/types';
+} from '../model/user-types';
 
 /** 現在のユーザー情報を取得（認証状態確認） */
+/** GET /api/v1/auth/me */
 export const getCurrentUser = async (): Promise<AuthMeResponse['data']> => {
   const { data } = await apiClient.get<AuthMeResponse>('/auth/me');
   return data.data;
 };
 
 /** ユーザー一覧を取得 */
+/** GET /api/v1/users */ 
 export const getUsers = async (params?: UsersQueryParams): Promise<UsersListResponse['data']> => {
-  // undefinedを除去してAPIクライアントに渡す
-  const cleanParams = params ? Object.fromEntries(
-    Object.entries(params).filter(([_, value]) => value !== undefined)
-  ) as Record<string, string | number | boolean> : undefined;
-  
-  const { data } = await apiClient.get<UsersListResponse>('/users', { params: cleanParams });
+  const { data } = await apiClient.get<UsersListResponse>('/users', { params });
   return data.data;
 };
 
 /** 特定ユーザーの詳細情報を取得 */
+/** GET /api/v1/users/{userId} */
 export const getUserDetail = async (id: string): Promise<UserDetailResponse['data']> => {
   const { data } = await apiClient.get<UserDetailResponse>(`/users/${id}`);
   return data.data;
 };
 
 /** ユーザーの基本情報を更新 */
+/** PUT /api/v1/users/{userId} */
 export const updateUser = async ({
   id,
   data: updateData,

@@ -1,6 +1,9 @@
 /**
  * User Entity Query Keys
- * React Queryキー管理
+ * 
+ * React Queryキー管理を提供します。
+ * このファイルは内部実装のため、外部からは直接インポートせず、
+ * user-entity/index.ts からエクスポートされたキーを使用してください。
  */
 
 export const userKeys = {

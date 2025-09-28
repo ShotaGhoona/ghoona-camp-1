@@ -1,7 +1,15 @@
+/**
+ * User Types
+ * 
+ * ユーザー関連の型定義を提供します。
+ * このファイルは内部実装のため、外部からは直接インポートせず、
+ * user-entity/index.ts からエクスポートされた型を使用してください。
+ */
+
 // === API Response Types ===
 
-// 基本ユーザー情報（user-entity用）
-export interface UserResponse {
+// 基本ユーザー情報（user-entity用）- 内部実装
+interface UserResponse {
   id: string;
   clerk_id: string;
   email: string;

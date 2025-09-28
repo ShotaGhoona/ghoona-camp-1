@@ -14,7 +14,7 @@ export interface ApiResponse<T = unknown> {
 }
 
 export interface RequestConfig extends RequestInit {
-  params?: Record<string, string | number | boolean>;
+  params?: Record<string, string | number | boolean | undefined>;
   timeout?: number;
 }
 
@@ -32,7 +32,7 @@ class ApiClient {
    */
   private buildUrl(
     endpoint: string,
-    params?: Record<string, string | number | boolean>,
+    params?: Record<string, string | number | boolean | undefined>,
   ): string {
     const url = new URL(`${this.baseUrl}${endpoint}`);
 
