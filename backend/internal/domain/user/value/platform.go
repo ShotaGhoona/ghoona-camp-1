@@ -9,15 +9,13 @@ const (
 	PlatformLinkedIn  Platform = "linkedin"  // LinkedIn
 	PlatformWebsite   Platform = "website"   // ウェブサイト
 	PlatformBlog      Platform = "blog"      // ブログ
-	PlatformYouTube   Platform = "youtube"   // YouTube
-	PlatformInstagram Platform = "instagram" // Instagram
 )
 
 // IsValid はプラットフォームがサポートされているかどうかを確認する
 func (p Platform) IsValid() bool {
 	switch p {
 	case PlatformTwitter, PlatformGitHub, PlatformLinkedIn, 
-		 PlatformWebsite, PlatformBlog, PlatformYouTube, PlatformInstagram:
+		 PlatformWebsite, PlatformBlog:
 		return true
 	default:
 		return false
