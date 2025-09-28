@@ -8,11 +8,13 @@ var (
 	ErrUserNotFound        = errors.New("ユーザーが見つかりません")
 	ErrInvalidUsername     = errors.New("ユーザー名は3文字以上50文字以内で入力してください")
 	ErrDuplicateEmail      = errors.New("このメールアドレスは既に使用されています")
+	ErrDuplicateClerkID    = errors.New("このClerk IDは既に使用されています")
 	ErrInvalidEmail        = errors.New("無効なメールアドレスです")
 	ErrInvalidClerkID      = errors.New("無効なClerk IDです")
 
 	// User metadata errors
-	ErrUserMetadataNotFound = errors.New("ユーザーメタデータが見つかりません")
+	ErrUserMetadataNotFound    = errors.New("ユーザーメタデータが見つかりません")
+	ErrUserMetadataAlreadyExists = errors.New("ユーザーメタデータが既に存在します")
 
 	// Social link errors
 	ErrUserSocialLinkNotFound = errors.New("ソーシャルリンクが見つかりません")

@@ -67,12 +67,18 @@ func RespondWithError(ctx *gin.Context, err error) {
 	case errors.Is(err, domainUser.ErrUserMetadataNotFound):
 		statusCode = http.StatusNotFound
 		errorCode = "USER_METADATA_NOT_FOUND"
+	case errors.Is(err, domainUser.ErrUserMetadataAlreadyExists):
+		statusCode = http.StatusConflict
+		errorCode = "USER_METADATA_ALREADY_EXISTS"
 	case errors.Is(err, domainUser.ErrUserSocialLinkNotFound):
 		statusCode = http.StatusNotFound
 		errorCode = "SOCIAL_LINK_NOT_FOUND"
 	case errors.Is(err, domainUser.ErrDuplicateEmail):
 		statusCode = http.StatusConflict
 		errorCode = "DUPLICATE_EMAIL"
+	case errors.Is(err, domainUser.ErrDuplicateClerkID):
+		statusCode = http.StatusConflict
+		errorCode = "DUPLICATE_CLERK_ID"
 	case errors.Is(err, domainUser.ErrDuplicatePlatform):
 		statusCode = http.StatusConflict
 		errorCode = "DUPLICATE_PLATFORM"

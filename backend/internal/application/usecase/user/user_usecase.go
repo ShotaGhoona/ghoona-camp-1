@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"log"
 
 	"github.com/google/uuid"
 
@@ -66,7 +67,11 @@ func (u *userUseCase) GetUserByID(ctx context.Context, userID uuid.UUID) (*user.
 	}
 
 	// メタデータを取得
-	metadata, _ := u.metadataRepo.GetByUserID(ctx, userID)
+	metadata, err := u.metadataRepo.GetByUserID(ctx, userID)
+	if err != nil {
+		log.Printf("Failed to fetch user metadata for userID %s: %v", userID, err)
+		// メタデータ取得エラーは警告ログのみでユーザー情報は返す
+	}
 
 	return user.UserResponseFromEntityWithMetadata(userEntity, metadata), nil
 }
@@ -82,7 +87,11 @@ func (u *userUseCase) GetUserByClerkID(ctx context.Context, clerkID string) (*us
 	}
 
 	// メタデータを取得
-	metadata, _ := u.metadataRepo.GetByUserID(ctx, userEntity.ID)
+	metadata, err := u.metadataRepo.GetByUserID(ctx, userEntity.ID)
+	if err != nil {
+		log.Printf("Failed to fetch user metadata for userID %s: %v", userEntity.ID, err)
+		// メタデータ取得エラーは警告ログのみでユーザー情報は返す
+	}
 
 	return user.UserResponseFromEntityWithMetadata(userEntity, metadata), nil
 }
@@ -130,7 +139,7 @@ func (u *userUseCase) CreateUser(ctx context.Context, req *user.CreateUserReques
 			return err
 		}
 		if existingUserByClerk != nil {
-			return domainUser.ErrDuplicateEmail // Clerk IDが重複している場合のエラー
+			return domainUser.ErrDuplicateClerkID
 		}
 
 		// ユーザーエンティティの作成
@@ -235,18 +244,33 @@ func (u *userUseCase) DeleteUser(ctx context.Context, userID uuid.UUID) error {
 		}
 
 		// 関連するメタデータを削除
-		_ = u.metadataRepo.Delete(txCtx, userID)
+		if err := u.metadataRepo.Delete(txCtx, userID); err != nil {
+			log.Printf("Failed to delete metadata for userID %s: %v", userID, err)
+			// メタデータ削除エラーは警告ログのみで続行
+		}
 
 		// ソーシャルリンクを削除
-		socialLinks, _ := u.socialLinkRepo.GetByUserID(txCtx, userID)
-		for _, link := range socialLinks {
-			_ = u.socialLinkRepo.Delete(txCtx, link.ID)
+		socialLinks, err := u.socialLinkRepo.GetByUserID(txCtx, userID)
+		if err != nil {
+			log.Printf("Failed to get social links for userID %s: %v", userID, err)
+		} else {
+			for _, link := range socialLinks {
+				if err := u.socialLinkRepo.Delete(txCtx, link.ID); err != nil {
+					log.Printf("Failed to delete social link %s for userID %s: %v", link.ID, userID, err)
+				}
+			}
 		}
 
 		// ライバルを削除
-		rivals, _ := u.rivalRepo.GetByUserID(txCtx, userID)
-		for _, rival := range rivals {
-			_ = u.rivalRepo.Delete(txCtx, rival.ID)
+		rivals, err := u.rivalRepo.GetByUserID(txCtx, userID)
+		if err != nil {
+			log.Printf("Failed to get rivals for userID %s: %v", userID, err)
+		} else {
+			for _, rival := range rivals {
+				if err := u.rivalRepo.Delete(txCtx, rival.ID); err != nil {
+					log.Printf("Failed to delete rival %s for userID %s: %v", rival.ID, userID, err)
+				}
+			}
 		}
 
 		// ユーザーを削除

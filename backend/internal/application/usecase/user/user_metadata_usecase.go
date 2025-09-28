@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"log"
 
 	"github.com/google/uuid"
 
@@ -80,9 +81,13 @@ func (u *userMetadataUseCase) CreateUserMetadata(ctx context.Context, userID uui
 		}
 
 		// 既存メタデータの確認
-		existingMetadata, _ := u.metadataRepo.GetByUserID(txCtx, userID)
+		existingMetadata, err := u.metadataRepo.GetByUserID(txCtx, userID)
+		if err != nil {
+			log.Printf("Failed to check existing metadata for userID %s: %v", userID, err)
+			return err
+		}
 		if existingMetadata != nil {
-			return domainUser.ErrDuplicateEmail // メタデータが既に存在
+			return domainUser.ErrUserMetadataAlreadyExists
 		}
 
 		// デフォルト値の設定
