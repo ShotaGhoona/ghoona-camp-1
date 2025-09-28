@@ -61,3 +61,4 @@ func (s *UserService) ValidateSocialLinkURL(platform value.Platform, urlStr stri
 
 	return nil
 }
+

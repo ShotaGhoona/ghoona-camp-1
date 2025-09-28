@@ -18,6 +18,8 @@ var (
 	ErrInvalidGitHubURL    = errors.New("無効なGitHub URLです")
 	ErrInvalidLinkedInURL  = errors.New("無効なLinkedIn URLです")
 	ErrInvalidPlatform     = errors.New("無効なプラットフォームです")
+	ErrInvalidTitle        = errors.New("タイトルは100文字以内で入力してください")
+	ErrDuplicatePlatform   = errors.New("同一プラットフォームのリンクは1つまでです")
 
 	// Rival errors
 	ErrCannotRivalSelf     = errors.New("自分自身をライバルに設定できません")

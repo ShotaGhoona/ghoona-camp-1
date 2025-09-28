@@ -9,7 +9,7 @@ import (
 
 // UserMetadataRepository defines the interface for user metadata data access
 type UserMetadataRepository interface {
-	FindByUserID(ctx context.Context, userID uuid.UUID) (*entity.UserMetadata, error)
+	GetByUserID(ctx context.Context, userID uuid.UUID) (*entity.UserMetadata, error)
 	Create(ctx context.Context, metadata *entity.UserMetadata) error
 	Update(ctx context.Context, metadata *entity.UserMetadata) error
 	Delete(ctx context.Context, userID uuid.UUID) error

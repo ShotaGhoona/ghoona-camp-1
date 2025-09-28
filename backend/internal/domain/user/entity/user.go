@@ -3,8 +3,9 @@ package entity
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"ghoona-camp-backend/internal/domain/user/value"
+
+	"github.com/google/uuid"
 )
 
 // User represents a user account in the system
