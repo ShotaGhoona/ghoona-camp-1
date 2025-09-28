@@ -18,7 +18,7 @@ FSD（Feature-Sliced Design）アーキテクチャとNext.js 15のApp Routerを
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
-| ◻️ | FE-02-shared-01 | shadcn/ui セットアップ | shadcn/uiライブラリ導入、基本コンポーネントの設定 | 3時間 | 🔴 |
+| ✅ | FE-02-shared-01 | shadcn/ui セットアップ | shadcn/uiライブラリ導入、基本コンポーネントの設定 | 3時間 | 🔴 |
 | ◻️ | FE-02-shared-02 | デザインシステム構築 | カラーパレット、タイポグラフィ、スペーシング、テーマ設定 | 6時間 | 🔴 |
 | ◻️ | FE-02-shared-03 | 共通UIコンポーネント | Button、Card、Modal、Form、Loading等の基本コンポーネント | 8時間 | 🔴 |
 | ◻️ | FE-02-shared-04 | APIクライアント設定 | Supabaseクライアント、Clerkクライアント、HTTP設定 | 4時間 | 🔴 |
