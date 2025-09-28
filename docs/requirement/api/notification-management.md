@@ -82,8 +82,8 @@ const (
 ```go
 // internal/domain/notification/repository/notification_repository.go
 type NotificationRepository interface {
-    FindByUserID(ctx context.Context, userID UUID, filters NotificationFilters) ([]*entity.Notification, error)
-    FindByID(ctx context.Context, id UUID) (*entity.Notification, error)
+    GetByUserID(ctx context.Context, userID UUID, filters NotificationFilters) ([]*entity.Notification, error)
+    GetByID(ctx context.Context, id UUID) (*entity.Notification, error)
     Create(ctx context.Context, notification *entity.Notification) error
     Update(ctx context.Context, notification *entity.Notification) error
     Delete(ctx context.Context, id UUID) error
@@ -93,7 +93,7 @@ type NotificationRepository interface {
 }
 
 type NotificationSettingsRepository interface {
-    FindByUserID(ctx context.Context, userID UUID) (*entity.NotificationSettings, error)
+    GetByUserID(ctx context.Context, userID UUID) (*entity.NotificationSettings, error)
     Create(ctx context.Context, settings *entity.NotificationSettings) error
     Update(ctx context.Context, settings *entity.NotificationSettings) error
 }

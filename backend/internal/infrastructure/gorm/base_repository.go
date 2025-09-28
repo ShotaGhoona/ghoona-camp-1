@@ -3,13 +3,14 @@ package gorm
 import (
 	"context"
 	"fmt"
-	"time"
+
+	// "time"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
 	"ghoona-camp-backend/internal/application/transaction"
-	"ghoona-camp-backend/internal/domain/common"
+	// "ghoona-camp-backend/internal/domain/common" // TODO: ページネーションやエラーハンドリング機能を使う場合に有効化
 )
 
 // BaseRepository は基底リポジトリ
@@ -63,13 +64,13 @@ func (r *BaseRepository) GetConnectionStats() (map[string]interface{}, error) {
 	stats := sqlDB.Stats()
 	return map[string]interface{}{
 		"open_connections":     stats.OpenConnections,
-		"in_use":              stats.InUse,
-		"idle":                stats.Idle,
-		"wait_count":          stats.WaitCount,
-		"wait_duration":       stats.WaitDuration.String(),
-		"max_idle_closed":     stats.MaxIdleClosed,
+		"in_use":               stats.InUse,
+		"idle":                 stats.Idle,
+		"wait_count":           stats.WaitCount,
+		"wait_duration":        stats.WaitDuration.String(),
+		"max_idle_closed":      stats.MaxIdleClosed,
 		"max_idle_time_closed": stats.MaxIdleTimeClosed,
-		"max_lifetime_closed": stats.MaxLifetimeClosed,
+		"max_lifetime_closed":  stats.MaxLifetimeClosed,
 	}, nil
 }
 
@@ -85,86 +86,89 @@ func (r *BaseRepository) SetLogLevel(level logger.LogLevel) {
 	r.db.Logger = r.db.Logger.LogMode(level)
 }
 
+// TODO: 将来的にBaseEntityパターンを導入する場合は以下のコメントアウトを外す
 // CreateBaseEntity は基底エンティティの作成時共通処理
-func (r *BaseRepository) CreateBaseEntity(entity interface{}) error {
-	now := time.Now()
-	
-	// BaseEntityが実装されている場合の処理
-	if baseEntity, ok := entity.(interface {
-		SetCreatedAt(time.Time)
-		SetUpdatedAt(time.Time)
-	}); ok {
-		baseEntity.SetCreatedAt(now)
-		baseEntity.SetUpdatedAt(now)
-	}
-	
-	return nil
-}
+// func (r *BaseRepository) CreateBaseEntity(entity interface{}) error {
+// 	now := time.Now()
+//
+// 	// BaseEntityが実装されている場合の処理
+// 	if baseEntity, ok := entity.(interface {
+// 		SetCreatedAt(time.Time)
+// 		SetUpdatedAt(time.Time)
+// 	}); ok {
+// 		baseEntity.SetCreatedAt(now)
+// 		baseEntity.SetUpdatedAt(now)
+// 	}
+//
+// 	return nil
+// }
 
 // UpdateBaseEntity は基底エンティティの更新時共通処理
-func (r *BaseRepository) UpdateBaseEntity(entity interface{}) error {
-	now := time.Now()
-	
-	// BaseEntityが実装されている場合の処理
-	if baseEntity, ok := entity.(interface {
-		SetUpdatedAt(time.Time)
-	}); ok {
-		baseEntity.SetUpdatedAt(now)
-	}
-	
-	return nil
-}
+// func (r *BaseRepository) UpdateBaseEntity(entity interface{}) error {
+// 	now := time.Now()
+//
+// 	// BaseEntityが実装されている場合の処理
+// 	if baseEntity, ok := entity.(interface {
+// 		SetUpdatedAt(time.Time)
+// 	}); ok {
+// 		baseEntity.SetUpdatedAt(now)
+// 	}
+//
+// 	return nil
+// }
 
+// TODO: ページネーション機能が必要になった場合は以下のコメントアウトを外す
 // Paginate はページネーション処理を実行
-func (r *BaseRepository) Paginate(ctx context.Context, query *gorm.DB, page, limit int, result interface{}) (*common.Pagination, error) {
-	var total int64
-	
-	// 総件数を取得
-	if err := query.Count(&total).Error; err != nil {
-		return nil, fmt.Errorf("failed to count records: %w", err)
-	}
-	
-	// ページネーション計算
-	if page <= 0 {
-		page = 1
-	}
-	if limit <= 0 {
-		limit = 10
-	}
-	
-	offset := (page - 1) * limit
-	totalPages := int((total + int64(limit) - 1) / int64(limit))
-	
-	// データ取得
-	if err := query.Offset(offset).Limit(limit).Find(result).Error; err != nil {
-		return nil, fmt.Errorf("failed to find records: %w", err)
-	}
-	
-	pagination := &common.Pagination{
-		CurrentPage: page,
-		TotalPages:  totalPages,
-		TotalCount:  int(total),
-		HasNext:     page < totalPages,
-		HasPrev:     page > 1,
-	}
-	
-	return pagination, nil
-}
+// func (r *BaseRepository) Paginate(ctx context.Context, query *gorm.DB, page, limit int, result interface{}) (*common.Pagination, error) {
+// 	var total int64
+//
+// 	// 総件数を取得
+// 	if err := query.Count(&total).Error; err != nil {
+// 		return nil, fmt.Errorf("failed to count records: %w", err)
+// 	}
+//
+// 	// ページネーション計算
+// 	if page <= 0 {
+// 		page = 1
+// 	}
+// 	if limit <= 0 {
+// 		limit = 10
+// 	}
+//
+// 	offset := (page - 1) * limit
+// 	totalPages := int((total + int64(limit) - 1) / int64(limit))
+//
+// 	// データ取得
+// 	if err := query.Offset(offset).Limit(limit).Find(result).Error; err != nil {
+// 		return nil, fmt.Errorf("failed to find records: %w", err)
+// 	}
+//
+// 	pagination := &common.Pagination{
+// 		CurrentPage: page,
+// 		TotalPages:  totalPages,
+// 		TotalCount:  int(total),
+// 		HasNext:     page < totalPages,
+// 		HasPrev:     page > 1,
+// 	}
+//
+// 	return pagination, nil
+// }
 
 // IsRecordNotFound はGORMのErrRecordNotFoundをチェック
 func (r *BaseRepository) IsRecordNotFound(err error) bool {
 	return err == gorm.ErrRecordNotFound
 }
 
+// TODO: 共通エラーハンドリングが必要になった場合は以下のコメントアウトを外す
 // HandleError は共通エラーハンドリング
-func (r *BaseRepository) HandleError(err error, operation string) error {
-	if err == nil {
-		return nil
-	}
-	
-	if r.IsRecordNotFound(err) {
-		return common.ErrNotFound
-	}
-	
-	return fmt.Errorf("%s failed: %w", operation, err)
-}
+// func (r *BaseRepository) HandleError(err error, operation string) error {
+// 	if err == nil {
+// 		return nil
+// 	}
+//
+// 	if r.IsRecordNotFound(err) {
+// 		return common.ErrNotFound
+// 	}
+//
+// 	return fmt.Errorf("%s failed: %w", operation, err)
+// }

@@ -76,9 +76,9 @@ const (
 ```go
 // internal/domain/event/repository/event_repository.go
 type EventRepository interface {
-    FindByID(ctx context.Context, id UUID) (*entity.Event, error)
+    GetByID(ctx context.Context, id UUID) (*entity.Event, error)
     FindAll(ctx context.Context, filters EventFilters) ([]*entity.Event, error)
-    FindByCreatorID(ctx context.Context, creatorID UUID) ([]*entity.Event, error)
+    GetByCreatorID(ctx context.Context, creatorID UUID) ([]*entity.Event, error)
     FindUpcoming(ctx context.Context, limit int) ([]*entity.Event, error)
     Create(ctx context.Context, event *entity.Event) error
     Update(ctx context.Context, event *entity.Event) error
@@ -86,9 +86,9 @@ type EventRepository interface {
 }
 
 type EventParticipantRepository interface {
-    FindByEventID(ctx context.Context, eventID UUID) ([]*entity.EventParticipant, error)
-    FindByUserID(ctx context.Context, userID UUID) ([]*entity.EventParticipant, error)
-    FindByEventAndUser(ctx context.Context, eventID, userID UUID) (*entity.EventParticipant, error)
+    GetByEventID(ctx context.Context, eventID UUID) ([]*entity.EventParticipant, error)
+    GetByUserID(ctx context.Context, userID UUID) ([]*entity.EventParticipant, error)
+    GetByEventAndUser(ctx context.Context, eventID, userID UUID) (*entity.EventParticipant, error)
     Create(ctx context.Context, participant *entity.EventParticipant) error
     Update(ctx context.Context, participant *entity.EventParticipant) error
     Delete(ctx context.Context, id UUID) error

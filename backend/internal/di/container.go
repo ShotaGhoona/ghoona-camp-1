@@ -4,9 +4,14 @@ import (
 	"gorm.io/gorm"
 
 	"ghoona-camp-backend/internal/application/transaction"
+	userUsecase "ghoona-camp-backend/internal/application/usecase/user"
+	"ghoona-camp-backend/internal/domain/user/repository"
+	"ghoona-camp-backend/internal/domain/user/service"
 	"ghoona-camp-backend/internal/infrastructure/clerk"
 	"ghoona-camp-backend/internal/infrastructure/config"
 	"ghoona-camp-backend/internal/infrastructure/discord"
+	gormRepo "ghoona-camp-backend/internal/infrastructure/gorm/repository"
+	userController "ghoona-camp-backend/internal/interface/controller/user"
 )
 
 // Container holds all dependencies
@@ -24,25 +29,36 @@ type Container struct {
 	ClerkService   *clerk.AuthService
 	DiscordService *discord.WebhookService
 
-	// TODO: BE-03-* で追加予定
+	// BE-03-user-04で実装済み
 	// Repositories - using domain interfaces
-	// UserRepo         userRepo.UserRepository
+	UserRepo         repository.UserRepository
+	UserMetadataRepo repository.UserMetadataRepository
+	SocialLinkRepo   repository.UserSocialLinkRepository
+	RivalRepo        repository.UserRivalRepository
+
+	// Services/UseCases
+	UserUseCase         userUsecase.UserUseCase
+	UserMetadataUseCase userUsecase.UserMetadataUseCase
+	UserSocialUseCase   userUsecase.UserSocialUseCase
+	UserRivalUseCase    userUsecase.UserRivalUseCase
+
+	// Controllers
+	UserController         *userController.UserController
+	UserMetadataController *userController.UserMetadataController
+	UserSocialController   *userController.UserSocialController
+	UserRivalController    *userController.UserRivalController
+
+	// TODO: 他のドメインで追加予定
 	// AttendanceRepo   attendanceRepo.AttendanceRepository
 	// GoalRepo         goalRepo.GoalRepository
 	// EventRepo        eventRepo.EventRepository
 	// TitleRepo        titleRepo.TitleRepository
 	// NotificationRepo notificationRepo.NotificationRepository
-
-	// Services/UseCases
-	// UserUseCase         usecase.UserUseCase
 	// AttendanceUseCase   usecase.AttendanceUseCase
 	// GoalUseCase         usecase.GoalUseCase
 	// EventUseCase        usecase.EventUseCase
 	// TitleUseCase        usecase.TitleUseCase
 	// NotificationUseCase usecase.NotificationUseCase
-
-	// Controllers
-	// UserController         *controller.UserController
 	// AttendanceController   *controller.AttendanceController
 	// GoalController         *controller.GoalController
 	// EventController        *controller.EventController
@@ -63,15 +79,22 @@ func NewContainer(db *gorm.DB, cfg *config.Config) *Container {
 	// Initialize external services
 	c.initExternalServices()
 
-	// TODO: BE-03-* で実装予定
+	// BE-03-user-04で実装済み
 	// Initialize repositories
-	// c.initRepositories()
+	c.initUserRepositories()
 
 	// Initialize services
-	// c.initServices()
+	c.initUserServices()
 
 	// Initialize controllers
-	// c.initControllers()
+	c.initUserControllers()
+
+	// TODO: 他のドメインで実装予定
+	// c.initAttendanceComponents()
+	// c.initGoalComponents()
+	// c.initEventComponents()
+	// c.initTitleComponents()
+	// c.initNotificationComponents()
 
 	return c
 }
@@ -84,30 +107,65 @@ func (c *Container) initExternalServices() {
 	c.DiscordService = discord.NewWebhookService(c.Config)
 }
 
-// TODO: BE-03-* で実装予定
-// func (c *Container) initRepositories() {
-//     c.UserRepo = repository.NewUserRepository(c.DB)
+// BE-03-user-04で実装済み
+func (c *Container) initUserRepositories() {
+	c.UserRepo = gormRepo.NewUserRepository(c.DB)
+	c.UserMetadataRepo = gormRepo.NewUserMetadataRepository(c.DB)
+	c.SocialLinkRepo = gormRepo.NewUserSocialLinkRepository(c.DB)
+	c.RivalRepo = gormRepo.NewUserRivalRepository(c.DB)
+}
+
+func (c *Container) initUserServices() {
+	// Domain services
+	userService := service.NewUserService()
+	rivalService := service.NewRivalService(c.RivalRepo)
+	validationService := service.NewUserValidationService(c.SocialLinkRepo)
+
+	// UseCases
+	c.UserUseCase = userUsecase.NewUserUseCase(
+		c.UserRepo,
+		c.UserMetadataRepo,
+		c.SocialLinkRepo,
+		c.RivalRepo,
+		userService,
+		validationService,
+		c.TxManager,
+	)
+	
+	c.UserMetadataUseCase = userUsecase.NewUserMetadataUseCase(
+		c.UserRepo,
+		c.UserMetadataRepo,
+		validationService,
+		c.TxManager,
+	)
+	
+	c.UserSocialUseCase = userUsecase.NewUserSocialUseCase(
+		c.UserRepo,
+		c.SocialLinkRepo,
+		userService,
+		validationService,
+		c.TxManager,
+	)
+	
+	c.UserRivalUseCase = userUsecase.NewUserRivalUseCase(
+		c.UserRepo,
+		c.RivalRepo,
+		rivalService,
+		validationService,
+		c.TxManager,
+	)
+}
+
+func (c *Container) initUserControllers() {
+	c.UserController = userController.NewUserController(c.UserUseCase)
+	c.UserMetadataController = userController.NewUserMetadataController(c.UserMetadataUseCase, c.UserRepo)
+	c.UserSocialController = userController.NewUserSocialController(c.UserSocialUseCase, c.UserRepo)
+	c.UserRivalController = userController.NewUserRivalController(c.UserRivalUseCase, c.UserRepo)
+}
+
+// TODO: 他のドメインで実装予定
+// func (c *Container) initAttendanceComponents() {
 //     c.AttendanceRepo = repository.NewAttendanceRepository(c.DB)
-//     c.GoalRepo = repository.NewGoalRepository(c.DB)
-//     c.EventRepo = repository.NewEventRepository(c.DB)
-//     c.TitleRepo = repository.NewTitleRepository(c.DB)
-//     c.NotificationRepo = repository.NewNotificationRepository(c.DB)
-// }
-
-// func (c *Container) initServices() {
-//     c.UserUseCase = usecase.NewUserUseCase(c.UserRepo, c.TxManager)
 //     c.AttendanceUseCase = usecase.NewAttendanceUseCase(c.AttendanceRepo, c.TxManager)
-//     c.GoalUseCase = usecase.NewGoalUseCase(c.GoalRepo, c.TxManager)
-//     c.EventUseCase = usecase.NewEventUseCase(c.EventRepo, c.TxManager)
-//     c.TitleUseCase = usecase.NewTitleUseCase(c.TitleRepo, c.TxManager)
-//     c.NotificationUseCase = usecase.NewNotificationUseCase(c.NotificationRepo, c.TxManager)
-// }
-
-// func (c *Container) initControllers() {
-//     c.UserController = controller.NewUserController(c.UserUseCase)
 //     c.AttendanceController = controller.NewAttendanceController(c.AttendanceUseCase)
-//     c.GoalController = controller.NewGoalController(c.GoalUseCase)
-//     c.EventController = controller.NewEventController(c.EventUseCase)
-//     c.TitleController = controller.NewTitleController(c.TitleUseCase)
-//     c.NotificationController = controller.NewNotificationController(c.NotificationUseCase)
 // }
