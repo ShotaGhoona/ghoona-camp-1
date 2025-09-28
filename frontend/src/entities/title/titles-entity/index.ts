@@ -1,10 +1,8 @@
-
-
 // === API Functions ===
-export * from './api/user-api';
+export * from './api/titles-api';
 
 // === Type Definitions ===
-export type * from './model/user-types';
+export type * from './model/titles-types';
 
 // === Validation Schemas & Type Guards ===
 export * from './lib/validators';

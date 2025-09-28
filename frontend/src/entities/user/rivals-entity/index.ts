@@ -1,9 +1,12 @@
-// User Rivals Entity Exports
-// Export API functions
-// export * from './api';
+// === API Functions ===
+export * from './api/rivals-api';
 
-// Export models/types
-// export * from './model';
+// === Type Definitions ===
+export type * from './model/rivals-types';
 
-// Export utilities/helpers
-// export * from './lib';
+// === Validation Schemas & Type Guards ===
+export * from './lib/validators';
+export type * from './lib/validators';
+
+// === Query Keys ===
+export * from './lib/query-keys';
