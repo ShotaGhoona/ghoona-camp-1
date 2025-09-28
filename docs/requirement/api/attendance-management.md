@@ -74,24 +74,24 @@ type AttendanceValidity struct {
 ```go
 // internal/domain/attendance/repository/attendance_log_repository.go
 type AttendanceLogRepository interface {
-    FindByUserID(ctx context.Context, userID UUID, filters LogFilters) ([]*entity.AttendanceLog, error)
-    FindByDate(ctx context.Context, date time.Time) ([]*entity.AttendanceLog, error)
-    FindByEventID(ctx context.Context, eventID UUID) ([]*entity.AttendanceLog, error)
+    GetByUserID(ctx context.Context, userID UUID, filters LogFilters) ([]*entity.AttendanceLog, error)
+    GetByDate(ctx context.Context, date time.Time) ([]*entity.AttendanceLog, error)
+    GetByEventID(ctx context.Context, eventID UUID) ([]*entity.AttendanceLog, error)
     Create(ctx context.Context, log *entity.AttendanceLog) error
     Update(ctx context.Context, log *entity.AttendanceLog) error
     Delete(ctx context.Context, id UUID) error
 }
 
 type AttendanceSummaryRepository interface {
-    FindByUserID(ctx context.Context, userID UUID, filters SummaryFilters) ([]*entity.AttendanceSummary, error)
-    FindByDate(ctx context.Context, userID UUID, date time.Time) (*entity.AttendanceSummary, error)
+    GetByUserID(ctx context.Context, userID UUID, filters SummaryFilters) ([]*entity.AttendanceSummary, error)
+    GetByDate(ctx context.Context, userID UUID, date time.Time) (*entity.AttendanceSummary, error)
     Create(ctx context.Context, summary *entity.AttendanceSummary) error
     Update(ctx context.Context, summary *entity.AttendanceSummary) error
     GetMonthlyData(ctx context.Context, userID UUID, year, month int) ([]*entity.AttendanceSummary, error)
 }
 
 type AttendanceStatisticsRepository interface {
-    FindByUserID(ctx context.Context, userID UUID) (*entity.AttendanceStatistics, error)
+    GetByUserID(ctx context.Context, userID UUID) (*entity.AttendanceStatistics, error)
     Create(ctx context.Context, stats *entity.AttendanceStatistics) error
     Update(ctx context.Context, stats *entity.AttendanceStatistics) error
     GetRankings(ctx context.Context, rankingType string, limit int) ([]*AttendanceRanking, error)

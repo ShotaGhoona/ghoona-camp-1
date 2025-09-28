@@ -52,8 +52,8 @@ const (
 ```go
 // internal/domain/goal/repository/goal_repository.go
 type GoalRepository interface {
-    FindByUserID(ctx context.Context, userID UUID) ([]*entity.Goal, error)
-    FindByID(ctx context.Context, id UUID) (*entity.Goal, error)
+    GetByUserID(ctx context.Context, userID UUID) ([]*entity.Goal, error)
+    GetByID(ctx context.Context, id UUID) (*entity.Goal, error)
     Create(ctx context.Context, goal *entity.Goal) error
     Update(ctx context.Context, goal *entity.Goal) error
     Delete(ctx context.Context, id UUID) error
@@ -61,7 +61,7 @@ type GoalRepository interface {
 }
 
 type GoalProgressRepository interface {
-    FindByGoalID(ctx context.Context, goalID UUID) ([]*entity.GoalProgress, error)
+    GetByGoalID(ctx context.Context, goalID UUID) ([]*entity.GoalProgress, error)
     CreateProgress(ctx context.Context, progress *entity.GoalProgress) error
     UpdateProgress(ctx context.Context, progress *entity.GoalProgress) error
 }

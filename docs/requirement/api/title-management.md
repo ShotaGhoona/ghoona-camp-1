@@ -59,16 +59,16 @@ const (
 // internal/domain/title/repository/title_repository.go
 type TitleRepository interface {
     FindAll(ctx context.Context) ([]*entity.Title, error)
-    FindByID(ctx context.Context, id UUID) (*entity.Title, error)
-    FindByLevel(ctx context.Context, level int) (*entity.Title, error)
+    GetByID(ctx context.Context, id UUID) (*entity.Title, error)
+    GetByLevel(ctx context.Context, level int) (*entity.Title, error)
     Create(ctx context.Context, title *entity.Title) error
     Update(ctx context.Context, title *entity.Title) error
     Delete(ctx context.Context, id UUID) error
 }
 
 type TitleAchievementRepository interface {
-    FindByUserID(ctx context.Context, userID UUID) ([]*entity.TitleAchievement, error)
-    FindByTitleID(ctx context.Context, titleID UUID) ([]*entity.TitleAchievement, error)
+    GetByUserID(ctx context.Context, userID UUID) ([]*entity.TitleAchievement, error)
+    GetByTitleID(ctx context.Context, titleID UUID) ([]*entity.TitleAchievement, error)
     FindCurrentByUserID(ctx context.Context, userID UUID) (*entity.TitleAchievement, error)
     Create(ctx context.Context, achievement *entity.TitleAchievement) error
     Update(ctx context.Context, achievement *entity.TitleAchievement) error

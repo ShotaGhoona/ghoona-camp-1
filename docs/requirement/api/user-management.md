@@ -80,31 +80,31 @@ const (
 ```go
 // internal/domain/user/repository/user_repository.go
 type UserRepository interface {
-    FindByID(ctx context.Context, id UUID) (*entity.User, error)
-    FindByClerkID(ctx context.Context, clerkID string) (*entity.User, error)
-    FindByEmail(ctx context.Context, email string) (*entity.User, error)
-    FindAll(ctx context.Context, filters UserFilters) ([]*entity.User, error)
+    GetByID(ctx context.Context, id UUID) (*entity.User, error)
+    GetByClerkID(ctx context.Context, clerkID string) (*entity.User, error)
+    GetByEmail(ctx context.Context, email string) (*entity.User, error)
+    GetAll(ctx context.Context, filters UserFilters) ([]*entity.User, error)
     Create(ctx context.Context, user *entity.User) error
     Update(ctx context.Context, user *entity.User) error
     Delete(ctx context.Context, id UUID) error
 }
 
 type UserMetadataRepository interface {
-    FindByUserID(ctx context.Context, userID UUID) (*entity.UserMetadata, error)
+    GetByUserID(ctx context.Context, userID UUID) (*entity.UserMetadata, error)
     Create(ctx context.Context, metadata *entity.UserMetadata) error
     Update(ctx context.Context, metadata *entity.UserMetadata) error
 }
 
 type UserSocialLinkRepository interface {
-    FindByUserID(ctx context.Context, userID UUID) ([]*entity.UserSocialLink, error)
-    FindByID(ctx context.Context, id UUID) (*entity.UserSocialLink, error)
+    GetByUserID(ctx context.Context, userID UUID) ([]*entity.UserSocialLink, error)
+    GetByID(ctx context.Context, id UUID) (*entity.UserSocialLink, error)
     Create(ctx context.Context, link *entity.UserSocialLink) error
     Update(ctx context.Context, link *entity.UserSocialLink) error
     Delete(ctx context.Context, id UUID) error
 }
 
 type UserRivalRepository interface {
-    FindByUserID(ctx context.Context, userID UUID) ([]*entity.UserRival, error)
+    GetByUserID(ctx context.Context, userID UUID) ([]*entity.UserRival, error)
     Create(ctx context.Context, rival *entity.UserRival) error
     Delete(ctx context.Context, id UUID) error
     CountByUserID(ctx context.Context, userID UUID) (int, error)
