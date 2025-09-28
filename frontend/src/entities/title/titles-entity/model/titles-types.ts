@@ -6,7 +6,7 @@
  * titles-entity/index.ts からエクスポートされた型を使用してください。
  */
 
-// === API Response Types ===
+// === API Response Types（API仕様準拠） ===
 
 // 称号基本情報（API仕様準拠）
 interface TitleResponse {
@@ -18,110 +18,21 @@ interface TitleResponse {
   required_days: number;
   image_url: string;
   color_theme: string;
-  holders_count: number;
-  achievement_rate: number;
-  user_status: {
-    is_achieved: boolean;
-    achieved_at?: string;
-    is_current: boolean;
-    progress?: {
-      current_days: number;
-      remaining_days: number;
-      progress_rate: number;
-    };
-  };
   is_active: boolean;
   created_at: string;
+  updated_at: string;
 }
 
 // === GET /titles レスポンス（API仕様準拠） ===
 export interface TitlesListResponse {
-  data: {
-    titles: TitleResponse[];
-    user_summary: {
-      achieved_count: number;
-      total_count: number;
-      current_title: {
-        id: string;
-        level: number;
-        name_jp: string;
-        color_theme: string;
-      };
-      next_title: {
-        id: string;
-        level: number;
-        name_jp: string;
-        progress_rate: number;
-        remaining_days: number;
-      };
-    };
-  };
+  data: TitleResponse[];
   message: string;
   timestamp: string;
 }
 
 // === GET /titles/{titleId} レスポンス（API仕様準拠） ===
 export interface TitleDetailResponse {
-  data: {
-    id: string;
-    level: number;
-    name_jp: string;
-    name_en: string;
-    description: string;
-    story: string;
-    required_days: number;
-    image_url: string;
-    color_theme: string;
-    badge_design: {
-      primary_color: string;
-      secondary_color: string;
-      icon: string;
-      pattern: string;
-    };
-    achievement_conditions: Array<{
-      type: string;
-      value: number;
-      description: string;
-    }>;
-    statistics: {
-      total_holders: number;
-      achievement_rate: number;
-      average_achievement_days: number;
-      recent_achievers_count: number;
-    };
-    recent_achievers: Array<{
-      user: {
-        id: string;
-        display_name: string;
-        username: string;
-        avatar_url: string;
-      };
-      achieved_at: string;
-    }>;
-    user_status: {
-      is_achieved: boolean;
-      progress?: {
-        current_days: number;
-        remaining_days: number;
-        progress_rate: number;
-        estimated_achievement_date: string;
-      };
-    };
-    perks: Array<{
-      type: string;
-      description: string;
-    }>;
-    next_title?: {
-      id: string;
-      level: number;
-      name_jp: string;
-      required_days: number;
-      additional_days_needed: number;
-    };
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-  };
+  data: TitleResponse;
   message: string;
   timestamp: string;
 }
@@ -136,91 +47,9 @@ export interface Title {
   requiredDays: number;
   imageUrl: string;
   colorTheme: string;
-  holdersCount: number;
-  achievementRate: number;
-  userStatus: {
-    isAchieved: boolean;
-    achievedAt?: Date;
-    isCurrent: boolean;
-    progress?: {
-      currentDays: number;
-      remainingDays: number;
-      progressRate: number;
-    };
-  };
   isActive: boolean;
   createdAt: Date;
-}
-
-export interface TitleDetail extends Title {
-  story: string;
-  badgeDesign: {
-    primaryColor: string;
-    secondaryColor: string;
-    icon: string;
-    pattern: string;
-  };
-  achievementConditions: Array<{
-    type: string;
-    value: number;
-    description: string;
-  }>;
-  statistics: {
-    totalHolders: number;
-    achievementRate: number;
-    averageAchievementDays: number;
-    recentAchieversCount: number;
-  };
-  recentAchievers: Array<{
-    user: {
-      id: string;
-      displayName: string;
-      username: string;
-      avatarUrl: string;
-    };
-    achievedAt: Date;
-  }>;
-  userStatus: {
-    isAchieved: boolean;
-    achievedAt?: Date;
-    isCurrent: boolean;
-    progress?: {
-      currentDays: number;
-      remainingDays: number;
-      progressRate: number;
-      estimatedAchievementDate: Date;
-    };
-  };
-  perks: Array<{
-    type: string;
-    description: string;
-  }>;
-  nextTitle?: {
-    id: string;
-    level: number;
-    nameJp: string;
-    requiredDays: number;
-    additionalDaysNeeded: number;
-  };
   updatedAt: Date;
-}
-
-export interface UserSummary {
-  achievedCount: number;
-  totalCount: number;
-  currentTitle: {
-    id: string;
-    level: number;
-    nameJp: string;
-    colorTheme: string;
-  };
-  nextTitle: {
-    id: string;
-    level: number;
-    nameJp: string;
-    progressRate: number;
-    remainingDays: number;
-  };
 }
 
 // === Title Level Constants ===

@@ -7,7 +7,7 @@
  */
 
 import { z } from 'zod';
-import type { Title, TitleDetail, TitleLevel, TitlesQueryParams } from '../model/titles-types';
+import type { Title, TitleLevel, TitlesQueryParams } from '../model/titles-types';
 import { TITLE_LEVELS, TITLE_REQUIRED_DAYS } from '../model/titles-types';
 
 // === Zodスキーマ ===
@@ -37,12 +37,6 @@ export const titleDescriptionSchema = z
   .min(1, '称号説明は必須です')
   .max(2000, '称号説明は2000文字以内で入力してください');
 
-/** 称号ストーリーのバリデーション */
-export const titleStorySchema = z
-  .string()
-  .min(1, '称号ストーリーは必須です')
-  .max(5000, '称号ストーリーは5000文字以内で入力してください');
-
 /** 必要参加日数のバリデーション */
 export const requiredDaysSchema = z
   .number()
@@ -61,21 +55,6 @@ export const titlesQueryParamsSchema = z.object({
   user_id: z.string().uuid().optional(),
 });
 
-/** 進捗情報のスキーマ */
-export const progressSchema = z.object({
-  currentDays: z.number().min(0),
-  remainingDays: z.number().min(0),
-  progressRate: z.number().min(0).max(100),
-});
-
-/** ユーザーステータスのスキーマ */
-export const userStatusSchema = z.object({
-  isAchieved: z.boolean(),
-  achievedAt: z.date().optional(),
-  isCurrent: z.boolean(),
-  progress: progressSchema.optional(),
-});
-
 /** 称号エンティティのスキーマ（API仕様準拠） */
 export const titleSchema = z.object({
   id: z.string().uuid(),
@@ -86,62 +65,8 @@ export const titleSchema = z.object({
   requiredDays: requiredDaysSchema,
   imageUrl: z.string().url(),
   colorTheme: colorThemeSchema,
-  holdersCount: z.number().min(0),
-  achievementRate: z.number().min(0).max(100),
-  userStatus: userStatusSchema,
   isActive: z.boolean(),
   createdAt: z.date(),
-});
-
-/** 称号詳細エンティティのスキーマ */
-export const titleDetailSchema = titleSchema.extend({
-  story: titleStorySchema,
-  badgeDesign: z.object({
-    primaryColor: colorThemeSchema,
-    secondaryColor: colorThemeSchema,
-    icon: z.string(),
-    pattern: z.string(),
-  }),
-  achievementConditions: z.array(z.object({
-    type: z.string(),
-    value: z.number(),
-    description: z.string(),
-  })),
-  statistics: z.object({
-    totalHolders: z.number().min(0),
-    achievementRate: z.number().min(0).max(100),
-    averageAchievementDays: z.number().min(0),
-    recentAchieversCount: z.number().min(0),
-  }),
-  recentAchievers: z.array(z.object({
-    user: z.object({
-      id: z.string().uuid(),
-      displayName: z.string(),
-      username: z.string(),
-      avatarUrl: z.string().url(),
-    }),
-    achievedAt: z.date(),
-  })),
-  userStatus: z.object({
-    isAchieved: z.boolean(),
-    progress: z.object({
-      currentDays: z.number().min(0),
-      remainingDays: z.number().min(0),
-      progressRate: z.number().min(0).max(100),
-      estimatedAchievementDate: z.date(),
-    }).optional(),
-  }),
-  perks: z.array(z.object({
-    type: z.string(),
-    description: z.string(),
-  })),
-  nextTitle: z.object({
-    id: z.string().uuid(),
-    level: titleLevelSchema,
-    nameJp: titleNameJpSchema,
-    requiredDays: requiredDaysSchema,
-    additionalDaysNeeded: z.number().min(0),
-  }).optional(),
   updatedAt: z.date(),
 });
 
@@ -201,10 +126,6 @@ export const calculateRemainingDays = (currentDays: number, requiredDays: number
 // === Type Guards ===
 export const isTitle = (value: unknown): value is Title => {
   return titleSchema.safeParse(value).success;
-};
-
-export const isTitleDetail = (value: unknown): value is TitleDetail => {
-  return titleDetailSchema.safeParse(value).success;
 };
 
 export const isTitleLevel = (value: unknown): value is TitleLevel => {
