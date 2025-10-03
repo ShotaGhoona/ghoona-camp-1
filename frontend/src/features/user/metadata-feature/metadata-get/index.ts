@@ -1,0 +1,1 @@
+export * from './lib/use-metadata-get';
