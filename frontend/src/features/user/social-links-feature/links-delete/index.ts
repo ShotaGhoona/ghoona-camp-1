@@ -1,4 +1,1 @@
-// Links Delete Slice
-// Export your UI components and lib utilities here
-// export * from "./ui";
-// export * from "./lib";
+export { useDeleteSocialLinks } from './lib/use-links-delete';
