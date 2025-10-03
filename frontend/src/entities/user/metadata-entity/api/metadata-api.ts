@@ -14,14 +14,14 @@ import type {
 } from '../model/metadata-types';
 
 /** ユーザーメタデータ取得 */
-/** GET /api/v1/users/{userId}/metadata */
+/** GET /users/{userId}/metadata */
 export const getUserMetadata = async (userId: string): Promise<UserMetadataDetailResponse['data']> => {
   const { data } = await apiClient.get<UserMetadataDetailResponse>(`/users/${userId}/metadata`);
   return data.data;
 };
 
 /** ユーザーメタデータ更新 */
-/** PUT /api/v1/users/{userId}/metadata */
+/** PUT /users/{userId}/metadata */
 export const updateUserMetadata = async ({
   userId,
   data: updateData,

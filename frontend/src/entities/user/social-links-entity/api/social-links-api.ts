@@ -16,14 +16,14 @@ import type {
 } from '../model/social-links-types';
 
 /** ユーザーのSNSリンク一覧取得 */
-/** GET /api/v1/users/{userId}/social-links */
-export const getUserSocialLinks = async (userId: string): Promise<UserSocialLinksListResponse['data']['social_links']> => {
+/** GET /users/{userId}/social-links */
+export const getUserSocialLinks = async (userId: string): Promise<UserSocialLinksListResponse['data']['socialLinks']> => {
   const { data } = await apiClient.get<UserSocialLinksListResponse>(`/users/${userId}/social-links`);
-  return data.data.social_links;
+  return data.data.socialLinks;
 };
 
 /** 新しいSNSリンクを追加 */
-/** POST /api/v1/users/{userId}/social-links */
+/** POST /users/{userId}/social-links */
 export const createSocialLink = async ({
   userId,
   data: linkData,
@@ -36,7 +36,7 @@ export const createSocialLink = async ({
 };
 
 /** 既存のSNSリンクを更新 */
-/** PUT /api/v1/users/{userId}/social-links/{linkId} */
+/** PUT /users/{userId}/social-links/{linkId} */
 export const updateSocialLink = async ({
   userId,
   linkId,
@@ -51,7 +51,7 @@ export const updateSocialLink = async ({
 };
 
 /** SNSリンクを削除 */
-/** DELETE /api/v1/users/{userId}/social-links/{linkId} */
+/** DELETE /users/{userId}/social-links/{linkId} */
 export const deleteSocialLink = async ({
   userId,
   linkId,

@@ -33,14 +33,14 @@ export const createSocialLinkFormSchema = z.object({
   platform: platformSchema,
   url: urlSchema,
   title: titleSchema,
-  is_public: z.boolean().default(true),
+  isPublic: z.boolean().default(true),
 });
 
 /** ソーシャルリンク更新フォームのバリデーション */
 export const updateSocialLinkFormSchema = z.object({
   url: urlSchema.optional(),
   title: titleSchema.optional(),
-  is_public: z.boolean().optional(),
+  isPublic: z.boolean().optional(),
 });
 
 /** ソーシャルリンクエンティティのスキーマ */

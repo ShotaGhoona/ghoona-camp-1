@@ -14,14 +14,14 @@ import type {
 } from '../model/rivals-types';
 
 /** ユーザーのライバル一覧取得 */
-/** GET /api/v1/users/{userId}/rivals */
+/** GET /users/{userId}/rivals */
 export const getUserRivals = async (userId: string): Promise<UserRivalsListResponse['data']> => {
   const { data } = await apiClient.get<UserRivalsListResponse>(`/users/${userId}/rivals`);
   return data.data;
 };
 
 /** 新しいライバルを追加 */
-/** POST /api/v1/users/{userId}/rivals */
+/** POST /users/{userId}/rivals */
 export const createRival = async ({
   userId,
   data: rivalData,
@@ -34,7 +34,7 @@ export const createRival = async ({
 };
 
 /** ライバル関係を解除 */
-/** DELETE /api/v1/users/{userId}/rivals/{rivalId} */
+/** DELETE /users/{userId}/rivals/{rivalId} */
 export const deleteRival = async ({
   userId,
   rivalId,

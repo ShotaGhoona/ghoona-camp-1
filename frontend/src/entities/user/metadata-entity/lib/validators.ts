@@ -50,12 +50,12 @@ export const timezoneSchema = z
 
 /** ユーザーメタデータ更新フォームのバリデーション */
 export const updateUserMetadataFormSchema = z.object({
-  display_name: displayNameSchema.optional(),
-  profile_image_url: z.string().url('有効なURLを入力してください').optional(),
+  displayName: displayNameSchema.optional(),
+  profileImageUrl: z.string().url('有効なURLを入力してください').optional(),
   tagline: taglineSchema.optional(),
   bio: bioSchema.optional(),
   vision: visionSchema.optional(),
-  vision_public: z.boolean().optional(),
+  visionPublic: z.boolean().optional(),
   timezone: timezoneSchema.optional(),
   skills: skillsSchema.optional(),
   interests: interestsSchema.optional(),

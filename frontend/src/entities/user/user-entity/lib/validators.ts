@@ -21,7 +21,7 @@ export const usernameSchema = z
 /** ユーザー基本情報更新フォームのバリデーション */
 export const updateUserFormSchema = z.object({
   username: usernameSchema.optional(),
-  avatar_url: z.string().url('有効なURLを入力してください').optional(),
+  avatarUrl: z.string().url('有効なURLを入力してください').optional(),
 });
 
 /** ユーザーエンティティのスキーマ */

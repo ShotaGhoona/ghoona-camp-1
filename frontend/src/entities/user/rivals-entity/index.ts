@@ -10,6 +10,3 @@ export type * from './lib/validators';
 
 // === Query Keys ===
 export * from './lib/query-keys';
-
-// === Mappers ===
-export * from './lib/mappers';

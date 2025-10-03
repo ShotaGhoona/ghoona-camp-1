@@ -19,7 +19,7 @@ export const rivalUserIdSchema = z
 
 /** ライバル作成フォームのバリデーション */
 export const createRivalFormSchema = z.object({
-  rival_user_id: rivalUserIdSchema,
+  rivalUserId: rivalUserIdSchema,
 });
 
 /** ライバルユーザーのスキーマ */

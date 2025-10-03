@@ -6,65 +6,40 @@
  * social-links-entity/index.ts からエクスポートされた型を使用してください。
  */
 
-// === API Response Types ===
-
-// ソーシャルリンク（social-links-entity用）- 内部実装
-interface SocialLinkResponse {
-  id: string;
-  platform: string;
-  url: string;
-  title: string;
-  is_public: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-// === GET /users/{userId}/social-links レスポンス（統一形式） ===
-export interface UserSocialLinksListResponse {
-  data: {
-    social_links: SocialLinkResponse[];
-  };
-  message: string;
-  timestamp: string;
-}
-
-// === POST /users/{userId}/social-links レスポンス（統一形式） ===
-export interface SocialLinkCreateResponse {
-  data: {
-    id: string;
-    platform: string;
-    url: string;
-    title: string;
-    is_public: boolean;
-    created_at: string;
-  };
-  message: string;
-  timestamp: string;
-}
-
-// === PUT /users/{userId}/social-links/{linkId} レスポンス（統一形式） ===
-export interface SocialLinkUpdateResponse {
-  data: {
-    id: string;
-    platform: string;
-    url: string;
-    title: string;
-    is_public: boolean;
-    updated_at: string;
-  };
-  message: string;
-  timestamp: string;
-}
-
-// === Client Types（camelCase - フロントエンド用） ===
+// === Core SocialLink Type ===
 export interface SocialLink {
   id: string;
   platform: string;
   url: string;
   title: string;
   isPublic: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// === API Response Types ===
+
+// === GET /users/{userId}/social-links レスポンス ===
+export interface UserSocialLinksListResponse {
+  data: {
+    socialLinks: SocialLink[];
+  };
+  message: string;
+  timestamp: string;
+}
+
+// === POST /users/{userId}/social-links レスポンス ===
+export interface SocialLinkCreateResponse {
+  data: SocialLink;
+  message: string;
+  timestamp: string;
+}
+
+// === PUT /users/{userId}/social-links/{linkId} レスポンス ===
+export interface SocialLinkUpdateResponse {
+  data: SocialLink;
+  message: string;
+  timestamp: string;
 }
 
 // === DTO Types（API送信用） ===
@@ -72,13 +47,13 @@ export interface CreateSocialLinkDto {
   platform: string;
   url: string;
   title: string;
-  is_public?: boolean;
+  isPublic?: boolean;
 }
 
 export interface UpdateSocialLinkDto {
   url?: string;
   title?: string;
-  is_public?: boolean;
+  isPublic?: boolean;
 }
 
 // === Platform Types ===
