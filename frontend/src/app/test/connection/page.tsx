@@ -2,21 +2,32 @@
 
 import { Suspense, useState } from 'react';
 import {
-  useGetSession,
-  useGetProfile,
-  useUpdateProfile,
-  useGetMetadata,
-  useUpdateMetadata,
-  useGetUsersList,
-  useGetUserDetail,
-  useGetRivals,
-  useCreateRival,
-  useDeleteRival,
-  useGetSocialLinks,
-  useCreateSocialLinks,
-  useUpdateSocialLinks,
-  useDeleteSocialLinks
+  // Auth Feature
+  useAuthMeGet,
+  
+  // User Feature
+  useUsersListGet,
+  useUserDetailGet,
+  useUserBasicUpdate,
+  
+  // Metadata Feature
+  useMetadataGet,
+  useMetadataUpdate,
+  
+  // Social Links Feature
+  useSocialLinksGet,
+  useSocialLinksCreate,
+  useSocialLinksUpdate,
+  useSocialLinksDelete,
+  
+  // Rivals Feature
+  useRivalsGet,
+  useRivalsCreate,
+  useRivalsDelete
 } from '@/features/user';
+
+// Entity層から型定義をインポート
+import type { UsersQueryParams } from '@/entities/user/user-entity';
 
 // データ表示コンポーネント
 function DataDisplay({ title, data, status }: { title: string; data: any; status?: string }) {
@@ -31,255 +42,299 @@ function DataDisplay({ title, data, status }: { title: string; data: any; status
   );
 }
 
-// セッション確認コンポーネント
-function SessionTest() {
-  try {
-    const sessionData = useGetSession();
-    return <DataDisplay title="セッション情報" data={sessionData} status="✅ 成功" />;
-  } catch (error: any) {
-    return <DataDisplay title="セッション情報" data={{ error: error?.message || '不明なエラー' }} status="❌ エラー" />;
-  }
-}
-
-// プロフィール確認コンポーネント
-function ProfileTest({ userId }: { userId: string }) {
-  const [updateStatus, setUpdateStatus] = useState<string>('');
+// 認証テストコンポーネント
+function AuthMeTest() {
+  const { data, isLoading, error } = useAuthMeGet();
   
-  try {
-    const profileData = useGetProfile(userId);
-    const { updateProfile } = useUpdateProfile(userId);
-    
-    const handleUpdate = async () => {
-      try {
-        setUpdateStatus('更新中...');
-        await updateProfile({
-          display_name: '更新されたユーザー名',
-          bio: '更新されたプロフィール'
-        });
-        setUpdateStatus('✅ 更新成功');
-      } catch (error: any) {
-        setUpdateStatus(`❌ 更新エラー: ${error?.message || '不明なエラー'}`);
-      }
-    };
-    
-    return (
-      <div>
-        <DataDisplay title="プロフィール情報" data={profileData} status="✅ 成功" />
-        <button 
-          onClick={handleUpdate}
-          className="bg-blue-500 text-white px-4 py-2 rounded mb-2"
-        >
-          プロフィール更新テスト
-        </button>
-        {updateStatus && <p className="text-sm">{updateStatus}</p>}
-      </div>
-    );
-  } catch (error: any) {
-    return <DataDisplay title="プロフィール情報" data={{ error: error?.message || '不明なエラー' }} status="❌ エラー" />;
-  }
+  if (isLoading) return <DataDisplay title="認証情報（GET /auth/me）" data="読み込み中..." status="🔄 Loading" />;
+  if (error) return <DataDisplay title="認証情報（GET /auth/me）" data={{ error: error.message }} status="❌ Error" />;
+  
+  return <DataDisplay title="認証情報（GET /auth/me）" data={data} status="✅ Success" />;
 }
 
-// メタデータ確認コンポーネント
+// ユーザー一覧テストコンポーネント
+function UsersListTest() {
+  const [searchParams, setSearchParams] = useState<UsersQueryParams>({
+    page: 1,
+    limit: 5,
+    search: '',
+    sortBy: 'createdAt',
+    order: 'desc'
+  });
+  
+  const { data, isLoading, error } = useUsersListGet(searchParams);
+  
+  const handleSearch = () => {
+    setSearchParams(prev => ({ ...prev, search: 'john' }));
+  };
+  
+  const handleFilter = () => {
+    setSearchParams(prev => ({ 
+      ...prev, 
+      skills: 'JavaScript,React', // カンマ区切り文字列として送信
+      sortBy: 'attendanceDays'
+    }));
+  };
+  
+  if (isLoading) return <DataDisplay title="ユーザー一覧（GET /users）" data="読み込み中..." status="🔄 Loading" />;
+  if (error) return <DataDisplay title="ユーザー一覧（GET /users）" data={{ error: error.message }} status="❌ Error" />;
+  
+  return (
+    <div>
+      <DataDisplay title="ユーザー一覧（GET /users）" data={data} status="✅ Success" />
+      <div className="space-x-2 mb-2">
+        <button 
+          onClick={handleSearch}
+          className="bg-blue-500 text-white px-4 py-2 rounded text-sm"
+        >
+          検索テスト (john)
+        </button>
+        <button 
+          onClick={handleFilter}
+          className="bg-green-500 text-white px-4 py-2 rounded text-sm"
+        >
+          フィルタテスト (JS/React)
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ユーザー詳細テストコンポーネント
+function UserDetailTest({ userId }: { userId: string }) {
+  const { data, isLoading, error } = useUserDetailGet(userId);
+  
+  if (!userId) return <DataDisplay title="ユーザー詳細（GET /users/{userId}）" data="ユーザーIDを入力してください" status="⏸️ Waiting" />;
+  if (isLoading) return <DataDisplay title="ユーザー詳細（GET /users/{userId}）" data="読み込み中..." status="🔄 Loading" />;
+  if (error) return <DataDisplay title="ユーザー詳細（GET /users/{userId}）" data={{ error: error.message }} status="❌ Error" />;
+  
+  return <DataDisplay title="ユーザー詳細（GET /users/{userId}）" data={data} status="✅ Success" />;
+}
+
+// ユーザー基本更新テストコンポーネント
+function UserBasicUpdateTest({ userId }: { userId: string }) {
+  const { data: userData } = useUserDetailGet(userId);
+  const updateMutation = useUserBasicUpdate(userId);
+  
+  const handleUpdate = () => {
+    updateMutation.mutate({
+      username: `updated_${Date.now()}`,
+      avatarUrl: 'https://example.com/new-avatar.jpg'
+    });
+  };
+  
+  if (!userId) return <DataDisplay title="ユーザー基本更新（PUT /users/{userId}）" data="ユーザーIDを入力してください" status="⏸️ Waiting" />;
+  
+  return (
+    <div>
+      <DataDisplay 
+        title="ユーザー基本更新（PUT /users/{userId}）" 
+        data={{
+          currentUser: userData,
+          mutationState: {
+            isPending: updateMutation.isPending,
+            error: updateMutation.error?.message,
+            isSuccess: updateMutation.isSuccess
+          }
+        }} 
+        status={updateMutation.isPending ? "🔄 Updating" : updateMutation.isSuccess ? "✅ Updated" : "⏸️ Ready"} 
+      />
+      <button 
+        onClick={handleUpdate}
+        disabled={updateMutation.isPending}
+        className="bg-blue-500 text-white px-4 py-2 rounded text-sm disabled:opacity-50"
+      >
+        {updateMutation.isPending ? '更新中...' : 'ユーザー情報更新テスト'}
+      </button>
+    </div>
+  );
+}
+
+// メタデータテストコンポーネント
 function MetadataTest({ userId }: { userId: string }) {
-  const [updateStatus, setUpdateStatus] = useState<string>('');
+  const { data, isLoading, error } = useMetadataGet(userId);
+  const updateMutation = useMetadataUpdate(userId);
   
-  try {
-    const metadataData = useGetMetadata(userId);
-    const { updateMetadata } = useUpdateMetadata(userId);
-    
-    const handleUpdate = async () => {
-      try {
-        setUpdateStatus('更新中...');
-        await updateMetadata({
-          total_score: 1000,
-          rank: 1,
-          level: 10
-        });
-        setUpdateStatus('✅ 更新成功');
-      } catch (error: any) {
-        setUpdateStatus(`❌ 更新エラー: ${error?.message || '不明なエラー'}`);
-      }
-    };
-    
-    return (
-      <div>
-        <DataDisplay title="メタデータ" data={metadataData} status="✅ 成功" />
+  const handleUpdate = () => {
+    updateMutation.mutate({
+      displayName: `Updated User ${Date.now()}`,
+      tagline: 'Updated tagline from test',
+      bio: 'This is an updated bio from the connection test',
+      skills: ['JavaScript', 'React', 'TypeScript', 'Node.js'],
+      interests: ['Web Development', 'AI/ML', 'Open Source'],
+      visionPublic: true
+    });
+  };
+  
+  if (!userId) return <DataDisplay title="メタデータ（GET/PUT /users/{userId}/metadata）" data="ユーザーIDを入力してください" status="⏸️ Waiting" />;
+  if (isLoading) return <DataDisplay title="メタデータ（GET/PUT /users/{userId}/metadata）" data="読み込み中..." status="🔄 Loading" />;
+  if (error) return <DataDisplay title="メタデータ（GET/PUT /users/{userId}/metadata）" data={{ error: error.message }} status="❌ Error" />;
+  
+  return (
+    <div>
+      <DataDisplay 
+        title="メタデータ（GET/PUT /users/{userId}/metadata）" 
+        data={{
+          metadata: data,
+          mutationState: {
+            isPending: updateMutation.isPending,
+            error: updateMutation.error?.message,
+            isSuccess: updateMutation.isSuccess
+          }
+        }} 
+        status="✅ Success" 
+      />
+      <button 
+        onClick={handleUpdate}
+        disabled={updateMutation.isPending}
+        className="bg-green-500 text-white px-4 py-2 rounded text-sm disabled:opacity-50"
+      >
+        {updateMutation.isPending ? '更新中...' : 'メタデータ更新テスト'}
+      </button>
+    </div>
+  );
+}
+
+// ソーシャルリンクテストコンポーネント
+function SocialLinksTest({ userId }: { userId: string }) {
+  const { data, isLoading, error } = useSocialLinksGet(userId);
+  const createMutation = useSocialLinksCreate(userId);
+  const updateMutation = useSocialLinksUpdate(userId, data?.[0]?.id || '');
+  const deleteMutation = useSocialLinksDelete(userId);
+  
+  const handleCreate = () => {
+    createMutation.mutate({
+      platform: 'github',
+      url: `https://github.com/test-user-${Date.now()}`,
+      title: 'Test GitHub Profile',
+      isPublic: true
+    });
+  };
+  
+  const handleUpdate = () => {
+    if (data && data.length > 0) {
+      updateMutation.mutate({
+        url: `https://github.com/updated-user-${Date.now()}`,
+        title: 'Updated GitHub Profile',
+        isPublic: false
+      });
+    }
+  };
+  
+  const handleDelete = () => {
+    if (data && data.length > 0) {
+      deleteMutation.mutate(data[0].id);
+    }
+  };
+  
+  if (!userId) return <DataDisplay title="ソーシャルリンク（/users/{userId}/social-links）" data="ユーザーIDを入力してください" status="⏸️ Waiting" />;
+  if (isLoading) return <DataDisplay title="ソーシャルリンク（/users/{userId}/social-links）" data="読み込み中..." status="🔄 Loading" />;
+  if (error) return <DataDisplay title="ソーシャルリンク（/users/{userId}/social-links）" data={{ error: error.message }} status="❌ Error" />;
+  
+  return (
+    <div>
+      <DataDisplay 
+        title="ソーシャルリンク（/users/{userId}/social-links）" 
+        data={{
+          socialLinks: data,
+          mutations: {
+            create: { isPending: createMutation.isPending, isSuccess: createMutation.isSuccess },
+            update: { isPending: updateMutation.isPending, isSuccess: updateMutation.isSuccess },
+            delete: { isPending: deleteMutation.isPending, isSuccess: deleteMutation.isSuccess }
+          }
+        }} 
+        status="✅ Success" 
+      />
+      <div className="space-x-2 mb-2">
+        <button 
+          onClick={handleCreate}
+          disabled={createMutation.isPending}
+          className="bg-blue-500 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+        >
+          {createMutation.isPending ? '作成中...' : 'CREATE'}
+        </button>
         <button 
           onClick={handleUpdate}
-          className="bg-green-500 text-white px-4 py-2 rounded mb-2"
+          disabled={updateMutation.isPending || !data || data.length === 0}
+          className="bg-yellow-500 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
         >
-          メタデータ更新テスト
+          {updateMutation.isPending ? '更新中...' : 'UPDATE'}
         </button>
-        {updateStatus && <p className="text-sm">{updateStatus}</p>}
+        <button 
+          onClick={handleDelete}
+          disabled={deleteMutation.isPending || !data || data.length === 0}
+          className="bg-red-500 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+        >
+          {deleteMutation.isPending ? '削除中...' : 'DELETE'}
+        </button>
       </div>
-    );
-  } catch (error: any) {
-    return <DataDisplay title="メタデータ" data={{ error: error?.message || '不明なエラー' }} status="❌ エラー" />;
-  }
+    </div>
+  );
 }
 
-// ユーザー一覧確認コンポーネント
-function UsersTest() {
-  try {
-    const usersData = useGetUsersList({ limit: 5, offset: 0 });
-    return <DataDisplay title="ユーザー一覧" data={usersData} status="✅ 成功" />;
-  } catch (error: any) {
-    return <DataDisplay title="ユーザー一覧" data={{ error: error?.message || '不明なエラー' }} status="❌ エラー" />;
-  }
-}
-
-// ユーザー詳細確認コンポーネント
-function UserDetailTest({ targetUserId }: { targetUserId: string }) {
-  try {
-    const userDetailData = useGetUserDetail(targetUserId);
-    return <DataDisplay title="ユーザー詳細" data={userDetailData} status="✅ 成功" />;
-  } catch (error: any) {
-    return <DataDisplay title="ユーザー詳細" data={{ error: error?.message || '不明なエラー' }} status="❌ エラー" />;
-  }
-}
-
-// ライバル機能確認コンポーネント
+// ライバルテストコンポーネント
 function RivalsTest({ userId }: { userId: string }) {
-  const [actionStatus, setActionStatus] = useState<string>('');
+  const { data, isLoading, error } = useRivalsGet(userId);
+  const createMutation = useRivalsCreate(userId);
+  const deleteMutation = useRivalsDelete(userId);
   
-  try {
-    const rivalsData = useGetRivals(userId);
-    const { createRival } = useCreateRival(userId);
-    const { deleteRival } = useDeleteRival(userId);
-    
-    const handleCreateRival = async () => {
-      try {
-        setActionStatus('ライバル追加中...');
-        await createRival({ rival_user_id: 'test-rival-id' });
-        setActionStatus('✅ 追加成功');
-      } catch (error: any) {
-        setActionStatus(`❌ 追加エラー: ${error?.message || '不明なエラー'}`);
-      }
-    };
-    
-    const handleDeleteRival = async (rivalId: string) => {
-      try {
-        setActionStatus('ライバル削除中...');
-        await deleteRival(rivalId);
-        setActionStatus('✅ 削除成功');
-      } catch (error: any) {
-        setActionStatus(`❌ 削除エラー: ${error?.message || '不明なエラー'}`);
-      }
-    };
-    
-    return (
-      <div>
-        <DataDisplay title="ライバル情報" data={rivalsData} status="✅ 成功" />
-        <div className="space-x-2 mb-2">
-          <button 
-            onClick={handleCreateRival}
-            className="bg-purple-500 text-white px-4 py-2 rounded"
-          >
-            ライバル追加テスト
-          </button>
-          {rivalsData.rivals?.length > 0 && (
-            <button 
-              onClick={() => handleDeleteRival(rivalsData.rivals[0].id)}
-              className="bg-red-500 text-white px-4 py-2 rounded"
-            >
-              最初のライバル削除テスト
-            </button>
-          )}
-        </div>
-        {actionStatus && <p className="text-sm">{actionStatus}</p>}
-      </div>
-    );
-  } catch (error: any) {
-    return <DataDisplay title="ライバル情報" data={{ error: error?.message || '不明なエラー' }} status="❌ エラー" />;
-  }
-}
-
-// SNSリンク機能確認コンポーネント
-function SocialLinksTest({ userId }: { userId: string }) {
-  const [actionStatus, setActionStatus] = useState<string>('');
+  const handleCreate = () => {
+    // テスト用の仮のライバルユーザーID
+    createMutation.mutate({
+      rivalUserId: 'test-rival-user-id'
+    });
+  };
   
-  try {
-    const socialLinksData = useGetSocialLinks(userId);
-    const { createSocialLinks } = useCreateSocialLinks(userId);
-    const { updateSocialLinks } = useUpdateSocialLinks(userId);
-    const { deleteSocialLinks } = useDeleteSocialLinks(userId);
-    
-    const handleCreateLink = async () => {
-      try {
-        setActionStatus('SNSリンク作成中...');
-        await createSocialLinks({
-          platform: 'twitter',
-          url: 'https://twitter.com/test',
-          display_order: 1
-        });
-        setActionStatus('✅ 作成成功');
-      } catch (error: any) {
-        setActionStatus(`❌ 作成エラー: ${error?.message || '不明なエラー'}`);
-      }
-    };
-    
-    const handleUpdateLink = async (linkId: string) => {
-      try {
-        setActionStatus('SNSリンク更新中...');
-        await updateSocialLinks(linkId, {
-          url: 'https://twitter.com/updated',
-          display_order: 2
-        });
-        setActionStatus('✅ 更新成功');
-      } catch (error: any) {
-        setActionStatus(`❌ 更新エラー: ${error?.message || '不明なエラー'}`);
-      }
-    };
-    
-    const handleDeleteLink = async (linkId: string) => {
-      try {
-        setActionStatus('SNSリンク削除中...');
-        await deleteSocialLinks(linkId);
-        setActionStatus('✅ 削除成功');
-      } catch (error: any) {
-        setActionStatus(`❌ 削除エラー: ${error?.message || '不明なエラー'}`);
-      }
-    };
-    
-    return (
-      <div>
-        <DataDisplay title="SNSリンク情報" data={socialLinksData} status="✅ 成功" />
-        <div className="space-x-2 mb-2">
-          <button 
-            onClick={handleCreateLink}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            SNSリンク作成テスト
-          </button>
-          {socialLinksData.socialLinks?.length > 0 && (
-            <>
-              <button 
-                onClick={() => handleUpdateLink(socialLinksData.socialLinks[0].id)}
-                className="bg-yellow-500 text-white px-4 py-2 rounded"
-              >
-                最初のリンク更新テスト
-              </button>
-              <button 
-                onClick={() => handleDeleteLink(socialLinksData.socialLinks[0].id)}
-                className="bg-red-500 text-white px-4 py-2 rounded"
-              >
-                最初のリンク削除テスト
-              </button>
-            </>
-          )}
-        </div>
-        {actionStatus && <p className="text-sm">{actionStatus}</p>}
+  const handleDelete = () => {
+    if (data?.rivals && data.rivals.length > 0) {
+      deleteMutation.mutate(data.rivals[0].id);
+    }
+  };
+  
+  if (!userId) return <DataDisplay title="ライバル（/users/{userId}/rivals）" data="ユーザーIDを入力してください" status="⏸️ Waiting" />;
+  if (isLoading) return <DataDisplay title="ライバル（/users/{userId}/rivals）" data="読み込み中..." status="🔄 Loading" />;
+  if (error) return <DataDisplay title="ライバル（/users/{userId}/rivals）" data={{ error: error.message }} status="❌ Error" />;
+  
+  return (
+    <div>
+      <DataDisplay 
+        title="ライバル（/users/{userId}/rivals）" 
+        data={{
+          rivals: data,
+          mutations: {
+            create: { isPending: createMutation.isPending, isSuccess: createMutation.isSuccess },
+            delete: { isPending: deleteMutation.isPending, isSuccess: deleteMutation.isSuccess }
+          }
+        }} 
+        status="✅ Success" 
+      />
+      <div className="space-x-2 mb-2">
+        <button 
+          onClick={handleCreate}
+          disabled={createMutation.isPending || (data?.count || 0) >= 3}
+          className="bg-purple-500 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+        >
+          {createMutation.isPending ? '追加中...' : 'CREATE RIVAL'}
+        </button>
+        <button 
+          onClick={handleDelete}
+          disabled={deleteMutation.isPending || !data?.rivals || data.rivals.length === 0}
+          className="bg-red-500 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+        >
+          {deleteMutation.isPending ? '削除中...' : 'DELETE RIVAL'}
+        </button>
       </div>
-    );
-  } catch (error: any) {
-    return <DataDisplay title="SNSリンク情報" data={{ error: error?.message || '不明なエラー' }} status="❌ エラー" />;
-  }
+      <p className="text-xs text-gray-500">
+        ライバル数: {data?.count || 0} / {data?.maxRivals || 3}
+      </p>
+    </div>
+  );
 }
 
 // エラーバウンダリコンポーネント
 function ErrorBoundary({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border-2 border-red-200 rounded p-4 mb-4">
+    <div className="border-2 border-gray-200 rounded p-4 mb-4">
       <Suspense fallback={
         <div className="text-blue-600">🔄 データ読み込み中...</div>
       }>
@@ -291,98 +346,107 @@ function ErrorBoundary({ children }: { children: React.ReactNode }) {
 
 export default function ConnectionTestPage() {
   const [testUserId, setTestUserId] = useState('user-123');
-  const [targetUserId, setTargetUserId] = useState('target-user-456');
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">ユーザー機能 接続テスト</h1>
+    <div className="container mx-auto p-6 max-w-7xl">
+      <h1 className="text-3xl font-bold mb-6">User Features 接続テスト</h1>
       
-      <div className="mb-6 space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">テスト用ユーザーID:</label>
-          <input 
-            type="text"
-            value={testUserId}
-            onChange={(e) => setTestUserId(e.target.value)}
-            className="border rounded px-3 py-2 w-64"
-            placeholder="テスト用のユーザーIDを入力"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">対象ユーザーID（詳細表示用）:</label>
-          <input 
-            type="text"
-            value={targetUserId}
-            onChange={(e) => setTargetUserId(e.target.value)}
-            className="border rounded px-3 py-2 w-64"
-            placeholder="詳細表示用のユーザーIDを入力"
-          />
-        </div>
+      <div className="mb-6">
+        <label className="block text-sm font-medium mb-2">テスト用ユーザーID:</label>
+        <input 
+          type="text"
+          value={testUserId}
+          onChange={(e) => setTestUserId(e.target.value)}
+          className="border rounded px-3 py-2 w-80"
+          placeholder="テスト用のユーザーIDを入力"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          実際のユーザーIDを入力するか、テスト用の値のままで動作確認できます
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 認証・プロフィール確認 */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* 認証機能 */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">認証・プロフィール</h2>
+          <h2 className="text-2xl font-semibold text-blue-700">🔐 Auth Feature</h2>
           
           <ErrorBoundary>
-            <SessionTest />
+            <AuthMeTest />
+          </ErrorBoundary>
+        </div>
+
+        {/* ユーザー機能 */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-green-700">👥 User Feature</h2>
+          
+          <ErrorBoundary>
+            <UsersListTest />
           </ErrorBoundary>
           
           <ErrorBoundary>
-            <ProfileTest userId={testUserId} />
+            <UserDetailTest userId={testUserId} />
           </ErrorBoundary>
+          
+          <ErrorBoundary>
+            <UserBasicUpdateTest userId={testUserId} />
+          </ErrorBoundary>
+        </div>
+
+        {/* メタデータ機能 */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-purple-700">📝 Metadata Feature</h2>
           
           <ErrorBoundary>
             <MetadataTest userId={testUserId} />
           </ErrorBoundary>
         </div>
 
-        {/* ユーザー管理確認 */}
+        {/* ソーシャルリンク機能 */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">ユーザー管理</h2>
-          
-          <ErrorBoundary>
-            <UsersTest />
-          </ErrorBoundary>
-          
-          <ErrorBoundary>
-            <UserDetailTest targetUserId={targetUserId} />
-          </ErrorBoundary>
-        </div>
-
-        {/* ソーシャル機能確認 */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">ソーシャル機能</h2>
-          
-          <ErrorBoundary>
-            <RivalsTest userId={testUserId} />
-          </ErrorBoundary>
+          <h2 className="text-2xl font-semibold text-orange-700">🔗 Social Links Feature</h2>
           
           <ErrorBoundary>
             <SocialLinksTest userId={testUserId} />
           </ErrorBoundary>
         </div>
 
+        {/* ライバル機能 */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-red-700">⚔️ Rivals Feature</h2>
+          
+          <ErrorBoundary>
+            <RivalsTest userId={testUserId} />
+          </ErrorBoundary>
+        </div>
+
         {/* テスト手順説明 */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold">テスト手順</h2>
-          <div className="bg-gray-50 p-4 rounded">
-            <h3 className="font-semibold mb-2">テスト方法:</h3>
-            <ul className="list-disc pl-5 space-y-1 text-sm">
-              <li>上記の入力欄に有効なユーザーIDを入力してください</li>
-              <li>データが正しく読み込まれるか確認してください（緑色ステータス）</li>
-              <li>ボタンを使用して変更操作をテストしてください</li>
-              <li>ローディング状態とエラーハンドリングを確認してください</li>
-              <li>詳細なエラーメッセージはブラウザコンソールで確認してください</li>
-              <li>API レスポンスはネットワークタブで確認してください</li>
-            </ul>
+          <h2 className="text-2xl font-semibold text-gray-700">📋 テスト手順</h2>
+          <div className="bg-gray-50 p-4 rounded border">
+            <h3 className="font-semibold mb-3">🎯 テスト項目</h3>
+            <div className="space-y-2 text-sm">
+              <div><strong>認証:</strong> セッション情報の取得</div>
+              <div><strong>ユーザー:</strong> 一覧・詳細・基本情報更新</div>
+              <div><strong>メタデータ:</strong> プロフィール詳細の取得・更新</div>
+              <div><strong>ソーシャルリンク:</strong> CRUD操作（作成・読取・更新・削除）</div>
+              <div><strong>ライバル:</strong> 一覧・追加・削除</div>
+            </div>
             
-            <h3 className="font-semibold mt-4 mb-2">期待される動作:</h3>
+            <h3 className="font-semibold mt-4 mb-3">✅ 確認ポイント</h3>
             <ul className="list-disc pl-5 space-y-1 text-sm">
-              <li>✅ 成功: データが正しく読み込まれ表示される</li>
-              <li>🔄 読み込み中: データ取得中に表示される</li>
-              <li>❌ エラー: API呼び出し失敗時やデータが無効な時に表示される</li>
+              <li>各APIの正常なレスポンス（✅ Success）</li>
+              <li>ローディング状態（🔄 Loading）</li>
+              <li>エラーハンドリング（❌ Error）</li>
+              <li>リアルタイム状態更新</li>
+              <li>ボタンクリックでの操作実行</li>
+              <li>キャッシュ無効化とデータ再取得</li>
+            </ul>
+
+            <h3 className="font-semibold mt-4 mb-3">🔧 デバッグ</h3>
+            <ul className="list-disc pl-5 space-y-1 text-sm">
+              <li>ブラウザコンソールでエラー詳細確認</li>
+              <li>ネットワークタブでAPI呼び出し確認</li>
+              <li>React Query DevTools使用推奨</li>
             </ul>
           </div>
         </div>
