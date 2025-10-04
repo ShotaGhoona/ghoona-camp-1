@@ -1,17 +1,19 @@
 package title
 
-import "errors"
-
-// TODO: BE-03-title-01で実装予定
-// 称号管理ドメイン固有のエラー定義
-
-var (
-	// 称号関連エラー（実装予定）
-	ErrTitleNotFound          = errors.New("称号が見つかりません")
-	ErrTitleAlreadyAchieved   = errors.New("既に獲得済みの称号です")
-	ErrInvalidLevel           = errors.New("無効なレベルです")
-	ErrRequirementNotMet      = errors.New("獲得条件を満たしていません")
-	ErrTitleNotUnlocked       = errors.New("称号が解放されていません")
+import (
+	"ghoona-camp-backend/internal/domain/common"
 )
 
-// TODO: 詳細なエラー定義とエラーハンドリング実装は後続タスクで行う
+// Title domain errors
+var (
+	// Title errors
+	ErrTitleNotFound        = common.ErrNotFound
+	ErrTitleInactive        = common.NewDomainError("TITLE_INACTIVE", "非アクティブな称号です", nil)
+	ErrInvalidTitleLevel    = common.NewDomainError("INVALID_TITLE_LEVEL", "無効な称号レベルです", nil)
+	
+	// Achievement errors  
+	ErrAchievementNotFound      = common.ErrNotFound
+	ErrTitleNotAchieved        = common.NewDomainError("TITLE_NOT_ACHIEVED", "未獲得の称号です", nil)
+	ErrTitleAlreadyCurrent     = common.NewDomainError("TITLE_ALREADY_CURRENT", "既に現在の称号に設定済み", nil)
+	ErrAchievementAlreadyExists = common.ErrAlreadyExists
+)
