@@ -7,6 +7,8 @@ import (
 	userUsecase "ghoona-camp-backend/internal/application/usecase/user"
 	"ghoona-camp-backend/internal/domain/user/repository"
 	"ghoona-camp-backend/internal/domain/user/service"
+	titleRepository "ghoona-camp-backend/internal/domain/title/repository"
+	titleService "ghoona-camp-backend/internal/domain/title/service"
 	"ghoona-camp-backend/internal/infrastructure/clerk"
 	"ghoona-camp-backend/internal/infrastructure/config"
 	"ghoona-camp-backend/internal/infrastructure/discord"
@@ -36,11 +38,18 @@ type Container struct {
 	SocialLinkRepo   repository.UserSocialLinkRepository
 	RivalRepo        repository.UserRivalRepository
 
+	// Title Repositories
+	TitleRepo            titleRepository.TitleRepository
+	TitleAchievementRepo titleRepository.TitleAchievementRepository
+
 	// Services/UseCases
 	UserUseCase         userUsecase.UserUseCase
 	UserMetadataUseCase userUsecase.UserMetadataUseCase
 	UserSocialUseCase   userUsecase.UserSocialUseCase
 	UserRivalUseCase    userUsecase.UserRivalUseCase
+
+	// Title Services
+	TitleService *titleService.TitleService
 
 	// Controllers
 	UserController         *userController.UserController
@@ -83,8 +92,15 @@ func NewContainer(db *gorm.DB, cfg *config.Config) *Container {
 	// Initialize repositories
 	c.initUserRepositories()
 
+	// BE-07-title-02で実装済み
+	// Initialize title repositories
+	c.initTitleRepositories()
+
 	// Initialize services
 	c.initUserServices()
+
+	// Initialize title services
+	c.initTitleServices()
 
 	// Initialize controllers
 	c.initUserControllers()
@@ -161,6 +177,17 @@ func (c *Container) initUserControllers() {
 	c.UserMetadataController = userController.NewUserMetadataController(c.UserMetadataUseCase, c.UserRepo)
 	c.UserSocialController = userController.NewUserSocialController(c.UserSocialUseCase, c.UserRepo)
 	c.UserRivalController = userController.NewUserRivalController(c.UserRivalUseCase, c.UserRepo)
+}
+
+// BE-07-title-02で実装済み
+func (c *Container) initTitleRepositories() {
+	c.TitleRepo = gormRepo.NewTitleRepository(c.DB)
+	c.TitleAchievementRepo = gormRepo.NewTitleAchievementRepository(c.DB)
+}
+
+func (c *Container) initTitleServices() {
+	// Domain services
+	c.TitleService = titleService.NewTitleService()
 }
 
 // TODO: 他のドメインで実装予定
