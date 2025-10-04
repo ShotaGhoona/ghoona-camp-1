@@ -33,9 +33,9 @@ type ClerkUser struct {
 
 // VerifyToken はJWTトークンを検証
 func (s *AuthService) VerifyToken(ctx context.Context, token string) (*ClerkUser, error) {
-	if s.secretKey == "" {
-		return nil, errors.New("Clerk secret key が設定されていません")
-	}
+	// if s.secretKey == "" {
+	// 	return nil, errors.New("Clerk secret key が設定されていません")
+	// }
 
 	if token == "" {
 		return nil, errors.New("トークンが空です")
@@ -45,9 +45,9 @@ func (s *AuthService) VerifyToken(ctx context.Context, token string) (*ClerkUser
 	if !s.enabled {
 		if token == "mock-clerk-token" {
 			return &ClerkUser{
-				ID:       "user_mock123",
-				Email:    "test@example.com",
-				Username: "testuser",
+				ID:       "clerk_dev_user_001",
+				Email:    "developer@ghoona.camp",
+				Username: "Ghoona Developer",
 			}, nil
 		}
 		return nil, errors.New("無効なモックトークンです")
