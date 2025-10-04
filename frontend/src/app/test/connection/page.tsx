@@ -38,13 +38,32 @@ const TEST_EMAIL = 'developer@ghoona.camp';
 
 // データ表示コンポーネント
 function DataDisplay({ title, data, status }: { title: string; data: any; status?: string }) {
+  const getStatusColor = (status?: string) => {
+    if (!status) return 'bg-gray-100 text-gray-800';
+    if (status.includes('Success')) return 'bg-green-100 text-green-800 border-green-200';
+    if (status.includes('Error')) return 'bg-red-100 text-red-800 border-red-200';
+    if (status.includes('Loading')) return 'bg-blue-100 text-blue-800 border-blue-200';
+    if (status.includes('Creating') || status.includes('Updating')) return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+    return 'bg-gray-100 text-gray-800 border-gray-200';
+  };
+
   return (
-    <div className="border rounded p-4 mb-4">
-      <h3 className="font-bold mb-2">{title}</h3>
-      {status && <p className="text-sm text-gray-600 mb-2">ステータス: {status}</p>}
-      <pre className="bg-gray-100 p-2 rounded text-sm overflow-auto max-h-40">
-        {JSON.stringify(data, null, 2)}
-      </pre>
+    <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 h-full">
+      <div className="p-4 border-b border-gray-100">
+        <h3 className="font-semibold text-gray-900 text-sm leading-tight">{title}</h3>
+        {status && (
+          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 border ${getStatusColor(status)}`}>
+            {status}
+          </div>
+        )}
+      </div>
+      <div className="p-4">
+        <div className="bg-gray-50 rounded-md p-3 max-h-64 overflow-auto">
+          <pre className="text-xs text-gray-700 whitespace-pre-wrap break-words font-mono">
+            {JSON.stringify(data, null, 2)}
+          </pre>
+        </div>
+      </div>
     </div>
   );
 }
@@ -442,195 +461,243 @@ export default function ConnectionTestPage() {
   const [testUserId, setTestUserId] = useState(TEST_USER_ID);
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <h1 className="text-3xl font-bold mb-6">User Features 接続テスト (Updated)</h1>
-      
-      <div className="mb-6 p-4 bg-blue-50 rounded border">
-        <h3 className="font-semibold mb-2">🔧 テスト設定</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div>
-            <strong>User ID:</strong><br />
-            <code className="bg-gray-100 px-2 py-1 rounded">{TEST_USER_ID}</code>
-          </div>
-          <div>
-            <strong>Clerk ID:</strong><br />
-            <code className="bg-gray-100 px-2 py-1 rounded">{TEST_CLERK_ID}</code>
-          </div>
-          <div>
-            <strong>Email:</strong><br />
-            <code className="bg-gray-100 px-2 py-1 rounded">{TEST_EMAIL}</code>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="p-6">
+        {/* ヘッダー */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">User Features 接続テスト</h1>
+          <p className="text-gray-600">すべてのユーザー機能APIエンドポイントのテストページ</p>
         </div>
         
-        <div className="mt-4">
-          <label className="block text-sm font-medium mb-2">カスタムテスト用ユーザーID:</label>
-          <input 
-            type="text"
-            value={testUserId}
-            onChange={(e) => setTestUserId(e.target.value)}
-            className="border rounded px-3 py-2 w-80"
-            placeholder="テスト用のユーザーIDを入力"
-          />
-          <button 
-            onClick={() => setTestUserId(TEST_USER_ID)}
-            className="ml-2 bg-gray-500 text-white px-3 py-2 rounded text-sm"
-          >
-            デフォルトに戻す
-          </button>
-        </div>
-      </div>
-
-      <div className="space-y-8">
-        {/* 認証機能 */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-blue-700 border-b-2 border-blue-200 pb-2">🔐 Auth Feature</h2>
+        {/* 設定パネル */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <span className="mr-2">🔧</span>
+            テスト設定
+          </h3>
           
-          <div className="overflow-x-auto">
-            <div className="flex gap-4 min-w-fit">
-              <div className="flex-shrink-0 w-96">
-                <ErrorBoundary>
-                  <AuthMeTest />
-                </ErrorBoundary>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="text-sm font-medium text-gray-700 mb-1">User ID</div>
+              <code className="bg-white px-3 py-2 rounded border text-sm text-gray-800 block break-all">
+                {TEST_USER_ID}
+              </code>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="text-sm font-medium text-gray-700 mb-1">Clerk ID</div>
+              <code className="bg-white px-3 py-2 rounded border text-sm text-gray-800 block">
+                {TEST_CLERK_ID}
+              </code>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="text-sm font-medium text-gray-700 mb-1">Email</div>
+              <code className="bg-white px-3 py-2 rounded border text-sm text-gray-800 block">
+                {TEST_EMAIL}
+              </code>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-200 pt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              カスタムテスト用ユーザーID
+            </label>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input 
+                type="text"
+                value={testUserId}
+                onChange={(e) => setTestUserId(e.target.value)}
+                className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="テスト用のユーザーIDを入力"
+              />
+              <button 
+                onClick={() => setTestUserId(TEST_USER_ID)}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+              >
+                デフォルトに戻す
+              </button>
             </div>
           </div>
         </div>
 
-        {/* ユーザー機能 */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-green-700 border-b-2 border-green-200 pb-2">👥 User Feature</h2>
-          
-          <div className="overflow-x-auto">
-            <div className="flex gap-4 min-w-fit">
-              <div className="flex-shrink-0 w-96">
-                <ErrorBoundary>
-                  <UserCreateTest />
-                </ErrorBoundary>
-              </div>
-              
-              <div className="flex-shrink-0 w-96">
-                <ErrorBoundary>
-                  <UsersListTest />
-                </ErrorBoundary>
-              </div>
-              
-              <div className="flex-shrink-0 w-96">
-                <ErrorBoundary>
-                  <UserDetailTest userId={testUserId} />
-                </ErrorBoundary>
-              </div>
-              
-              <div className="flex-shrink-0 w-96">
-                <ErrorBoundary>
-                  <UserBasicUpdateTest userId={testUserId} />
-                </ErrorBoundary>
+        {/* テストセクション */}
+        <div className="space-y-8">
+          {/* 認証機能 */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-blue-700 mb-4 flex items-center">
+              <span className="mr-3">🔐</span>
+              Auth Feature
+            </h2>
+            
+            <div className="overflow-x-auto pb-2">
+              <div className="flex gap-6 min-w-fit">
+                <div className="flex-shrink-0 w-80">
+                  <ErrorBoundary>
+                    <AuthMeTest />
+                  </ErrorBoundary>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* メタデータ機能 */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-purple-700 border-b-2 border-purple-200 pb-2">📝 Metadata Feature</h2>
-          
-          <div className="overflow-x-auto">
-            <div className="flex gap-4 min-w-fit">
-              <div className="flex-shrink-0 w-96">
-                <ErrorBoundary>
-                  <MetadataCreateTest userId={testUserId} />
-                </ErrorBoundary>
-              </div>
-              
-              <div className="flex-shrink-0 w-96">
-                <ErrorBoundary>
-                  <MetadataTest userId={testUserId} />
-                </ErrorBoundary>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ソーシャルリンク機能 */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-orange-700 border-b-2 border-orange-200 pb-2">🔗 Social Links Feature</h2>
-          
-          <div className="overflow-x-auto">
-            <div className="flex gap-4 min-w-fit">
-              <div className="flex-shrink-0 w-96">
-                <ErrorBoundary>
-                  <SocialLinksTest userId={testUserId} />
-                </ErrorBoundary>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ライバル機能 */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-red-700 border-b-2 border-red-200 pb-2">⚔️ Rivals Feature</h2>
-          
-          <div className="overflow-x-auto">
-            <div className="flex gap-4 min-w-fit">
-              <div className="flex-shrink-0 w-96">
-                <ErrorBoundary>
-                  <RivalsTest userId={testUserId} />
-                </ErrorBoundary>
+          {/* ユーザー機能 */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-green-700 mb-4 flex items-center">
+              <span className="mr-3">👥</span>
+              User Feature
+            </h2>
+            
+            <div className="overflow-x-auto pb-2">
+              <div className="flex gap-6 min-w-fit">
+                <div className="flex-shrink-0 w-80">
+                  <ErrorBoundary>
+                    <UserCreateTest />
+                  </ErrorBoundary>
+                </div>
+                
+                <div className="flex-shrink-0 w-80">
+                  <ErrorBoundary>
+                    <UsersListTest />
+                  </ErrorBoundary>
+                </div>
+                
+                <div className="flex-shrink-0 w-80">
+                  <ErrorBoundary>
+                    <UserDetailTest userId={testUserId} />
+                  </ErrorBoundary>
+                </div>
+                
+                <div className="flex-shrink-0 w-80">
+                  <ErrorBoundary>
+                    <UserBasicUpdateTest userId={testUserId} />
+                  </ErrorBoundary>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* テスト手順説明 */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-gray-700 border-b-2 border-gray-200 pb-2">📋 テスト手順 (Updated)</h2>
-          
-          <div className="overflow-x-auto">
-            <div className="flex gap-4 min-w-fit">
-              <div className="flex-shrink-0 w-96">
-                <div className="bg-gray-50 p-4 rounded border h-full">
-                  <h3 className="font-semibold mb-3">🆕 新機能テスト</h3>
-                  <div className="space-y-2 text-sm">
-                    <div><strong>ユーザー作成:</strong> POST /users で新規ユーザー追加</div>
-                    <div><strong>メタデータ作成:</strong> POST /users/{'{userId}'}/metadata で初回プロフィール作成</div>
-                    <div><strong>camelCase対応:</strong> 全APIレスポンスがcamelCase形式</div>
+          {/* メタデータ機能 */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-purple-700 mb-4 flex items-center">
+              <span className="mr-3">📝</span>
+              Metadata Feature
+            </h2>
+            
+            <div className="overflow-x-auto pb-2">
+              <div className="flex gap-6 min-w-fit">
+                <div className="flex-shrink-0 w-80">
+                  <ErrorBoundary>
+                    <MetadataCreateTest userId={testUserId} />
+                  </ErrorBoundary>
+                </div>
+                
+                <div className="flex-shrink-0 w-80">
+                  <ErrorBoundary>
+                    <MetadataTest userId={testUserId} />
+                  </ErrorBoundary>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ソーシャルリンク機能 */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-orange-700 mb-4 flex items-center">
+              <span className="mr-3">🔗</span>
+              Social Links Feature
+            </h2>
+            
+            <div className="overflow-x-auto pb-2">
+              <div className="flex gap-6 min-w-fit">
+                <div className="flex-shrink-0 w-80">
+                  <ErrorBoundary>
+                    <SocialLinksTest userId={testUserId} />
+                  </ErrorBoundary>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ライバル機能 */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-red-700 mb-4 flex items-center">
+              <span className="mr-3">⚔️</span>
+              Rivals Feature
+            </h2>
+            
+            <div className="overflow-x-auto pb-2">
+              <div className="flex gap-6 min-w-fit">
+                <div className="flex-shrink-0 w-80">
+                  <ErrorBoundary>
+                    <RivalsTest userId={testUserId} />
+                  </ErrorBoundary>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* テスト手順説明 */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 className="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+              <span className="mr-3">📋</span>
+              テスト手順・仕様
+            </h2>
+            
+            <div className="overflow-x-auto pb-2">
+              <div className="flex gap-6 min-w-fit">
+                <div className="flex-shrink-0 w-80">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4 h-full">
+                    <h3 className="font-bold text-blue-800 mb-3 flex items-center">
+                      <span className="mr-2">🆕</span>新機能テスト
+                    </h3>
+                    <div className="space-y-3 text-sm text-blue-700">
+                      <div><strong>ユーザー作成:</strong> POST /users で新規ユーザー追加</div>
+                      <div><strong>メタデータ作成:</strong> POST /users/{'{userId}'}/metadata で初回プロフィール作成</div>
+                      <div><strong>camelCase対応:</strong> 全APIレスポンスがcamelCase形式</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="flex-shrink-0 w-96">
-                <div className="bg-gray-50 p-4 rounded border h-full">
-                  <h3 className="font-semibold mb-3">🎯 主要テスト項目</h3>
-                  <div className="space-y-2 text-sm">
-                    <div><strong>認証:</strong> セッション情報の取得</div>
-                    <div><strong>ユーザー:</strong> 作成・一覧・詳細・基本情報更新</div>
-                    <div><strong>メタデータ:</strong> 作成・取得・更新</div>
-                    <div><strong>ソーシャルリンク:</strong> CRUD操作（作成・読取・更新・削除）</div>
-                    <div><strong>ライバル:</strong> 一覧・追加・削除</div>
+                
+                <div className="flex-shrink-0 w-80">
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-4 h-full">
+                    <h3 className="font-bold text-green-800 mb-3 flex items-center">
+                      <span className="mr-2">🎯</span>主要テスト項目
+                    </h3>
+                    <div className="space-y-2 text-sm text-green-700">
+                      <div><strong>認証:</strong> セッション情報の取得</div>
+                      <div><strong>ユーザー:</strong> 作成・一覧・詳細・基本情報更新</div>
+                      <div><strong>メタデータ:</strong> 作成・取得・更新</div>
+                      <div><strong>ソーシャルリンク:</strong> CRUD操作</div>
+                      <div><strong>ライバル:</strong> 一覧・追加・削除</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="flex-shrink-0 w-96">
-                <div className="bg-gray-50 p-4 rounded border h-full">
-                  <h3 className="font-semibold mb-3">✅ 確認ポイント</h3>
-                  <ul className="list-disc pl-5 space-y-1 text-sm">
-                    <li>各APIの正常なレスポンス（✅ Success）</li>
-                    <li>新機能（CREATE操作）の動作確認</li>
-                    <li>camelCase形式のレスポンス確認</li>
-                    <li>ローディング状態（🔄 Loading）</li>
-                    <li>エラーハンドリング（❌ Error）</li>
-                    <li>リアルタイム状態更新とキャッシュ無効化</li>
-                  </ul>
+                
+                <div className="flex-shrink-0 w-80">
+                  <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg p-4 h-full">
+                    <h3 className="font-bold text-yellow-800 mb-3 flex items-center">
+                      <span className="mr-2">✅</span>確認ポイント
+                    </h3>
+                    <ul className="list-disc pl-5 space-y-1 text-sm text-yellow-700">
+                      <li>正常なレスポンス（✅ Success）</li>
+                      <li>新機能（CREATE操作）の動作確認</li>
+                      <li>camelCase形式のレスポンス確認</li>
+                      <li>ローディング状態（🔄 Loading）</li>
+                      <li>エラーハンドリング（❌ Error）</li>
+                      <li>リアルタイム状態更新</li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="flex-shrink-0 w-96">
-                <div className="bg-gray-50 p-4 rounded border h-full">
-                  <h3 className="font-semibold mb-3">🧪 実テストデータ</h3>
-                  <div className="text-xs space-y-1">
-                    <div><strong>Base User:</strong> {TEST_EMAIL} (developer@ghoona.camp)</div>
-                    <div><strong>Test Rival:</strong> Test Expert (tester@ghoona.camp)</div>
-                    <div><strong>Platforms:</strong> Twitter, GitHub等の実際のプラットフォーム</div>
+                
+                <div className="flex-shrink-0 w-80">
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4 h-full">
+                    <h3 className="font-bold text-purple-800 mb-3 flex items-center">
+                      <span className="mr-2">🧪</span>実テストデータ
+                    </h3>
+                    <div className="text-sm text-purple-700 space-y-2">
+                      <div><strong>Base User:</strong><br/>{TEST_EMAIL}</div>
+                      <div><strong>Test Rival:</strong><br/>Test Expert (tester@ghoona.camp)</div>
+                      <div><strong>Platforms:</strong><br/>Twitter, GitHub等の実際のプラットフォーム</div>
+                    </div>
                   </div>
                 </div>
               </div>
