@@ -37,7 +37,7 @@ const TEST_CLERK_ID = 'clerk_dev_user_001';
 const TEST_EMAIL = 'developer@ghoona.camp';
 
 // データ表示コンポーネント
-function DataDisplay({ title, data, status }: { title: string; data: any; status?: string }) {
+function DataDisplay({ title, data, status }: { title: string; data: unknown; status?: string }) {
   const getStatusColor = (status?: string) => {
     if (!status) return 'bg-gray-100 text-gray-800';
     if (status.includes('Success')) return 'bg-green-100 text-green-800 border-green-200';

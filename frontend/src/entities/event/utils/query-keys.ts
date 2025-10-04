@@ -6,14 +6,14 @@ export const eventQueryKeys = {
   
   // Event queries
   events: () => [...eventQueryKeys.all, 'events'] as const,
-  eventsList: (filters?: Record<string, any>) => 
+  eventsList: (filters?: Record<string, unknown>) => 
     [...eventQueryKeys.events(), 'list', filters] as const,
   eventsDetail: (id: string) => 
     [...eventQueryKeys.events(), 'detail', id] as const,
   
   // Participants queries
   participants: () => [...eventQueryKeys.all, 'participants'] as const,
-  participantsList: (eventId: string, filters?: Record<string, any>) => 
+  participantsList: (eventId: string, filters?: Record<string, unknown>) => 
     [...eventQueryKeys.participants(), 'list', eventId, filters] as const,
   participantsDetail: (eventId: string, participantId: string) => 
     [...eventQueryKeys.participants(), 'detail', eventId, participantId] as const,
