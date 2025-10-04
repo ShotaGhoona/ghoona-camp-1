@@ -14,6 +14,8 @@ export const useRivalsCreate = (userId: string) => {
       queryClient.invalidateQueries({ queryKey: userKeys.detail(userId) });
       // ユーザー一覧も更新（ライバル情報が表示される場合）
       queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+      // セッション情報も更新（自分のライバル追加の場合）
+      queryClient.invalidateQueries({ queryKey: userKeys.session() });
     },
     onError: (error) => {
       console.error('Rival creation failed:', error);

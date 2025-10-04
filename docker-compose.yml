@@ -19,7 +19,7 @@ services:
     build: ./frontend
     container_name: ghoona_frontend
     env_file:
-      - ./frontend/.env
+      - ./frontend/.env.local
     ports:
       - "3000:3000"
     volumes:

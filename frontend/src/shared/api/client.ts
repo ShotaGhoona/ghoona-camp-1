@@ -52,9 +52,9 @@ class ApiClient {
    */
   private async getAuthHeaders(): Promise<HeadersInit> {
     if (typeof window !== 'undefined') {
-      // Clerkからトークンを取得（実装時にuseAuth()から取得）
-      // TODO: Clerk useAuth().getToken() 実装
-      const token = null; // 仮実装
+      // 開発環境用のモックトークン
+      // TODO: 本番環境では Clerk useAuth().getToken() を使用
+      const token = 'mock-clerk-token'; 
       if (token) {
         return { Authorization: `Bearer ${token}` };
       }

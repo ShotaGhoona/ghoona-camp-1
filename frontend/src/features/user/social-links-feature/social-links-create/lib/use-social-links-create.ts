@@ -12,6 +12,8 @@ export const useSocialLinksCreate = (userId: string) => {
       // ソーシャルリンク一覧とユーザー詳細を無効化
       queryClient.invalidateQueries({ queryKey: socialLinksKeys.list(userId) });
       queryClient.invalidateQueries({ queryKey: userKeys.detail(userId) });
+      // セッション情報も更新（自分のソーシャルリンク追加の場合）
+      queryClient.invalidateQueries({ queryKey: userKeys.session() });
     },
     onError: (error) => {
       console.error('Social link creation failed:', error);
