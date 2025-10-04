@@ -5,6 +5,7 @@ import (
 
 	"ghoona-camp-backend/internal/application/transaction"
 	userUsecase "ghoona-camp-backend/internal/application/usecase/user"
+	titleUsecase "ghoona-camp-backend/internal/application/usecase/title"
 	"ghoona-camp-backend/internal/domain/user/repository"
 	"ghoona-camp-backend/internal/domain/user/service"
 	titleRepository "ghoona-camp-backend/internal/domain/title/repository"
@@ -50,6 +51,11 @@ type Container struct {
 
 	// Title Services
 	TitleService *titleService.TitleService
+
+	// Title UseCases
+	TitleUseCase            titleUsecase.TitleUseCase
+	TitleAchievementUseCase titleUsecase.TitleAchievementUseCase
+	TitleProgressUseCase    titleUsecase.TitleProgressUseCase
 
 	// Controllers
 	UserController         *userController.UserController
@@ -101,6 +107,9 @@ func NewContainer(db *gorm.DB, cfg *config.Config) *Container {
 
 	// Initialize title services
 	c.initTitleServices()
+
+	// Initialize title use cases
+	c.initTitleUseCases()
 
 	// Initialize controllers
 	c.initUserControllers()
@@ -188,6 +197,39 @@ func (c *Container) initTitleRepositories() {
 func (c *Container) initTitleServices() {
 	// Domain services
 	c.TitleService = titleService.NewTitleService()
+}
+
+func (c *Container) initTitleUseCases() {
+	// Title validation service
+	titleValidationService := titleService.NewTitleValidationService(
+		c.TitleRepo,
+		c.TitleAchievementRepo,
+	)
+
+	// Basic title operations
+	c.TitleUseCase = titleUsecase.NewTitleUseCase(
+		c.TitleRepo,
+		titleValidationService,
+	)
+
+	// Title achievement operations
+	c.TitleAchievementUseCase = titleUsecase.NewTitleAchievementUseCase(
+		c.UserRepo,
+		c.TitleRepo,
+		c.TitleAchievementRepo,
+		c.TitleService,
+		titleValidationService,
+		c.TxManager,
+	)
+
+	// Title progress operations (with nil attendance provider for now)
+	c.TitleProgressUseCase = titleUsecase.NewTitleProgressUseCase(
+		c.UserRepo,
+		c.TitleRepo,
+		c.TitleAchievementRepo,
+		c.TitleService,
+		nil, // 将来の出席サービス統合まではnil
+	)
 }
 
 // TODO: 他のドメインで実装予定

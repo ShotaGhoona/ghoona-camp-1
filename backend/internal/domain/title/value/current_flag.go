@@ -20,3 +20,8 @@ func (c CurrentFlag) String() string {
 func (c CurrentFlag) Bool() bool {
 	return bool(c)
 }
+
+// IsValid は現在フラグが有効かどうかを確認する
+func (c CurrentFlag) IsValid() bool {
+	return c == CurrentTrue || c == CurrentFalse
+}
