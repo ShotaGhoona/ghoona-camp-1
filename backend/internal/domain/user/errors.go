@@ -1,42 +1,44 @@
 package user
 
-import "errors"
+import (
+	"ghoona-camp-backend/internal/domain/common"
+)
 
 // User domain errors
 var (
 	// User errors
-	ErrUserNotFound        = errors.New("ユーザーが見つかりません")
-	ErrInvalidUsername     = errors.New("ユーザー名は3文字以上50文字以内で入力してください")
-	ErrDuplicateEmail      = errors.New("このメールアドレスは既に使用されています")
-	ErrDuplicateClerkID    = errors.New("このClerk IDは既に使用されています")
-	ErrInvalidEmail        = errors.New("無効なメールアドレスです")
-	ErrInvalidClerkID      = errors.New("無効なClerk IDです")
+	ErrUserNotFound        = common.ErrNotFound
+	ErrInvalidUsername     = common.NewValidationError("username", "ユーザー名は3文字以上50文字以内で入力してください")
+	ErrDuplicateEmail      = common.ErrDuplicateEntry
+	ErrDuplicateClerkID    = common.ErrDuplicateEntry
+	ErrInvalidEmail        = common.NewValidationError("email", "無効なメールアドレスです")
+	ErrInvalidClerkID      = common.NewValidationError("clerkId", "無効なClerk IDです")
 
 	// User metadata errors
-	ErrUserMetadataNotFound    = errors.New("ユーザーメタデータが見つかりません")
-	ErrUserMetadataAlreadyExists = errors.New("ユーザーメタデータが既に存在します")
+	ErrUserMetadataNotFound      = common.ErrNotFound
+	ErrUserMetadataAlreadyExists = common.ErrAlreadyExists
 
 	// Social link errors
-	ErrUserSocialLinkNotFound = errors.New("ソーシャルリンクが見つかりません")
-	ErrInvalidURL          = errors.New("無効なURL形式です")
-	ErrInvalidURLScheme    = errors.New("URLはhttp またはhttpsスキームを使用してください")
-	ErrInvalidTwitterURL   = errors.New("無効なTwitter URLです")
-	ErrInvalidGitHubURL    = errors.New("無効なGitHub URLです")
-	ErrInvalidLinkedInURL  = errors.New("無効なLinkedIn URLです")
-	ErrInvalidPlatform     = errors.New("無効なプラットフォームです")
-	ErrInvalidTitle        = errors.New("タイトルは100文字以内で入力してください")
-	ErrDuplicatePlatform   = errors.New("同一プラットフォームのリンクは1つまでです")
+	ErrUserSocialLinkNotFound = common.ErrNotFound
+	ErrInvalidURL             = common.NewValidationError("url", "無効なURL形式です")
+	ErrInvalidURLScheme       = common.NewValidationError("url", "URLはhttp またはhttpsスキームを使用してください")
+	ErrInvalidTwitterURL      = common.NewValidationError("url", "無効なTwitter URLです")
+	ErrInvalidGitHubURL       = common.NewValidationError("url", "無効なGitHub URLです")
+	ErrInvalidLinkedInURL     = common.NewValidationError("url", "無効なLinkedIn URLです")
+	ErrInvalidPlatform        = common.NewValidationError("platform", "無効なプラットフォームです")
+	ErrInvalidTitle           = common.NewValidationError("title", "タイトルは100文字以内で入力してください")
+	ErrDuplicatePlatform      = common.ErrDuplicateEntry
 
 	// Rival errors
-	ErrCannotRivalSelf     = errors.New("自分自身をライバルに設定できません")
-	ErrRivalLimitExceeded  = errors.New("ライバルは最大3人まで設定できます")
-	ErrDuplicateRival      = errors.New("既にライバル関係が存在します")
+	ErrCannotRivalSelf    = common.NewDomainError("CANNOT_RIVAL_SELF", "自分自身をライバルに設定できません", nil)
+	ErrRivalLimitExceeded = common.NewDomainError("RIVAL_LIMIT_EXCEEDED", "ライバルは最大3人まで設定できます", nil)
+	ErrDuplicateRival     = common.ErrDuplicateEntry
 
 	// Metadata errors
-	ErrInvalidDisplayName  = errors.New("表示名は100文字以内で入力してください")
-	ErrInvalidTagline      = errors.New("一言プロフィールは150文字以内で入力してください")
-	ErrInvalidBio          = errors.New("自己紹介は1000文字以内で入力してください")
-	ErrInvalidVision       = errors.New("ビジョンは2000文字以内で入力してください")
-	ErrTooManySkills       = errors.New("スキルは最大20個まで設定できます")
-	ErrTooManyInterests    = errors.New("興味・関心は最大20個まで設定できます")
+	ErrInvalidDisplayName = common.NewValidationError("displayName", "表示名は100文字以内で入力してください")
+	ErrInvalidTagline     = common.NewValidationError("tagline", "一言プロフィールは150文字以内で入力してください")
+	ErrInvalidBio         = common.NewValidationError("bio", "自己紹介は1000文字以内で入力してください")
+	ErrInvalidVision      = common.NewValidationError("vision", "ビジョンは2000文字以内で入力してください")
+	ErrTooManySkills      = common.NewValidationError("skills", "スキルは最大20個まで設定できます")
+	ErrTooManyInterests   = common.NewValidationError("interests", "興味・関心は最大20個まで設定できます")
 )
