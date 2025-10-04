@@ -5,6 +5,7 @@
 - **Authentication**: Mock Token (`Bearer mock-clerk-token`)
 - **Test Tool**: Postman
 - **Test Date**: 2025-10-04
+- **API Response Format**: camelCase (Updated from snake_case)
 
 ## Authentication Settings
 ```
@@ -32,21 +33,21 @@ Headers:
 {
     "data": {
         "id": "5298ae80-faeb-4f65-8894-695b652f8115",
-        "clerk_id": "clerk_dev_user_001",
+        "clerkId": "clerk_dev_user_001",
         "email": "developer@ghoona.camp",
         "username": "Ghoona Developer",
-        "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
-        "discord_id": null,
+        "avatarUrl": "https://avatars.githubusercontent.com/u/1?v=4",
+        "discordId": null,
         "status": "active",
         "metadata": {
             "id": "fca64cbc-59ab-419b-a8c3-25b608ec631d",
-            "user_id": "5298ae80-faeb-4f65-8894-695b652f8115",
-            "display_name": "Ghoona Developer",
-            "profile_image_url": null,
+            "userId": "5298ae80-faeb-4f65-8894-695b652f8115",
+            "displayName": "Ghoona Developer",
+            "profileImageUrl": null,
             "tagline": "朝活で人生を変える開発者",
             "bio": "Ghoona Campの開発を通じて、朝活コミュニティの価値を最大化することを目指しています。毎朝6時から開発作業を行い、生産性の高い一日をスタートしています。",
             "vision": "朝活を通じて、多くの人が充実した人生を送れる世界を作りたい。テクノロジーの力で朝活習慣を支援し、継続できる仕組みを構築する。",
-            "vision_public": true,
+            "visionPublic": true,
             "timezone": "Asia/Tokyo",
             "skills": [
                 "Go",
@@ -63,11 +64,11 @@ Headers:
                 "健康",
                 "ライフハック"
             ],
-            "created_at": "2025-09-28T19:13:02.192692+09:00",
-            "updated_at": "2025-09-28T19:13:02.192692+09:00"
+            "createdAt": "2025-09-28T19:13:02.192692+09:00",
+            "updatedAt": "2025-09-28T19:13:02.192692+09:00"
         },
-        "created_at": "2025-09-28T19:13:02.104918+09:00",
-        "updated_at": "2025-09-28T19:13:02.104918+09:00"
+        "createdAt": "2025-09-28T19:13:02.104918+09:00",
+        "updatedAt": "2025-09-28T19:13:02.104918+09:00"
     },
     "message": "success",
     "timestamp": "2025-10-04T04:00:22Z"
@@ -96,91 +97,91 @@ Headers:
         "users": [
             {
                 "id": "879fb62c-ee02-4ff0-a1cb-005190b2c47e",
-                "clerk_id": "test_clerk_001",
+                "clerkId": "test_clerk_001",
                 "email": "test1@example.com",
                 "username": "Test User 1",
-                "avatar_url": "https://example.com/avatar1.jpg",
-                "discord_id": null,
+                "avatarUrl": "https://example.com/avatar1.jpg",
+                "discordId": null,
                 "status": "active",
-                "created_at": "2025-09-28T19:13:20.23238+09:00",
-                "updated_at": "2025-09-28T19:13:20.23238+09:00"
+                "createdAt": "2025-09-28T19:13:20.23238+09:00",
+                "updatedAt": "2025-09-28T19:13:20.23238+09:00"
             },
             {
                 "id": "390b77a6-54f9-45a1-9d43-0e3142797c9b",
-                "clerk_id": "test_clerk_002",
+                "clerkId": "test_clerk_002",
                 "email": "test2@example.com",
                 "username": "Test User 2",
-                "avatar_url": "https://example.com/avatar2.jpg",
-                "discord_id": null,
+                "avatarUrl": "https://example.com/avatar2.jpg",
+                "discordId": null,
                 "status": "active",
-                "created_at": "2025-09-28T19:13:20.23238+09:00",
-                "updated_at": "2025-09-28T19:13:20.23238+09:00"
+                "createdAt": "2025-09-28T19:13:20.23238+09:00",
+                "updatedAt": "2025-09-28T19:13:20.23238+09:00"
             },
             {
                 "id": "39db328a-5db9-47a2-a9f9-6721ee9d9b31",
-                "clerk_id": "clerk_dev_user_003",
+                "clerkId": "clerk_dev_user_003",
                 "email": "designer@ghoona.camp",
                 "username": "UI Designer",
-                "avatar_url": "https://avatars.githubusercontent.com/u/3?v=4",
-                "discord_id": null,
+                "avatarUrl": "https://avatars.githubusercontent.com/u/3?v=4",
+                "discordId": null,
                 "status": "active",
-                "created_at": "2025-09-28T19:13:02.104918+09:00",
-                "updated_at": "2025-09-28T19:13:02.104918+09:00"
+                "createdAt": "2025-09-28T19:13:02.104918+09:00",
+                "updatedAt": "2025-09-28T19:13:02.104918+09:00"
             },
             {
                 "id": "d48bfee7-3c73-4fa4-b90a-ed5be72a8750",
-                "clerk_id": "clerk_dev_user_004",
+                "clerkId": "clerk_dev_user_004",
                 "email": "pm@ghoona.camp",
                 "username": "Product Manager",
-                "avatar_url": "https://avatars.githubusercontent.com/u/4?v=4",
-                "discord_id": null,
+                "avatarUrl": "https://avatars.githubusercontent.com/u/4?v=4",
+                "discordId": null,
                 "status": "active",
-                "created_at": "2025-09-28T19:13:02.104918+09:00",
-                "updated_at": "2025-09-28T19:13:02.104918+09:00"
+                "createdAt": "2025-09-28T19:13:02.104918+09:00",
+                "updatedAt": "2025-09-28T19:13:02.104918+09:00"
             },
             {
                 "id": "5298ae80-faeb-4f65-8894-695b652f8115",
-                "clerk_id": "clerk_dev_user_001",
+                "clerkId": "clerk_dev_user_001",
                 "email": "developer@ghoona.camp",
                 "username": "Ghoona Developer",
-                "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
-                "discord_id": null,
+                "avatarUrl": "https://avatars.githubusercontent.com/u/1?v=4",
+                "discordId": null,
                 "status": "active",
-                "created_at": "2025-09-28T19:13:02.104918+09:00",
-                "updated_at": "2025-09-28T19:13:02.104918+09:00"
+                "createdAt": "2025-09-28T19:13:02.104918+09:00",
+                "updatedAt": "2025-09-28T19:13:02.104918+09:00"
             },
             {
                 "id": "93cc832a-897c-407f-874a-b4473e787fd4",
-                "clerk_id": "clerk_test_user_2",
+                "clerkId": "clerk_test_user_2",
                 "email": "test2@ghoona.camp",
                 "username": "テストユーザー2",
-                "avatar_url": "https://example.com/avatar2.jpg",
-                "discord_id": null,
+                "avatarUrl": "https://example.com/avatar2.jpg",
+                "discordId": null,
                 "status": "active",
-                "created_at": "2025-09-28T19:13:02.104918+09:00",
-                "updated_at": "2025-09-28T19:13:02.104918+09:00"
+                "createdAt": "2025-09-28T19:13:02.104918+09:00",
+                "updatedAt": "2025-09-28T19:13:02.104918+09:00"
             },
             {
                 "id": "fc96cf8a-40d5-45a1-ae40-51d042125e4b",
-                "clerk_id": "clerk_test_user_1",
+                "clerkId": "clerk_test_user_1",
                 "email": "test1@ghoona.camp",
                 "username": "テストユーザー1",
-                "avatar_url": "https://example.com/avatar1.jpg",
-                "discord_id": null,
+                "avatarUrl": "https://example.com/avatar1.jpg",
+                "discordId": null,
                 "status": "active",
-                "created_at": "2025-09-28T19:13:02.104918+09:00",
-                "updated_at": "2025-09-28T19:13:02.104918+09:00"
+                "createdAt": "2025-09-28T19:13:02.104918+09:00",
+                "updatedAt": "2025-09-28T19:13:02.104918+09:00"
             },
             {
                 "id": "b0e2d712-002a-4073-85f2-4daefcddf249",
-                "clerk_id": "clerk_dev_user_002",
+                "clerkId": "clerk_dev_user_002",
                 "email": "tester@ghoona.camp",
                 "username": "Test Expert",
-                "avatar_url": "https://avatars.githubusercontent.com/u/2?v=4",
-                "discord_id": null,
+                "avatarUrl": "https://avatars.githubusercontent.com/u/2?v=4",
+                "discordId": null,
                 "status": "active",
-                "created_at": "2025-09-28T19:13:02.104918+09:00",
-                "updated_at": "2025-09-28T19:13:02.104918+09:00"
+                "createdAt": "2025-09-28T19:13:02.104918+09:00",
+                "updatedAt": "2025-09-28T19:13:02.104918+09:00"
             }
         ],
         "total": 8
@@ -210,21 +211,21 @@ Headers:
 {
     "data": {
         "id": "5298ae80-faeb-4f65-8894-695b652f8115",
-        "clerk_id": "clerk_dev_user_001",
+        "clerkId": "clerk_dev_user_001",
         "email": "developer@ghoona.camp",
         "username": "Ghoona Developer",
-        "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
-        "discord_id": null,
+        "avatarUrl": "https://avatars.githubusercontent.com/u/1?v=4",
+        "discordId": null,
         "status": "active",
         "metadata": {
             "id": "fca64cbc-59ab-419b-a8c3-25b608ec631d",
-            "user_id": "5298ae80-faeb-4f65-8894-695b652f8115",
-            "display_name": "Ghoona Developer",
-            "profile_image_url": null,
+            "userId": "5298ae80-faeb-4f65-8894-695b652f8115",
+            "displayName": "Ghoona Developer",
+            "profileImageUrl": null,
             "tagline": "朝活で人生を変える開発者",
             "bio": "Ghoona Campの開発を通じて、朝活コミュニティの価値を最大化することを目指しています。毎朝6時から開発作業を行い、生産性の高い一日をスタートしています。",
             "vision": "朝活を通じて、多くの人が充実した人生を送れる世界を作りたい。テクノロジーの力で朝活習慣を支援し、継続できる仕組みを構築する。",
-            "vision_public": true,
+            "visionPublic": true,
             "timezone": "Asia/Tokyo",
             "skills": [
                 "Go",
@@ -241,11 +242,11 @@ Headers:
                 "健康",
                 "ライフハック"
             ],
-            "created_at": "2025-09-28T19:13:02.192692+09:00",
-            "updated_at": "2025-09-28T19:13:02.192692+09:00"
+            "createdAt": "2025-09-28T19:13:02.192692+09:00",
+            "updatedAt": "2025-09-28T19:13:02.192692+09:00"
         },
-        "created_at": "2025-09-28T19:13:02.104918+09:00",
-        "updated_at": "2025-09-28T19:13:02.104918+09:00"
+        "createdAt": "2025-09-28T19:13:02.104918+09:00",
+        "updatedAt": "2025-09-28T19:13:02.104918+09:00"
     },
     "message": "success",
     "timestamp": "2025-10-04T04:12:20Z"
@@ -268,11 +269,11 @@ Headers:
 **Request Body**:
 ```json
 {
-    "clerk_id": "clerk_new_user_001",
+    "clerkId": "clerk_new_user_001",
     "email": "newuser@example.com",
     "username": "New User",
-    "avatar_url": "https://example.com/avatar.jpg",
-    "discord_id": "discord_123456"
+    "avatarUrl": "https://example.com/avatar.jpg",
+    "discordId": "discord_123456"
 }
 ```
 
@@ -284,14 +285,14 @@ Headers:
 {
     "data": {
         "id": "30f173da-65f1-4c61-a0a8-552da28406b3",
-        "clerk_id": "clerk_new_user_001",
+        "clerkId": "clerk_new_user_001",
         "email": "newuser@example.com",
         "username": "New User",
-        "avatar_url": "https://example.com/avatar.jpg",
-        "discord_id": "discord_123456",
+        "avatarUrl": "https://example.com/avatar.jpg",
+        "discordId": "discord_123456",
         "status": "active",
-        "created_at": "2025-10-04T13:17:53.735391+09:00",
-        "updated_at": "2025-10-04T13:17:53.735391+09:00"
+        "createdAt": "2025-10-04T13:17:53.735391+09:00",
+        "updatedAt": "2025-10-04T13:17:53.735391+09:00"
     },
     "message": "success",
     "timestamp": "2025-10-04T04:17:54Z"
@@ -315,8 +316,8 @@ Headers:
 ```json
 {
     "username": "Updated Username",
-    "avatar_url": "https://example.com/new-avatar.jpg",
-    "discord_id": "new_discord_123"
+    "avatarUrl": "https://example.com/new-avatar.jpg",
+    "discordId": "new_discord_123"
 }
 ```
 
@@ -328,14 +329,14 @@ Headers:
 {
     "data": {
         "id": "5298ae80-faeb-4f65-8894-695b652f8115",
-        "clerk_id": "clerk_dev_user_001",
+        "clerkId": "clerk_dev_user_001",
         "email": "developer@ghoona.camp",
         "username": "Updated Username",
-        "avatar_url": "https://example.com/new-avatar.jpg",
-        "discord_id": "new_discord_123",
+        "avatarUrl": "https://example.com/new-avatar.jpg",
+        "discordId": "new_discord_123",
         "status": "active",
-        "created_at": "2025-09-28T19:13:02.104918+09:00",
-        "updated_at": "2025-09-28T19:13:02.104918+09:00"
+        "createdAt": "2025-09-28T19:13:02.104918+09:00",
+        "updatedAt": "2025-09-28T19:13:02.104918+09:00"
     },
     "message": "success",
     "timestamp": "2025-10-04T04:19:28Z"
@@ -362,13 +363,13 @@ Headers:
 {
     "data": {
         "id": "fca64cbc-59ab-419b-a8c3-25b608ec631d",
-        "user_id": "5298ae80-faeb-4f65-8894-695b652f8115",
-        "display_name": "Ghoona Developer",
-        "profile_image_url": null,
+        "userId": "5298ae80-faeb-4f65-8894-695b652f8115",
+        "displayName": "Ghoona Developer",
+        "profileImageUrl": null,
         "tagline": "朝活で人生を変える開発者",
         "bio": "Ghoona Campの開発を通じて、朝活コミュニティの価値を最大化することを目指しています。毎朝6時から開発作業を行い、生産性の高い一日をスタートしています。",
         "vision": "朝活を通じて、多くの人が充実した人生を送れる世界を作りたい。テクノロジーの力で朝活習慣を支援し、継続できる仕組みを構築する。",
-        "vision_public": true,
+        "visionPublic": true,
         "timezone": "Asia/Tokyo",
         "skills": [
             "Go",
@@ -385,8 +386,8 @@ Headers:
             "健康",
             "ライフハック"
         ],
-        "created_at": "2025-09-28T19:13:02.192692+09:00",
-        "updated_at": "2025-09-28T19:13:02.192692+09:00"
+        "createdAt": "2025-09-28T19:13:02.192692+09:00",
+        "updatedAt": "2025-09-28T19:13:02.192692+09:00"
     },
     "message": "success",
     "timestamp": "2025-10-04T04:12:51Z"
@@ -409,12 +410,12 @@ Headers:
 **Request Body**:
 ```json
 {
-    "display_name": "My Display Name",
-    "profile_image_url": "https://example.com/profile.jpg",
+    "displayName": "My Display Name",
+    "profileImageUrl": "https://example.com/profile.jpg",
     "tagline": "A passionate developer",
     "bio": "I love building amazing applications and contributing to open source projects.",
     "vision": "To create technology that makes people's lives better.",
-    "vision_public": true,
+    "visionPublic": true,
     "timezone": "Asia/Tokyo",
     "skills": ["JavaScript", "Go", "React", "Node.js"],
     "interests": ["Programming", "Technology", "Open Source", "Learning"]
@@ -451,10 +452,10 @@ Headers:
 **Request Body**:
 ```json
 {
-    "display_name": "Updated Display Name",
+    "displayName": "Updated Display Name",
     "tagline": "Updated tagline",
     "bio": "Updated bio information.",
-    "vision_public": false,
+    "visionPublic": false,
     "skills": ["Go", "React", "TypeScript", "Docker"],
     "interests": ["朝活", "Programming", "Health"]
 }
@@ -468,13 +469,13 @@ Headers:
 {
     "data": {
         "id": "fca64cbc-59ab-419b-a8c3-25b608ec631d",
-        "user_id": "5298ae80-faeb-4f65-8894-695b652f8115",
-        "display_name": "Updated Display Name",
-        "profile_image_url": "https://example.com/profile.jpg",
+        "userId": "5298ae80-faeb-4f65-8894-695b652f8115",
+        "displayName": "Updated Display Name",
+        "profileImageUrl": "https://example.com/profile.jpg",
         "tagline": "Updated tagline",
         "bio": "Updated bio information.",
         "vision": "To create technology that makes people's lives better.",
-        "vision_public": false,
+        "visionPublic": false,
         "timezone": "Asia/Tokyo",
         "skills": [
             "Go",
@@ -487,8 +488,8 @@ Headers:
             "Programming",
             "Health"
         ],
-        "created_at": "2025-09-28T19:13:02.192692+09:00",
-        "updated_at": "2025-10-04T13:21:10.743519+09:00"
+        "createdAt": "2025-09-28T19:13:02.192692+09:00",
+        "updatedAt": "2025-10-04T13:21:10.743519+09:00"
     },
     "message": "success",
     "timestamp": "2025-10-04T04:21:20Z"
@@ -514,16 +515,16 @@ Headers:
 ```json
 {
     "data": {
-        "social_links": [
+        "socialLinks": [
             {
                 "id": "24afb786-065e-4b25-a0ba-4f812d2b4765",
-                "user_id": "5298ae80-faeb-4f65-8894-695b652f8115",
+                "userId": "5298ae80-faeb-4f65-8894-695b652f8115",
                 "platform": "github",
                 "url": "https://github.com/ghoona-developer",
                 "title": "Ghoona Camp Repository",
-                "is_public": true,
-                "created_at": "2025-09-28T19:13:02.450473+09:00",
-                "updated_at": "2025-09-28T19:13:02.450473+09:00"
+                "isPublic": true,
+                "createdAt": "2025-09-28T19:13:02.450473+09:00",
+                "updatedAt": "2025-09-28T19:13:02.450473+09:00"
             }
         ],
         "total": 1
@@ -552,7 +553,7 @@ Headers:
     "platform": "twitter",
     "url": "https://twitter.com/myusername",
     "title": "My Twitter Account",
-    "is_public": true
+    "isPublic": true
 }
 ```
 
@@ -564,13 +565,13 @@ Headers:
 {
     "data": {
         "id": "71cfa2c6-091d-4edd-a09c-388257b8a231",
-        "user_id": "5298ae80-faeb-4f65-8894-695b652f8115",
+        "userId": "5298ae80-faeb-4f65-8894-695b652f8115",
         "platform": "twitter",
         "url": "https://twitter.com/myusername",
         "title": "My Twitter Account",
-        "is_public": true,
-        "created_at": "2025-10-04T13:21:45.832944592+09:00",
-        "updated_at": "2025-10-04T13:21:45.832944717+09:00"
+        "isPublic": true,
+        "createdAt": "2025-10-04T13:21:45.832944592+09:00",
+        "updatedAt": "2025-10-04T13:21:45.832944717+09:00"
     },
     "message": "success",
     "timestamp": "2025-10-04T04:21:46Z"
@@ -595,7 +596,7 @@ Headers:
 {
     "url": "https://twitter.com/newusername",
     "title": "Updated Twitter Account",
-    "is_public": false
+    "isPublic": false
 }
 ```
 
@@ -607,13 +608,13 @@ Headers:
 {
     "data": {
         "id": "71cfa2c6-091d-4edd-a09c-388257b8a231",
-        "user_id": "5298ae80-faeb-4f65-8894-695b652f8115",
+        "userId": "5298ae80-faeb-4f65-8894-695b652f8115",
         "platform": "twitter",
         "url": "https://twitter.com/newusername",
         "title": "Updated Twitter Account",
-        "is_public": false,
-        "created_at": "2025-10-04T13:21:45.832944+09:00",
-        "updated_at": "2025-10-04T13:21:45.832944+09:00"
+        "isPublic": false,
+        "createdAt": "2025-10-04T13:21:45.832944+09:00",
+        "updatedAt": "2025-10-04T13:21:45.832944+09:00"
     },
     "message": "success",
     "timestamp": "2025-10-04T04:22:40Z"
@@ -661,7 +662,7 @@ Headers:
     "data": {
         "rivals": [],
         "total": 0,
-        "max_rivals": 3
+        "maxRivals": 3
     },
     "message": "success",
     "timestamp": "2025-10-04T04:10:43Z"
@@ -684,7 +685,7 @@ Headers:
 **Request Body**:
 ```json
 {
-    "rival_user_id": "b0e2d712-002a-4073-85f2-4daefcddf249"
+    "rivalUserId": "b0e2d712-002a-4073-85f2-4daefcddf249"
 }
 ```
 
@@ -696,19 +697,19 @@ Headers:
 {
     "data": {
         "id": "25fbb5d1-f06d-4b6b-9ae8-4671c4a9c52b",
-        "user_id": "5298ae80-faeb-4f65-8894-695b652f8115",
-        "rival_user": {
+        "userId": "5298ae80-faeb-4f65-8894-695b652f8115",
+        "rivalUser": {
             "id": "b0e2d712-002a-4073-85f2-4daefcddf249",
-            "clerk_id": "clerk_dev_user_002",
+            "clerkId": "clerk_dev_user_002",
             "email": "tester@ghoona.camp",
             "username": "Test Expert",
-            "avatar_url": "https://avatars.githubusercontent.com/u/2?v=4",
-            "discord_id": null,
+            "avatarUrl": "https://avatars.githubusercontent.com/u/2?v=4",
+            "discordId": null,
             "status": "active",
-            "created_at": "2025-09-28T19:13:02.104918+09:00",
-            "updated_at": "2025-09-28T19:13:02.104918+09:00"
+            "createdAt": "2025-09-28T19:13:02.104918+09:00",
+            "updatedAt": "2025-09-28T19:13:02.104918+09:00"
         },
-        "created_at": "2025-10-04T13:25:40.918967048+09:00"
+        "createdAt": "2025-10-04T13:25:40.918967048+09:00"
     },
     "message": "success",
     "timestamp": "2025-10-04T04:25:41Z"
@@ -766,9 +767,43 @@ Headers:
 
 ## Issues & Improvements
 
+- ✅ **API Response Format Updated**: Changed from snake_case to camelCase (2025-10-04)
+  - All JSON responses now use camelCase field names
+  - Better compatibility with Next.js frontend
+  - No frontend conversion required
+
+## API Response Format Changes
+
+### Updated Field Names (snake_case → camelCase):
+- `clerk_id` → `clerkId`
+- `avatar_url` → `avatarUrl`
+- `discord_id` → `discordId`
+- `user_id` → `userId`
+- `created_at` → `createdAt`
+- `updated_at` → `updatedAt`
+- `display_name` → `displayName`
+- `profile_image_url` → `profileImageUrl`
+- `vision_public` → `visionPublic`
+- `is_public` → `isPublic`
+- `social_links` → `socialLinks`
+- `rival_user_id` → `rivalUserId`
+- `rival_user` → `rivalUser`
+- `max_rivals` → `maxRivals`
+
+### Modified Files:
+1. `internal/application/dto/user/user_dto.go`
+2. `internal/application/dto/user/user_metadata_dto.go`
+3. `internal/application/dto/user/social_link_dto.go`
+4. `internal/application/dto/user/rival_dto.go`
+5. `internal/domain/common/types.go`
+6. `internal/infrastructure/gorm/model/user.go`
 
 ## Next Test Schedule
 
+- [ ] Re-test all endpoints with updated camelCase format
+- [ ] Update frontend TypeScript interfaces
+- [ ] Verify authentication flow still works correctly
 
 ---
 *Last Updated: 2025-10-04*
+*API Format Updated: snake_case → camelCase*

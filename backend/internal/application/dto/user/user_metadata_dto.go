@@ -10,12 +10,12 @@ import (
 
 // UpdateUserMetadataRequest はユーザーメタデータ更新のリクエストDTO
 type UpdateUserMetadataRequest struct {
-	DisplayName      *string  `json:"display_name" binding:"omitempty,max=100"`
-	ProfileImageURL  *string  `json:"profile_image_url" binding:"omitempty"`
+	DisplayName      *string  `json:"displayName" binding:"omitempty,max=100"`
+	ProfileImageURL  *string  `json:"profileImageUrl" binding:"omitempty"`
 	Tagline          *string  `json:"tagline" binding:"omitempty,max=150"`
 	Bio              *string  `json:"bio" binding:"omitempty,max=1000"`
 	Vision           *string  `json:"vision" binding:"omitempty,max=2000"`
-	VisionPublic     *bool    `json:"vision_public"`
+	VisionPublic     *bool    `json:"visionPublic"`
 	Timezone         *string  `json:"timezone" binding:"omitempty"`
 	Skills           []string `json:"skills" binding:"max=20,dive,max=50"`
 	Interests        []string `json:"interests" binding:"max=20,dive,max=50"`
@@ -23,12 +23,12 @@ type UpdateUserMetadataRequest struct {
 
 // CreateUserMetadataRequest はユーザーメタデータ作成のリクエストDTO
 type CreateUserMetadataRequest struct {
-	DisplayName      *string  `json:"display_name" binding:"omitempty,max=100"`
-	ProfileImageURL  *string  `json:"profile_image_url" binding:"omitempty"`
+	DisplayName      *string  `json:"displayName" binding:"omitempty,max=100"`
+	ProfileImageURL  *string  `json:"profileImageUrl" binding:"omitempty"`
 	Tagline          *string  `json:"tagline" binding:"omitempty,max=150"`
 	Bio              *string  `json:"bio" binding:"omitempty,max=1000"`
 	Vision           *string  `json:"vision" binding:"omitempty,max=2000"`
-	VisionPublic     *bool    `json:"vision_public"`
+	VisionPublic     *bool    `json:"visionPublic"`
 	Timezone         string   `json:"timezone" binding:"omitempty"`
 	Skills           []string `json:"skills" binding:"max=20,dive,max=50"`
 	Interests        []string `json:"interests" binding:"max=20,dive,max=50"`
@@ -37,18 +37,18 @@ type CreateUserMetadataRequest struct {
 // UserMetadataResponse はユーザーメタデータのレスポンスDTO
 type UserMetadataResponse struct {
 	ID               uuid.UUID `json:"id"`
-	UserID           uuid.UUID `json:"user_id"`
-	DisplayName      *string   `json:"display_name"`
-	ProfileImageURL  *string   `json:"profile_image_url"`
+	UserID           uuid.UUID `json:"userId"`
+	DisplayName      *string   `json:"displayName"`
+	ProfileImageURL  *string   `json:"profileImageUrl"`
 	Tagline          *string   `json:"tagline"`
 	Bio              *string   `json:"bio"`
 	Vision           *string   `json:"vision"`
-	VisionPublic     bool      `json:"vision_public"`
+	VisionPublic     bool      `json:"visionPublic"`
 	Timezone         string    `json:"timezone"`
 	Skills           []string  `json:"skills"`
 	Interests        []string  `json:"interests"`
-	CreatedAt        time.Time `json:"created_at"`
-	UpdatedAt        time.Time `json:"updated_at"`
+	CreatedAt        time.Time `json:"createdAt"`
+	UpdatedAt        time.Time `json:"updatedAt"`
 }
 
 // UserMetadataResponseFromEntity はエンティティからレスポンスDTOに変換する

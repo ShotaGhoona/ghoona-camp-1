@@ -14,57 +14,57 @@ import (
 // User はユーザー基本情報のGORMモデル
 type User struct {
 	ID        uuid.UUID  `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	ClerkID   string     `gorm:"uniqueIndex;not null;size:255" json:"clerk_id"`
+	ClerkID   string     `gorm:"uniqueIndex;not null;size:255" json:"clerkId"`
 	Email     string     `gorm:"uniqueIndex;not null;size:255" json:"email"`
 	Username  *string    `gorm:"size:100" json:"username"`
-	AvatarURL *string    `gorm:"type:text" json:"avatar_url"`
-	DiscordID *string    `gorm:"uniqueIndex;size:255" json:"discord_id"`
-	IsActive  bool       `gorm:"default:true" json:"is_active"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	AvatarURL *string    `gorm:"type:text" json:"avatarUrl"`
+	DiscordID *string    `gorm:"uniqueIndex;size:255" json:"discordId"`
+	IsActive  bool       `gorm:"default:true" json:"isActive"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt"`
 }
 
 // UserMetadata はユーザー詳細情報のGORMモデル
 type UserMetadata struct {
 	ID               uuid.UUID      `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	UserID           uuid.UUID      `gorm:"type:uuid;uniqueIndex;not null" json:"user_id"`
-	DisplayName      *string        `gorm:"size:100" json:"display_name"`
-	ProfileImageURL  *string        `gorm:"type:text" json:"profile_image_url"`
+	UserID           uuid.UUID      `gorm:"type:uuid;uniqueIndex;not null" json:"userId"`
+	DisplayName      *string        `gorm:"size:100" json:"displayName"`
+	ProfileImageURL  *string        `gorm:"type:text" json:"profileImageUrl"`
 	Tagline          *string        `gorm:"size:150" json:"tagline"`
 	Bio              *string        `gorm:"type:text" json:"bio"`
 	Vision           *string        `gorm:"type:text" json:"vision"`
-	VisionPublic     bool           `gorm:"default:false" json:"vision_public"`
+	VisionPublic     bool           `gorm:"default:false" json:"visionPublic"`
 	Timezone         string         `gorm:"size:50;default:'Asia/Tokyo'" json:"timezone"`
 	Skills           pq.StringArray `gorm:"type:text[]" json:"skills"`
 	Interests        pq.StringArray `gorm:"type:text[]" json:"interests"`
 	User             User           `gorm:"foreignKey:UserID" json:"user"`
-	CreatedAt        time.Time      `json:"created_at"`
-	UpdatedAt        time.Time      `json:"updated_at"`
+	CreatedAt        time.Time      `json:"createdAt"`
+	UpdatedAt        time.Time      `json:"updatedAt"`
 }
 
 // UserSocialLink はユーザーソーシャルリンクのGORMモデル
 type UserSocialLink struct {
 	ID        uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	UserID    uuid.UUID `gorm:"type:uuid;not null;index" json:"user_id"`
+	UserID    uuid.UUID `gorm:"type:uuid;not null;index" json:"userId"`
 	Platform  string    `gorm:"not null;size:50" json:"platform"`
 	URL       string    `gorm:"not null;type:text" json:"url"`
 	Title     *string   `gorm:"size:100" json:"title"`
-	IsPublic  bool      `gorm:"default:true" json:"is_public"`
+	IsPublic  bool      `gorm:"default:true" json:"isPublic"`
 	User      User      `gorm:"foreignKey:UserID" json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 // UserRival はユーザーライバル関係のGORMモデル
 type UserRival struct {
 	ID          uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
-	UserID      uuid.UUID `gorm:"type:uuid;not null;index" json:"user_id"`
-	RivalUserID uuid.UUID `gorm:"type:uuid;not null;index" json:"rival_user_id"`
+	UserID      uuid.UUID `gorm:"type:uuid;not null;index" json:"userId"`
+	RivalUserID uuid.UUID `gorm:"type:uuid;not null;index" json:"rivalUserId"`
 	User        User      `gorm:"foreignKey:UserID" json:"user"`
-	RivalUser   User      `gorm:"foreignKey:RivalUserID" json:"rival_user"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	RivalUser   User      `gorm:"foreignKey:RivalUserID" json:"rivalUser"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 // TableName メソッドでテーブル名を指定
