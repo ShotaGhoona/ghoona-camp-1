@@ -3,20 +3,19 @@ package user
 import (
 	"time"
 
-	"github.com/google/uuid"
-
+	"ghoona-camp-backend/internal/domain/common"
 	"ghoona-camp-backend/internal/domain/user/entity"
 )
 
 // AddRivalRequest はライバル追加のリクエストDTO
 type AddRivalRequest struct {
-	RivalUserID uuid.UUID `json:"rivalUserId" binding:"required"`
+	RivalUserID common.UUID `json:"rivalUserId" binding:"required"`
 }
 
 // RivalResponse はライバルのレスポンスDTO
 type RivalResponse struct {
-	ID          uuid.UUID    `json:"id"`
-	UserID      uuid.UUID    `json:"userId"`
+	ID          common.UUID  `json:"id"`
+	UserID      common.UUID  `json:"userId"`
 	RivalUser   UserResponse `json:"rivalUser"`
 	CreatedAt   time.Time    `json:"createdAt"`
 }
@@ -54,7 +53,7 @@ func RivalListFromEntities(rivals []*entity.UserRival, rivalUsers []*entity.User
 	}
 
 	// ライバルユーザーをマップ化（効率的な検索のため）
-	rivalUserMap := make(map[uuid.UUID]*entity.User)
+	rivalUserMap := make(map[common.UUID]*entity.User)
 	for _, user := range rivalUsers {
 		if user != nil {
 			rivalUserMap[user.ID] = user

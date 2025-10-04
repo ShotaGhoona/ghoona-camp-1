@@ -4,10 +4,9 @@ import (
 	"context"
 	"log"
 
-	"github.com/google/uuid"
-
 	"ghoona-camp-backend/internal/application/dto/user"
 	"ghoona-camp-backend/internal/application/transaction"
+	"ghoona-camp-backend/internal/domain/common"
 	domainUser "ghoona-camp-backend/internal/domain/user"
 	"ghoona-camp-backend/internal/domain/user/entity"
 	"ghoona-camp-backend/internal/domain/user/repository"
@@ -16,12 +15,12 @@ import (
 
 // UserUseCase ユーザー基本操作のユースケース
 type UserUseCase interface {
-	GetUserByID(ctx context.Context, userID uuid.UUID) (*user.UserResponse, error)
+	GetUserByID(ctx context.Context, userID common.UUID) (*user.UserResponse, error)
 	GetUserByClerkID(ctx context.Context, clerkID string) (*user.UserResponse, error)
 	GetUsers(ctx context.Context) (*user.UserListResponse, error)
 	CreateUser(ctx context.Context, req *user.CreateUserRequest) (*user.UserResponse, error)
-	UpdateUser(ctx context.Context, userID uuid.UUID, req *user.UpdateUserRequest) (*user.UserResponse, error)
-	DeleteUser(ctx context.Context, userID uuid.UUID) error
+	UpdateUser(ctx context.Context, userID common.UUID, req *user.UpdateUserRequest) (*user.UserResponse, error)
+	DeleteUser(ctx context.Context, userID common.UUID) error
 	GetUserRepo() repository.UserRepository
 }
 
@@ -57,7 +56,7 @@ func NewUserUseCase(
 }
 
 // GetUserByID IDでユーザーを取得
-func (u *userUseCase) GetUserByID(ctx context.Context, userID uuid.UUID) (*user.UserResponse, error) {
+func (u *userUseCase) GetUserByID(ctx context.Context, userID common.UUID) (*user.UserResponse, error) {
 	userEntity, err := u.userRepo.GetByID(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -185,7 +184,7 @@ func (u *userUseCase) CreateUser(ctx context.Context, req *user.CreateUserReques
 }
 
 // UpdateUser ユーザー情報を更新
-func (u *userUseCase) UpdateUser(ctx context.Context, userID uuid.UUID, req *user.UpdateUserRequest) (*user.UserResponse, error) {
+func (u *userUseCase) UpdateUser(ctx context.Context, userID common.UUID, req *user.UpdateUserRequest) (*user.UserResponse, error) {
 	var response *user.UserResponse
 	
 	err := u.txManager.ExecuteInTx(ctx, func(txCtx context.Context) error {
@@ -232,7 +231,7 @@ func (u *userUseCase) UpdateUser(ctx context.Context, userID uuid.UUID, req *use
 }
 
 // DeleteUser ユーザーを削除
-func (u *userUseCase) DeleteUser(ctx context.Context, userID uuid.UUID) error {
+func (u *userUseCase) DeleteUser(ctx context.Context, userID common.UUID) error {
 	return u.txManager.ExecuteInTx(ctx, func(txCtx context.Context) error {
 		// ユーザーの存在確認
 		userEntity, err := u.userRepo.GetByID(txCtx, userID)

@@ -3,8 +3,7 @@ package user
 import (
 	"time"
 
-	"github.com/google/uuid"
-
+	"ghoona-camp-backend/internal/domain/common"
 	"ghoona-camp-backend/internal/domain/user/entity"
 )
 
@@ -25,14 +24,14 @@ type UpdateSocialLinkRequest struct {
 
 // SocialLinkResponse はソーシャルリンクのレスポンスDTO
 type SocialLinkResponse struct {
-	ID        uuid.UUID `json:"id"`
-	UserID    uuid.UUID `json:"userId"`
-	Platform  string    `json:"platform"`
-	URL       string    `json:"url"`
-	Title     *string   `json:"title"`
-	IsPublic  bool      `json:"isPublic"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID        common.UUID `json:"id"`
+	UserID    common.UUID `json:"userId"`
+	Platform  string      `json:"platform"`
+	URL       string      `json:"url"`
+	Title     *string     `json:"title"`
+	IsPublic  bool        `json:"isPublic"`
+	CreatedAt time.Time   `json:"createdAt"`
+	UpdatedAt time.Time   `json:"updatedAt"`
 }
 
 // SocialLinkListResponse はソーシャルリンク一覧のレスポンスDTO

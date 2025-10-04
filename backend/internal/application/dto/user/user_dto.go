@@ -3,8 +3,7 @@ package user
 import (
 	"time"
 
-	"github.com/google/uuid"
-
+	"ghoona-camp-backend/internal/domain/common"
 	"ghoona-camp-backend/internal/domain/user/entity"
 )
 
@@ -26,7 +25,7 @@ type UpdateUserRequest struct {
 
 // UserResponse はユーザーのレスポンスDTO
 type UserResponse struct {
-	ID        uuid.UUID             `json:"id"`
+	ID        common.UUID           `json:"id"`
 	ClerkID   string                `json:"clerkId"`
 	Email     string                `json:"email"`
 	Username  *string               `json:"username"`

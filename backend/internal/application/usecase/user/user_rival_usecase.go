@@ -3,10 +3,9 @@ package user
 import (
 	"context"
 
-	"github.com/google/uuid"
-
 	"ghoona-camp-backend/internal/application/dto/user"
 	"ghoona-camp-backend/internal/application/transaction"
+	"ghoona-camp-backend/internal/domain/common"
 	domainUser "ghoona-camp-backend/internal/domain/user"
 	"ghoona-camp-backend/internal/domain/user/entity"
 	"ghoona-camp-backend/internal/domain/user/repository"
@@ -15,9 +14,9 @@ import (
 
 // UserRivalUseCase ユーザーライバル操作のユースケース
 type UserRivalUseCase interface {
-	GetUserRivals(ctx context.Context, userID uuid.UUID) (*user.RivalListResponse, error)
-	AddRival(ctx context.Context, userID uuid.UUID, req *user.AddRivalRequest) (*user.RivalResponse, error)
-	RemoveRival(ctx context.Context, rivalID uuid.UUID) error
+	GetUserRivals(ctx context.Context, userID common.UUID) (*user.RivalListResponse, error)
+	AddRival(ctx context.Context, userID common.UUID, req *user.AddRivalRequest) (*user.RivalResponse, error)
+	RemoveRival(ctx context.Context, rivalID common.UUID) error
 }
 
 type userRivalUseCase struct {
@@ -46,7 +45,7 @@ func NewUserRivalUseCase(
 }
 
 // GetUserRivals ユーザーのライバルを取得
-func (u *userRivalUseCase) GetUserRivals(ctx context.Context, userID uuid.UUID) (*user.RivalListResponse, error) {
+func (u *userRivalUseCase) GetUserRivals(ctx context.Context, userID common.UUID) (*user.RivalListResponse, error) {
 	// ユーザーの存在確認
 	userEntity, err := u.userRepo.GetByID(ctx, userID)
 	if err != nil {
@@ -78,7 +77,7 @@ func (u *userRivalUseCase) GetUserRivals(ctx context.Context, userID uuid.UUID) 
 }
 
 // AddRival ライバルを追加
-func (u *userRivalUseCase) AddRival(ctx context.Context, userID uuid.UUID, req *user.AddRivalRequest) (*user.RivalResponse, error) {
+func (u *userRivalUseCase) AddRival(ctx context.Context, userID common.UUID, req *user.AddRivalRequest) (*user.RivalResponse, error) {
 	var response *user.RivalResponse
 	
 	err := u.txManager.ExecuteInTx(ctx, func(txCtx context.Context) error {
@@ -131,7 +130,7 @@ func (u *userRivalUseCase) AddRival(ctx context.Context, userID uuid.UUID, req *
 }
 
 // RemoveRival ライバルを削除
-func (u *userRivalUseCase) RemoveRival(ctx context.Context, rivalID uuid.UUID) error {
+func (u *userRivalUseCase) RemoveRival(ctx context.Context, rivalID common.UUID) error {
 	return u.txManager.ExecuteInTx(ctx, func(txCtx context.Context) error {
 		// ライバルを削除
 		return u.rivalRepo.Delete(txCtx, rivalID)
