@@ -1,102 +1,8 @@
 # Attendance Management API - 詳細設計
 
 ## Overview
-Ghoona Campアプリケーションの参加記録・統計管理関連API詳細設計書です。
-Discord参加ログ・出席統計・ランキング機能を中心とした朝活参加管理を提供します。
-
-## アーキテクチャ適合性
-このAPI設計は以下のアーキテクチャ原則に従います：
-- **オニオンアーキテクチャ**: Domain → Application → Infrastructure → Interface層の依存関係
-- **ドメイン駆動設計**: `attendance`コンテキストを中心としたエンティティ設計
-- **クリーンな境界**: DTO、ドメインエンティティ、GORMモデルの適切な分離
-
-## ドメイン設計対応
-
-### ドメインエンティティ
-```go
-// internal/domain/attendance/entity/attendance_log.go
-type AttendanceLog struct {
-    ID               UUID
-    UserID           UUID
-    EventID          *UUID
-    DiscordChannelID string
-    JoinedAt         time.Time
-    LeftAt           *time.Time
-    DurationMinutes  int
-    IsValid          bool
-    CreatedAt        time.Time
-    UpdatedAt        time.Time
-}
-
-// internal/domain/attendance/entity/attendance_summary.go
-type AttendanceSummary struct {
-    ID                     UUID
-    UserID                 UUID
-    Date                   time.Time
-    TotalDurationMinutes   int
-    SessionCount           int
-    FirstJoinTime          *time.Time
-    LastLeaveTime          *time.Time
-    IsMorningActive        bool
-    CreatedAt              time.Time
-    UpdatedAt              time.Time
-}
-
-// internal/domain/attendance/entity/attendance_statistics.go
-type AttendanceStatistics struct {
-    ID                   UUID
-    UserID               UUID
-    TotalAttendanceDays  int
-    CurrentStreakDays    int
-    MaxStreakDays        int
-    LastAttendanceDate   *time.Time
-    FirstAttendanceDate  *time.Time
-    TotalDurationMinutes int
-    CreatedAt            time.Time
-    UpdatedAt            time.Time
-}
-
-// internal/domain/attendance/value/morning_hours.go
-type MorningHours struct {
-    StartHour int // 6:00
-    EndHour   int // 7:00
-}
-
-// internal/domain/attendance/value/attendance_validity.go
-type AttendanceValidity struct {
-    MinDurationMinutes int
-    ValidChannels      []string
-    MorningTimeRange   MorningHours
-}
-```
-
-### リポジトリインターフェース
-```go
-// internal/domain/attendance/repository/attendance_log_repository.go
-type AttendanceLogRepository interface {
-    GetByUserID(ctx context.Context, userID UUID, filters LogFilters) ([]*entity.AttendanceLog, error)
-    GetByDate(ctx context.Context, date time.Time) ([]*entity.AttendanceLog, error)
-    GetByEventID(ctx context.Context, eventID UUID) ([]*entity.AttendanceLog, error)
-    Create(ctx context.Context, log *entity.AttendanceLog) error
-    Update(ctx context.Context, log *entity.AttendanceLog) error
-    Delete(ctx context.Context, id UUID) error
-}
-
-type AttendanceSummaryRepository interface {
-    GetByUserID(ctx context.Context, userID UUID, filters SummaryFilters) ([]*entity.AttendanceSummary, error)
-    GetByDate(ctx context.Context, userID UUID, date time.Time) (*entity.AttendanceSummary, error)
-    Create(ctx context.Context, summary *entity.AttendanceSummary) error
-    Update(ctx context.Context, summary *entity.AttendanceSummary) error
-    GetMonthlyData(ctx context.Context, userID UUID, year, month int) ([]*entity.AttendanceSummary, error)
-}
-
-type AttendanceStatisticsRepository interface {
-    GetByUserID(ctx context.Context, userID UUID) (*entity.AttendanceStatistics, error)
-    Create(ctx context.Context, stats *entity.AttendanceStatistics) error
-    Update(ctx context.Context, stats *entity.AttendanceStatistics) error
-    GetRankings(ctx context.Context, rankingType string, limit int) ([]*AttendanceRanking, error)
-}
-```
+Ghoona Campアプリケーションの朝活参加記録管理API詳細設計書です。
+Discord参加ログの自動記録・基本統計・ランキング機能を提供します。
 
 ## Base URL
 ```
@@ -134,8 +40,6 @@ GET /users/{userId}/attendance/logs
 |-----------|---|------|------|
 | from_date | string | No | 開始日 (YYYY-MM-DD) |
 | to_date | string | No | 終了日 (YYYY-MM-DD) |
-| channel_id | string | No | Discordチャンネルでのフィルタ |
-| min_duration | integer | No | 最低参加時間（分）でのフィルタ |
 | is_valid | boolean | No | 有効な参加のみ取得 |
 | page | integer | No | ページ番号 (デフォルト: 1) |
 | limit | integer | No | 1ページあたりの件数 (デフォルト: 30, 最大: 100) |
@@ -160,63 +64,34 @@ GET /users/{userId}/attendance/logs
           "title": "朝の読書会",
           "creator": "佐藤花子"
         },
-        "discord_channel": {
-          "id": "1234567890123456789",
-          "name": "朝の読書会",
-          "type": "voice"
-        },
+        "discord_channel_id": "1234567890123456789",
         "joined_at": "2025-01-21T06:30:00Z",
         "left_at": "2025-01-21T07:15:00Z",
         "duration_minutes": 45,
         "is_valid": true,
         "is_morning_active": true,
-        "session_quality": {
-          "consistency_score": 85,
-          "engagement_level": "high"
-        },
-        "related_goal": {
-          "id": "550e8400-e29b-41d4-a716-446655440300",
-          "title": "毎日読書30分",
-          "progress_contributed": true
-        },
         "created_at": "2025-01-21T06:30:00Z"
       },
       {
         "id": "550e8400-e29b-41d4-a716-446655440101",
         "event": null,
-        "discord_channel": {
-          "id": "1234567890123456790",
-          "name": "一般朝活",
-          "type": "voice"
-        },
+        "discord_channel_id": "1234567890123456790",
         "joined_at": "2025-01-20T06:15:00Z",
         "left_at": "2025-01-20T06:50:00Z",
         "duration_minutes": 35,
         "is_valid": true,
         "is_morning_active": true,
-        "session_quality": {
-          "consistency_score": 92,
-          "engagement_level": "high"
-        },
-        "related_goal": null,
         "created_at": "2025-01-20T06:15:00Z"
       },
       {
         "id": "550e8400-e29b-41d4-a716-446655440102",
         "event": null,
-        "discord_channel": {
-          "id": "1234567890123456791",
-          "name": "雑談ルーム",
-          "type": "voice"
-        },
+        "discord_channel_id": "1234567890123456791",
         "joined_at": "2025-01-19T05:45:00Z",
         "left_at": "2025-01-19T06:05:00Z",
         "duration_minutes": 20,
         "is_valid": false,
         "is_morning_active": false,
-        "session_quality": null,
-        "related_goal": null,
-        "validation_reason": "朝活時間外での参加",
         "created_at": "2025-01-19T05:45:00Z"
       }
     ],
@@ -323,19 +198,6 @@ X-API-Key: your-bot-api-key
       "duration_minutes": 45,
       "is_valid": true,
       "is_morning_active": true,
-      "goals_progressed": [
-        {
-          "goal_id": "550e8400-e29b-41d4-a716-446655440300",
-          "title": "毎日読書30分",
-          "progress_updated": true
-        }
-      ],
-      "achievements_earned": [
-        {
-          "type": "daily_goal",
-          "description": "本日の目標達成"
-        }
-      ]
     }
   },
   "message": "Session completed successfully",
@@ -391,32 +253,11 @@ GET /users/{userId}/attendance/summaries
         "first_join_time": "06:30:00",
         "last_leave_time": "07:15:00",
         "is_morning_active": true,
-        "quality_metrics": {
-          "consistency_score": 85,
-          "goal_alignment": 100,
-          "community_engagement": 78
-        },
-        "goals_progressed": [
-          {
-            "goal_id": "550e8400-e29b-41d4-a716-446655440300",
-            "title": "毎日読書30分",
-            "target_minutes": 30,
-            "actual_minutes": 45,
-            "achievement_rate": 150
-          }
-        ],
         "events_attended": [
           {
             "event_id": "550e8400-e29b-41d4-a716-446655440200",
             "title": "朝の読書会",
             "duration_minutes": 45
-          }
-        ],
-        "milestones": [
-          {
-            "type": "streak_continuation",
-            "description": "3日連続参加",
-            "achievement_level": "good"
           }
         ]
       },
@@ -427,22 +268,7 @@ GET /users/{userId}/attendance/summaries
         "first_join_time": "06:15:00",
         "last_leave_time": "06:50:00",
         "is_morning_active": true,
-        "quality_metrics": {
-          "consistency_score": 92,
-          "goal_alignment": 100,
-          "community_engagement": 65
-        },
-        "goals_progressed": [
-          {
-            "goal_id": "550e8400-e29b-41d4-a716-446655440300",
-            "title": "毎日読書30分",
-            "target_minutes": 30,
-            "actual_minutes": 35,
-            "achievement_rate": 117
-          }
-        ],
-        "events_attended": [],
-        "milestones": []
+        "events_attended": []
       },
       {
         "date": "2025-01-19",
@@ -451,108 +277,22 @@ GET /users/{userId}/attendance/summaries
         "first_join_time": null,
         "last_leave_time": null,
         "is_morning_active": false,
-        "quality_metrics": null,
-        "goals_progressed": [],
-        "events_attended": [],
-        "milestones": [],
-        "absence_reason": "weekend"
+        "events_attended": []
       }
     ],
     "calendar_data": {
       "attendance_days": 18,
       "total_days": 21,
       "attendance_rate": 85.7,
-      "streak_days": 3,
-      "best_day": {
-        "date": "2025-01-15",
-        "duration_minutes": 120,
-        "quality_score": 95
-      },
-      "patterns": {
-        "most_active_hour": "06:30",
-        "average_session_duration": 42,
-        "preferred_channels": ["朝の読書会", "一般朝活"]
-      }
-    }
-  },
-  "message": "success",
-  "timestamp": "2025-01-21T10:00:00Z"
-}
-```
-
-### 月間カレンダーデータ取得
-
-```
-GET /users/{userId}/attendance/calendar
-```
-
-**権限**: 👤 本人のみ
-
-**説明**: カレンダー表示用の月間参加データを最適化して取得
-
-**クエリパラメータ:**
-
-| パラメータ | 型 | 必須 | 説明 |
-|-----------|---|------|------|
-| year | integer | Yes | 年 |
-| month | integer | Yes | 月 |
-
-**レスポンス:**
-
-```json
-{
-  "data": {
-    "calendar": {
-      "year": 2025,
-      "month": 1,
-      "days": [
-        {
-          "date": 1,
-          "status": "attended",
-          "duration_minutes": 45,
-          "quality_level": "high",
-          "session_count": 1,
-          "goals_achieved": 1,
-          "events_count": 1
-        },
-        {
-          "date": 2,
-          "status": "attended",
-          "duration_minutes": 30,
-          "quality_level": "medium",
-          "session_count": 1,
-          "goals_achieved": 1,
-          "events_count": 0
-        },
-        {
-          "date": 3,
-          "status": "missed",
-          "duration_minutes": 0,
-          "quality_level": null,
-          "session_count": 0,
-          "goals_achieved": 0,
-          "events_count": 0
-        }
-      ]
-    },
-    "summary": {
-      "total_attendance_days": 18,
-      "total_duration_minutes": 810,
-      "average_duration": 45,
       "current_streak": 3,
-      "best_streak": 7,
-      "goals_achievement_rate": 88.9,
-      "quality_distribution": {
-        "high": 8,
-        "medium": 7,
-        "low": 3
-      }
+      "max_streak": 7
     }
   },
   "message": "success",
   "timestamp": "2025-01-21T10:00:00Z"
 }
 ```
+
 
 ---
 
@@ -573,8 +313,6 @@ GET /users/{userId}/attendance/statistics
 | パラメータ | 型 | 必須 | 説明 |
 |-----------|---|------|------|
 | period | string | No | 期間 (week, month, quarter, year, all) デフォルト: all |
-| include_trends | boolean | No | トレンド分析を含める (デフォルト: false) |
-| include_goals | boolean | No | 目標との関連統計を含める (デフォルト: false) |
 
 **レスポンス:**
 
@@ -600,7 +338,6 @@ GET /users/{userId}/attendance/statistics
       "total_duration_minutes": 2025,
       "average_session_duration": 45,
       "attendance_rate": 78.3,
-      "consistency_score": 82.1
     },
     "period_statistics": {
       "period": "month",
@@ -612,11 +349,6 @@ GET /users/{userId}/attendance/statistics
       "total_duration_minutes": 810,
       "session_count": 20,
       "average_daily_duration": 45,
-      "quality_metrics": {
-        "morning_active_rate": 94.4,
-        "goal_achievement_rate": 88.9,
-        "community_engagement_score": 76.5
-      }
     },
     "streaks": {
       "current_streak": {
@@ -628,7 +360,6 @@ GET /users/{userId}/attendance/statistics
         "days": 15,
         "start_date": "2024-11-01",
         "end_date": "2024-11-15",
-        "achievement_unlocked": "強い意志の証"
       },
       "recent_streaks": [
         {
@@ -659,55 +390,8 @@ GET /users/{userId}/attendance/statistics
         "current_progress": 28,
         "remaining_days": 2,
         "progress_rate": 93.3,
-        "estimated_achievement": "2025-01-23"
       }
     },
-    "rankings": {
-      "total_days_rank": 47,
-      "current_streak_rank": 23,
-      "monthly_duration_rank": 15,
-      "consistency_rank": 31
-    },
-    "achievements": [
-      {
-        "type": "milestone",
-        "title": "初心者卒業",
-        "description": "15日連続参加達成",
-        "achieved_at": "2024-11-15T06:30:00Z",
-        "icon": "🏆"
-      },
-      {
-        "type": "quality",
-        "title": "朝活エキスパート",
-        "description": "月間平均45分以上参加",
-        "achieved_at": "2024-12-31T23:59:59Z",
-        "icon": "⭐"
-      }
-    ],
-    "trends": {
-      "weekly_pattern": {
-        "monday": 85.7,
-        "tuesday": 92.3,
-        "wednesday": 76.9,
-        "thursday": 88.5,
-        "friday": 80.8,
-        "saturday": 69.2,
-        "sunday": 73.1
-      },
-      "monthly_trend": "improving",
-      "duration_trend": "stable",
-      "consistency_trend": "improving"
-    },
-    "goals_relationship": {
-      "goals_count": 2,
-      "goals_supported_by_attendance": 2,
-      "average_goal_achievement_rate": 91.5,
-      "most_progressed_goal": {
-        "id": "550e8400-e29b-41d4-a716-446655440300",
-        "title": "毎日読書30分",
-        "contribution_rate": 95.2
-      }
-    }
   },
   "message": "success",
   "timestamp": "2025-01-21T10:00:00Z"
@@ -766,7 +450,6 @@ GET /ranking/monthly
         "total_duration_minutes": 1260,
         "average_duration": 60,
         "current_streak": 21,
-        "quality_score": 94.5,
         "is_current_user": false,
         "is_rival": true,
         "change_from_last_month": "+2"
@@ -788,7 +471,6 @@ GET /ranking/monthly
         "total_duration_minutes": 1100,
         "average_duration": 55,
         "current_streak": 8,
-        "quality_score": 88.2,
         "is_current_user": false,
         "is_rival": false,
         "change_from_last_month": "0"
@@ -810,7 +492,6 @@ GET /ranking/monthly
         "total_duration_minutes": 810,
         "average_duration": 45,
         "current_streak": 3,
-        "quality_score": 82.1,
         "is_current_user": true,
         "is_rival": false,
         "change_from_last_month": "+3"
@@ -818,30 +499,10 @@ GET /ranking/monthly
     ],
     "current_user_stats": {
       "rank": 15,
-      "attendance_days": 18,
-      "percentile": 67.3,
-      "gap_to_next_rank": {
-        "rank": 14,
-        "attendance_days_needed": 1,
-        "achievable_by": "2025-01-22"
-      },
-      "rivals_comparison": [
-        {
-          "rival": {
-            "id": "550e8400-e29b-41d4-a716-446655440010",
-            "display_name": "佐藤花子",
-            "rank": 1
-          },
-          "gap": 3,
-          "status": "behind"
-        }
-      ]
+      "attendance_days": 18
     },
     "summary": {
-      "total_participants": 147,
-      "average_attendance_days": 12.3,
-      "top_10_average": 19.8,
-      "median_attendance_days": 11
+      "total_participants": 147
     }
   },
   "message": "success",
@@ -890,7 +551,6 @@ GET /ranking/total
         "total_duration_minutes": 18540,
         "max_streak_days": 89,
         "current_streak": 45,
-        "achievement_rate": 98.3,
         "is_current_user": false,
         "member_since_days": 371
       },
@@ -912,36 +572,14 @@ GET /ranking/total
         "total_duration_minutes": 2025,
         "max_streak_days": 15,
         "current_streak": 3,
-        "achievement_rate": 78.3,
         "is_current_user": true,
         "member_since_days": 98
       }
     ],
     "current_user_stats": {
       "rank": 47,
-      "total_attendance_days": 45,
-      "percentile": 68.1,
-      "hall_of_fame_status": "rising_star",
-      "next_milestone": {
-        "attendance_days": 60,
-        "title_unlock": "暁の守護者",
-        "estimated_date": "2025-02-15"
-      }
+      "total_attendance_days": 45
     },
-    "hall_of_fame": [
-      {
-        "category": "longest_streak",
-        "record_holder": "鈴木一郎",
-        "value": 89,
-        "achievement_date": "2024-11-30"
-      },
-      {
-        "category": "fastest_to_100_days",
-        "record_holder": "佐藤花子",
-        "value": 105,
-        "achievement_date": "2024-06-15"
-      }
-    ]
   },
   "message": "success",
   "timestamp": "2025-01-21T10:00:00Z"
@@ -962,16 +600,13 @@ GET /ranking/streak
 
 | パラメータ | 型 | 必須 | 説明 |
 |-----------|---|------|------|
-| type | string | No | ランキングタイプ (current, max) デフォルト: current |
 | limit | integer | No | 取得件数 (デフォルト: 20, 最大: 100) |
-| min_streak | integer | No | 最低連続日数でのフィルタ (デフォルト: 1) |
 
 **レスポンス:**
 
 ```json
 {
   "data": {
-    "ranking_type": "current",
     "rankings": [
       {
         "rank": 1,
@@ -989,18 +624,6 @@ GET /ranking/streak
         "current_streak_days": 45,
         "streak_start_date": "2024-12-07",
         "max_streak_days": 89,
-        "streak_quality": {
-          "consistency_rate": 100.0,
-          "morning_active_rate": 97.8,
-          "average_duration": 58
-        },
-        "streak_milestones": [
-          {
-            "days": 30,
-            "achieved_at": "2025-01-05",
-            "reward": "朝陽の使者獲得"
-          }
-        ],
         "is_current_user": false
       },
       {
@@ -1019,38 +642,13 @@ GET /ranking/streak
         "current_streak_days": 3,
         "streak_start_date": "2025-01-19",
         "max_streak_days": 15,
-        "streak_quality": {
-          "consistency_rate": 100.0,
-          "morning_active_rate": 100.0,
-          "average_duration": 42
-        },
-        "streak_milestones": [],
         "is_current_user": true
       }
     ],
     "current_user_stats": {
       "current_streak_rank": 23,
-      "max_streak_rank": 15,
       "current_streak_days": 3,
-      "max_streak_days": 15,
-      "streak_potential": "high",
-      "next_streak_milestone": {
-        "days": 5,
-        "reward": "継続の力",
-        "estimated_date": "2025-01-23"
-      }
-    },
-    "streak_insights": {
-      "danger_zone_threshold": 1,
-      "users_in_danger": 23,
-      "average_current_streak": 8.4,
-      "longest_active_streak": 45,
-      "streak_distribution": {
-        "1-7_days": 89,
-        "8-14_days": 34,
-        "15-30_days": 18,
-        "31+_days": 6
-      }
+      "max_streak_days": 15
     }
   },
   "message": "success",
@@ -1088,152 +686,22 @@ GET /ranking/streak
 | BOT_AUTH_REQUIRED | Bot認証が必要 | 401 |
 | STATISTICS_NOT_AVAILABLE | 統計データが利用できない | 404 |
 
-## ビジネスルール（ドメイン層実装）
+## 基本ルール
 
-### ドメインルール
-```go
-// internal/domain/attendance/errors.go
-var (
-    ErrInvalidDiscordUser    = errors.New("無効なDiscordユーザーIDです")
-    ErrInvalidChannel        = errors.New("無効なDiscordチャンネルです")
-    ErrSessionNotActive      = errors.New("アクティブなセッションがありません")
-    ErrDuplicateLogEntry     = errors.New("重複するログエントリです")
-    ErrInvalidTimeRange      = errors.New("無効な時間範囲です")
-    ErrMinimumDurationNotMet = errors.New("最低参加時間を満たしていません")
-)
+### 参加ログ管理ルール
+1. **Discord参加記録**: Botによる自動記録（6:00-7:00の参加開始が有効）
+2. **最低参加時間**: 制限なし（短時間でも有効）
+3. **有効性判定**: 朝活時間内（6:00-7:00）の参加開始
+4. **統計更新**: 日次バッチ処理で自動計算
 
-// internal/domain/attendance/entity/attendance_log.go
-func (al *AttendanceLog) Validate() error {
-    if al.UserID == uuid.Nil {
-        return errors.New("ユーザーIDは必須です")
-    }
-    if al.DiscordChannelID == "" {
-        return errors.New("DiscordチャンネルIDは必須です")
-    }
-    if al.JoinedAt.After(time.Now()) {
-        return errors.New("未来の参加時刻は設定できません")
-    }
-    if al.LeftAt != nil && al.LeftAt.Before(al.JoinedAt) {
-        return ErrInvalidTimeRange
-    }
-    return nil
-}
+### ランキングシステム
+- **月間ランキング**: 当月の参加日数
+- **総合ランキング**: 累計参加日数
+- **連続記録**: 現在の連続参加日数
+- **更新頻度**: 毎日深夜0時に更新
 
-func (al *AttendanceLog) CalculateDuration() int {
-    if al.LeftAt == nil {
-        return 0
-    }
-    duration := al.LeftAt.Sub(al.JoinedAt)
-    return int(duration.Minutes())
-}
-
-func (al *AttendanceLog) IsMorningActive() bool {
-    hour := al.JoinedAt.Hour()
-    return hour >= 6 && hour < 7
-}
-
-func (al *AttendanceLog) IsValidSession(minDuration int) bool {
-    return al.DurationMinutes >= minDuration && al.IsMorningActive()
-}
-
-// internal/domain/attendance/entity/attendance_summary.go
-func (as *AttendanceSummary) Validate() error {
-    if as.UserID == uuid.Nil {
-        return errors.New("ユーザーIDは必須です")
-    }
-    if as.Date.After(time.Now().Truncate(24 * time.Hour)) {
-        return errors.New("未来日のサマリーは作成できません")
-    }
-    if as.SessionCount < 0 || as.TotalDurationMinutes < 0 {
-        return errors.New("セッション数と参加時間は0以上である必要があります")
-    }
-    return nil
-}
-
-func (as *AttendanceSummary) CalculateQualityScore() float64 {
-    if as.SessionCount == 0 {
-        return 0
-    }
-    
-    avgDuration := float64(as.TotalDurationMinutes) / float64(as.SessionCount)
-    qualityScore := avgDuration / 60.0 * 100 // 1時間を基準とした品質スコア
-    
-    if as.IsMorningActive {
-        qualityScore *= 1.2 // 朝活ボーナス
-    }
-    
-    if qualityScore > 100 {
-        qualityScore = 100
-    }
-    
-    return qualityScore
-}
-
-// internal/domain/attendance/entity/attendance_statistics.go
-func (stats *AttendanceStatistics) UpdateStreak(attendanceDate time.Time) {
-    if stats.LastAttendanceDate == nil {
-        stats.CurrentStreakDays = 1
-        stats.MaxStreakDays = 1
-        stats.LastAttendanceDate = &attendanceDate
-        return
-    }
-    
-    lastDate := *stats.LastAttendanceDate
-    daysDiff := int(attendanceDate.Sub(lastDate).Hours() / 24)
-    
-    if daysDiff == 1 {
-        // 連続参加
-        stats.CurrentStreakDays++
-        if stats.CurrentStreakDays > stats.MaxStreakDays {
-            stats.MaxStreakDays = stats.CurrentStreakDays
-        }
-    } else if daysDiff > 1 {
-        // 連続記録リセット
-        stats.CurrentStreakDays = 1
-    }
-    
-    stats.LastAttendanceDate = &attendanceDate
-}
-
-func (stats *AttendanceStatistics) CalculateAttendanceRate(totalPossibleDays int) float64 {
-    if totalPossibleDays == 0 {
-        return 0
-    }
-    return float64(stats.TotalAttendanceDays) / float64(totalPossibleDays) * 100
-}
-```
-
-### 参加ログ管理のルール
-1. **朝活時間判定**: 6:00-7:00の参加開始を朝活として認定（AttendanceLog.IsMorningActive()で制御）
-2. **最低参加時間**: 設定可能な最低時間（デフォルト0分）（AttendanceLog.IsValidSession()で制御）
-3. **重複セッション防止**: 同一時間帯の重複参加ログ防止（リポジトリ層で制御）
-4. **自動統計更新**: 参加ログ作成時に統計を自動更新（ドメインサービスで制御）
-
-### 統計計算のルール
-1. **連続日数計算**: 日単位での連続参加判定（AttendanceStatistics.UpdateStreak()で制御）
-2. **品質スコア**: 参加時間と朝活率に基づく品質評価（AttendanceSummary.CalculateQualityScore()で制御）
-3. **ランキング更新**: 日次バッチで順位を再計算
-4. **データ整合性**: 統計データと実ログの整合性を定期チェック
-
-## 注意事項
-
-### Discord連携
-- Discord Botからの認証はAPIキー方式
-- 入退室ログは自動記録、手動補正も可能
-- チャンネル制限による有効性判定
-
-### プライバシー考慮
-- 詳細ログは本人のみアクセス可能
-- 公開統計は基本情報のみ
-- ランキングは匿名化オプション対応
-
-### パフォーマンス考慮
-- 統計データは事前計算でキャッシュ
-- ログデータは適切なインデックス設計
-- ランキングは定期更新で負荷分散
-
-### キャッシュ戦略
-- 個人統計: 10分キャッシュ
-- ランキングデータ: 1時間キャッシュ
-- カレンダーデータ: 5分キャッシュ
-- 月間サマリー: 30分キャッシュ
+### アクセス制御
+- **参加ログ**: 本人のみ詳細閲覧可能
+- **統計データ**: 本人のみ詳細、他者は基本統計のみ
+- **ランキング**: 全ユーザー閲覧可能
+- **Bot API**: Discord Bot専用認証

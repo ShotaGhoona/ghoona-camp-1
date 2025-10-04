@@ -10,22 +10,22 @@ import (
 
 // AddRivalRequest はライバル追加のリクエストDTO
 type AddRivalRequest struct {
-	RivalUserID uuid.UUID `json:"rival_user_id" binding:"required"`
+	RivalUserID uuid.UUID `json:"rivalUserId" binding:"required"`
 }
 
 // RivalResponse はライバルのレスポンスDTO
 type RivalResponse struct {
 	ID          uuid.UUID    `json:"id"`
-	UserID      uuid.UUID    `json:"user_id"`
-	RivalUser   UserResponse `json:"rival_user"`
-	CreatedAt   time.Time    `json:"created_at"`
+	UserID      uuid.UUID    `json:"userId"`
+	RivalUser   UserResponse `json:"rivalUser"`
+	CreatedAt   time.Time    `json:"createdAt"`
 }
 
 // RivalListResponse はライバル一覧のレスポンスDTO
 type RivalListResponse struct {
 	Rivals    []RivalResponse `json:"rivals"`
 	Total     int             `json:"total"`
-	MaxRivals int             `json:"max_rivals"`
+	MaxRivals int             `json:"maxRivals"`
 }
 
 // RivalResponseFromEntity はエンティティからレスポンスDTOに変換する

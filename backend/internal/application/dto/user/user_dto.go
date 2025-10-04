@@ -10,32 +10,32 @@ import (
 
 // CreateUserRequest はユーザー作成のリクエストDTO
 type CreateUserRequest struct {
-	ClerkID   string  `json:"clerk_id" binding:"required"`
+	ClerkID   string  `json:"clerkId" binding:"required"`
 	Email     string  `json:"email" binding:"required,email"`
 	Username  *string `json:"username" binding:"omitempty,min=3,max=50"`
-	AvatarURL *string `json:"avatar_url" binding:"omitempty"`
-	DiscordID *string `json:"discord_id" binding:"omitempty"`
+	AvatarURL *string `json:"avatarUrl" binding:"omitempty"`
+	DiscordID *string `json:"discordId" binding:"omitempty"`
 }
 
 // UpdateUserRequest はユーザー更新のリクエストDTO
 type UpdateUserRequest struct {
 	Username  *string `json:"username" binding:"omitempty,min=3,max=50"`
-	AvatarURL *string `json:"avatar_url" binding:"omitempty"`
-	DiscordID *string `json:"discord_id" binding:"omitempty"`
+	AvatarURL *string `json:"avatarUrl" binding:"omitempty"`
+	DiscordID *string `json:"discordId" binding:"omitempty"`
 }
 
 // UserResponse はユーザーのレスポンスDTO
 type UserResponse struct {
 	ID        uuid.UUID             `json:"id"`
-	ClerkID   string                `json:"clerk_id"`
+	ClerkID   string                `json:"clerkId"`
 	Email     string                `json:"email"`
 	Username  *string               `json:"username"`
-	AvatarURL *string               `json:"avatar_url"`
-	DiscordID *string               `json:"discord_id"`
+	AvatarURL *string               `json:"avatarUrl"`
+	DiscordID *string               `json:"discordId"`
 	Status    string                `json:"status"`
 	Metadata  *UserMetadataResponse `json:"metadata,omitempty"`
-	CreatedAt time.Time             `json:"created_at"`
-	UpdatedAt time.Time             `json:"updated_at"`
+	CreatedAt time.Time             `json:"createdAt"`
+	UpdatedAt time.Time             `json:"updatedAt"`
 }
 
 // UserListResponse はユーザー一覧のレスポンスDTO

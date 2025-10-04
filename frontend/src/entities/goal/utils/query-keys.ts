@@ -6,7 +6,7 @@ export const goalQueryKeys = {
   
   // Goal queries
   goals: () => [...goalQueryKeys.all, 'goals'] as const,
-  goalsList: (filters?: Record<string, any>) => 
+  goalsList: (filters?: Record<string, unknown>) => 
     [...goalQueryKeys.goals(), 'list', filters] as const,
   goalsDetail: (id: string) => 
     [...goalQueryKeys.goals(), 'detail', id] as const,

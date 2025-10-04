@@ -6,14 +6,14 @@ export const attendanceQueryKeys = {
   
   // Logs queries
   logs: () => [...attendanceQueryKeys.all, 'logs'] as const,
-  logsList: (filters?: Record<string, any>) => 
+  logsList: (filters?: Record<string, unknown>) => 
     [...attendanceQueryKeys.logs(), 'list', filters] as const,
   logsDetail: (id: string) => 
     [...attendanceQueryKeys.logs(), 'detail', id] as const,
   
   // Ranking queries
   ranking: () => [...attendanceQueryKeys.all, 'ranking'] as const,
-  rankingList: (filters?: Record<string, any>) => 
+  rankingList: (filters?: Record<string, unknown>) => 
     [...attendanceQueryKeys.ranking(), 'list', filters] as const,
   
   // Statistics queries

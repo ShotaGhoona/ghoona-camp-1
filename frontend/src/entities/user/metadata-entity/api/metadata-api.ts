@@ -9,19 +9,34 @@
 import { apiClient } from '@/shared/api';
 import type { 
   UserMetadataDetailResponse,
+  UserMetadataCreateResponse,
   UserMetadataUpdateResponse,
+  CreateUserMetadataDto,
   UpdateUserMetadataDto
 } from '../model/metadata-types';
 
 /** ユーザーメタデータ取得 */
-/** GET /api/v1/users/{userId}/metadata */
+/** GET /users/{userId}/metadata */
 export const getUserMetadata = async (userId: string): Promise<UserMetadataDetailResponse['data']> => {
   const { data } = await apiClient.get<UserMetadataDetailResponse>(`/users/${userId}/metadata`);
   return data.data;
 };
 
+/** ユーザーメタデータ作成 */
+/** POST /users/{userId}/metadata */
+export const createUserMetadata = async ({
+  userId,
+  data: metadataData,
+}: {
+  userId: string;
+  data: CreateUserMetadataDto;
+}): Promise<UserMetadataCreateResponse['data']> => {
+  const { data } = await apiClient.post<UserMetadataCreateResponse>(`/users/${userId}/metadata`, metadataData);
+  return data.data;
+};
+
 /** ユーザーメタデータ更新 */
-/** PUT /api/v1/users/{userId}/metadata */
+/** PUT /users/{userId}/metadata */
 export const updateUserMetadata = async ({
   userId,
   data: updateData,

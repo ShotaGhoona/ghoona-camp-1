@@ -36,6 +36,17 @@ Authorization: Bearer <clerk_token>
 | POST | `/users/{userId}/rivals` | 新しいライバルを追加。ダッシュボードでの比較表示で使用 | 👤 |
 | DELETE | `/users/{userId}/rivals/{rivalId}` | ライバル関係を解除 | 👤 |
 
+#### GET /users クエリパラメータ
+- `page` (number): ページ番号（デフォルト: 1）
+- `limit` (number): 1ページあたりの件数（デフォルト: 20）
+- `search` (string): ユーザー名での検索
+- `skills` (string): スキルでフィルタリング（カンマ区切り）
+- `interests` (string): 興味・関心でフィルタリング（カンマ区切り）
+- `sortBy` (string): ソート基準（name | attendanceDays | streakDays | createdAt）
+- `order` (string): ソート順（asc | desc）
+
+**例:** `GET /users?page=1&limit=20&search=john&skills=JavaScript,React&sortBy=attendanceDays&order=desc`
+
 ### Goal Management
 目標設定・管理関連のエンドポイント
 

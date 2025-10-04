@@ -11,8 +11,7 @@ import type {
   Achievement, 
   UserAchievements, 
   SetCurrentTitleDto,
-  AchievementsQueryParams,
-  UserInfo
+  AchievementsQueryParams
 } from '../model/achievements-types';
 
 // === Zodスキーマ ===

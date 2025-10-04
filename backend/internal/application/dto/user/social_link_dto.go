@@ -13,31 +13,31 @@ type CreateSocialLinkRequest struct {
 	Platform string  `json:"platform" binding:"required"`
 	URL      string  `json:"url" binding:"required,url"`
 	Title    *string `json:"title" binding:"omitempty,max=100"`
-	IsPublic *bool   `json:"is_public"`
+	IsPublic *bool   `json:"isPublic"`
 }
 
 // UpdateSocialLinkRequest はソーシャルリンク更新のリクエストDTO
 type UpdateSocialLinkRequest struct {
 	URL      *string `json:"url" binding:"omitempty,url"`
 	Title    *string `json:"title" binding:"omitempty,max=100"`
-	IsPublic *bool   `json:"is_public"`
+	IsPublic *bool   `json:"isPublic"`
 }
 
 // SocialLinkResponse はソーシャルリンクのレスポンスDTO
 type SocialLinkResponse struct {
 	ID        uuid.UUID `json:"id"`
-	UserID    uuid.UUID `json:"user_id"`
+	UserID    uuid.UUID `json:"userId"`
 	Platform  string    `json:"platform"`
 	URL       string    `json:"url"`
 	Title     *string   `json:"title"`
-	IsPublic  bool      `json:"is_public"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	IsPublic  bool      `json:"isPublic"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 // SocialLinkListResponse はソーシャルリンク一覧のレスポンスDTO
 type SocialLinkListResponse struct {
-	SocialLinks []SocialLinkResponse `json:"social_links"`
+	SocialLinks []SocialLinkResponse `json:"socialLinks"`
 	Total       int                  `json:"total"`
 }
 

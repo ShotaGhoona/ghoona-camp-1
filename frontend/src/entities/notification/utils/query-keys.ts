@@ -6,7 +6,7 @@ export const notificationQueryKeys = {
   
   // Notifications queries
   notifications: () => [...notificationQueryKeys.all, 'notifications'] as const,
-  notificationsList: (filters?: Record<string, any>) => 
+  notificationsList: (filters?: Record<string, unknown>) => 
     [...notificationQueryKeys.notifications(), 'list', filters] as const,
   notificationsDetail: (id: string) => 
     [...notificationQueryKeys.notifications(), 'detail', id] as const,

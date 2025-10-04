@@ -1,6 +1,14 @@
-// User Feature
-export * from "./metadata-feature";
-export * from "./profile-feature";
-export * from "./rivals-feature";
-export * from "./social-links-feature";
-export * from "./user-feature";
+// === Authentication ===
+export * from './auth-feature';
+
+// === User Management ===
+export * from './user-feature';
+
+// === Metadata Management ===
+export * from './metadata-feature';
+
+// === Social Links Management ===
+export * from './social-links-feature';
+
+// === Rivals Management ===
+export * from './rivals-feature';

@@ -26,8 +26,8 @@ func ParseUUID(s string) (UUID, error) {
 // 使用予定: 全ドメインエンティティの基底構造 (User, Attendance, Goal, Event, Title, Notification)
 type BaseEntity struct {
 	ID        UUID      `json:"id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 // NewBaseEntity は基本エンティティを作成
@@ -56,11 +56,11 @@ func (e *BaseEntity) UpdateTimestamp() {
 //   - 称号一覧API (BE-08-title-04)
 //   - 出席ログ一覧API (BE-04-attend-04)
 type Pagination struct {
-	CurrentPage int  `json:"current_page"`
-	TotalPages  int  `json:"total_pages"`
-	TotalCount  int  `json:"total_count"`
-	HasNext     bool `json:"has_next"`
-	HasPrev     bool `json:"has_prev"`
+	CurrentPage int  `json:"currentPage"`
+	TotalPages  int  `json:"totalPages"`
+	TotalCount  int  `json:"totalCount"`
+	HasNext     bool `json:"hasNext"`
+	HasPrev     bool `json:"hasPrev"`
 }
 
 // NewPagination はページネーション情報を作成
