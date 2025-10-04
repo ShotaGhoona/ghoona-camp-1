@@ -14,7 +14,7 @@ import { SOCIAL_PLATFORMS } from '../model/social-links-types';
 
 /** プラットフォームのバリデーション */
 export const platformSchema = z.enum(SOCIAL_PLATFORMS as [SocialPlatform, ...SocialPlatform[]], {
-  errorMap: () => ({ message: '有効なプラットフォームを選択してください' }),
+  message: '有効なプラットフォームを選択してください',
 });
 
 /** URLのバリデーション */
@@ -32,7 +32,7 @@ export const titleSchema = z
 export const createSocialLinkFormSchema = z.object({
   platform: platformSchema,
   url: urlSchema,
-  title: titleSchema,
+  title: titleSchema.optional(),
   isPublic: z.boolean().default(true),
 });
 
@@ -46,12 +46,13 @@ export const updateSocialLinkFormSchema = z.object({
 /** ソーシャルリンクエンティティのスキーマ */
 export const socialLinkSchema = z.object({
   id: z.string().uuid(),
+  userId: z.string().uuid(),
   platform: platformSchema,
   url: z.string().url(),
-  title: z.string(),
+  title: z.string().nullable(),
   isPublic: z.boolean(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 // === Type Guards ===

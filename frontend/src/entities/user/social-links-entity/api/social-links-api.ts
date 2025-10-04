@@ -17,9 +17,9 @@ import type {
 
 /** ユーザーのSNSリンク一覧取得 */
 /** GET /users/{userId}/social-links */
-export const getUserSocialLinks = async (userId: string): Promise<UserSocialLinksListResponse['data']['socialLinks']> => {
+export const getUserSocialLinks = async (userId: string): Promise<UserSocialLinksListResponse['data']> => {
   const { data } = await apiClient.get<UserSocialLinksListResponse>(`/users/${userId}/social-links`);
-  return data.data.socialLinks;
+  return data.data;
 };
 
 /** 新しいSNSリンクを追加 */

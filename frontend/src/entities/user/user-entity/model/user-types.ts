@@ -11,10 +11,10 @@ export interface User {
   id: string;
   clerkId: string;
   email: string;
-  username: string;
-  avatarUrl: string;
-  discordId?: string;
-  isActive: boolean;
+  username: string | null;
+  avatarUrl: string | null;
+  discordId: string | null;
+  status: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -34,34 +34,8 @@ export interface AuthMeResponse {
 // === GET /users レスポンス ===
 export interface UsersListResponse {
   data: {
-    users: Array<{
-      id: string;
-      displayName: string;
-      username: string;
-      avatarUrl: string;
-      tagline: string;
-      skills: string[];
-      interests: string[];
-      currentTitle: {
-        level: number;
-        nameJp: string;
-        nameEn: string;
-        colorTheme: string;
-      };
-      attendanceStats: {
-        totalAttendanceDays: number;
-        currentStreakDays: number;
-      };
-      createdAt: string;
-    }>;
-    pagination: {
-      currentPage: number;
-      totalPages: number;
-      totalCount: number;
-      limit: number;
-      hasNext: boolean;
-      hasPrev: boolean;
-    };
+    users: User[];
+    total: number;
   };
   message: string;
   timestamp: string;
@@ -69,71 +43,40 @@ export interface UsersListResponse {
 
 // === GET /users/{userId} レスポンス ===
 export interface UserDetailResponse {
-  data: {
-    id: string;
-    displayName: string;
-    username: string;
-    avatarUrl: string;
-    profileImageUrl: string;
-    tagline: string;
-    bio: string;
-    vision: string;
-    timezone: string;
-    skills: string[];
-    interests: string[];
-    socialLinks: Array<{
-      id: string;
-      platform: string;
-      url: string;
-      title: string;
-      isPublic: boolean;
-    }>;
-    currentTitle: {
-      id: string;
-      level: number;
-      nameJp: string;
-      nameEn: string;
-      description: string;
-      colorTheme: string;
-      achievedAt: string;
-    };
-    attendanceStats: {
-      totalAttendanceDays: number;
-      currentStreakDays: number;
-      maxStreakDays: number;
-      firstAttendanceDate: string;
-      lastAttendanceDate: string;
-      totalDurationMinutes: number;
-    };
-    achievements: Array<{
-      titleId: string;
-      level: number;
-      nameJp: string;
-      achievedAt: string;
-    }>;
-    isRival: boolean;
-    createdAt: string;
+  data: User & {
+    metadata: unknown; // metadata-entityで定義
   };
+  message: string;
+  timestamp: string;
+}
+
+// === POST /users レスポンス ===
+export interface UserCreateResponse {
+  data: User;
   message: string;
   timestamp: string;
 }
 
 // === PUT /users/{userId} レスポンス ===
 export interface UserUpdateResponse {
-  data: {
-    id: string;
-    username: string;
-    avatarUrl: string;
-    updatedAt: string;
-  };
+  data: User;
   message: string;
   timestamp: string;
 }
 
 // === DTO Types（API送信用） ===
+export interface CreateUserDto {
+  clerkId: string;
+  email: string;
+  username?: string;
+  avatarUrl?: string;
+  discordId?: string;
+}
+
 export interface UpdateUserDto {
   username?: string;
   avatarUrl?: string;
+  discordId?: string;
 }
 
 // === Query Parameters Types ===

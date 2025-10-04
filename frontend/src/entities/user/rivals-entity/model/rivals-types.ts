@@ -9,29 +9,26 @@
 // === Core Types ===
 export interface RivalUser {
   id: string;
-  displayName: string;
-  username: string;
-  avatarUrl: string;
-  currentTitle: {
-    level: number;
-    nameJp: string;
-    colorTheme: string;
-  };
-  attendanceStats: {
-    totalAttendanceDays: number;
-    currentStreakDays: number;
-  };
+  clerkId: string;
+  email: string;
+  username: string | null;
+  avatarUrl: string | null;
+  discordId: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Rival {
   id: string;
+  userId: string;
   rivalUser: RivalUser;
   createdAt: string;
 }
 
 export interface RivalsList {
   rivals: Rival[];
-  count: number;
+  total: number;
   maxRivals: number;
 }
 

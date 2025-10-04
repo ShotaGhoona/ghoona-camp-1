@@ -25,31 +25,28 @@ export const createRivalFormSchema = z.object({
 /** ライバルユーザーのスキーマ */
 export const rivalUserSchema = z.object({
   id: z.string().uuid(),
-  displayName: z.string(),
-  username: z.string(),
-  avatarUrl: z.string().url(),
-  currentTitle: z.object({
-    level: z.number(),
-    nameJp: z.string(),
-    colorTheme: z.string(),
-  }),
-  attendanceStats: z.object({
-    totalAttendanceDays: z.number(),
-    currentStreakDays: z.number(),
-  }),
+  clerkId: z.string().min(1),
+  email: z.string().email(),
+  username: z.string().nullable(),
+  avatarUrl: z.string().url().nullable(),
+  discordId: z.string().nullable(),
+  status: z.enum(['active', 'inactive', 'suspended']).default('active'),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 /** ライバルエンティティのスキーマ */
 export const rivalSchema = z.object({
   id: z.string().uuid(),
+  userId: z.string().uuid(),
   rivalUser: rivalUserSchema,
-  createdAt: z.date(),
+  createdAt: z.string(),
 });
 
 /** ライバルリストのスキーマ */
 export const rivalsListSchema = z.object({
   rivals: z.array(rivalSchema),
-  count: z.number().min(0).max(MAX_RIVALS_COUNT),
+  total: z.number().min(0),
   maxRivals: z.number().default(MAX_RIVALS_COUNT),
 });
 

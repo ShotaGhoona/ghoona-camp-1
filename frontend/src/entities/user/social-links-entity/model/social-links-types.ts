@@ -9,9 +9,10 @@
 // === Core SocialLink Type ===
 export interface SocialLink {
   id: string;
+  userId: string;
   platform: string;
   url: string;
-  title: string;
+  title: string | null;
   isPublic: boolean;
   createdAt: string;
   updatedAt: string;
@@ -23,6 +24,7 @@ export interface SocialLink {
 export interface UserSocialLinksListResponse {
   data: {
     socialLinks: SocialLink[];
+    total: number;
   };
   message: string;
   timestamp: string;
@@ -46,7 +48,7 @@ export interface SocialLinkUpdateResponse {
 export interface CreateSocialLinkDto {
   platform: string;
   url: string;
-  title: string;
+  title?: string;
   isPublic?: boolean;
 }
 

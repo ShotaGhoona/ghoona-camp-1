@@ -12,6 +12,7 @@ export const userKeys = {
   list: (filters?: Record<string, unknown>) => [...userKeys.lists(), { filters }] as const,
   details: () => [...userKeys.all, 'detail'] as const,
   detail: (id: string) => [...userKeys.details(), id] as const,
+  create: () => [...userKeys.all, 'create'] as const,
   update: (id: string) => [...userKeys.all, 'update', id] as const,
   session: () => [...userKeys.all, 'session'] as const, // GET /auth/me用
 } as const;

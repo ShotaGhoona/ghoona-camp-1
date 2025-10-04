@@ -11,7 +11,9 @@ import type {
   AuthMeResponse,
   UsersListResponse,
   UserDetailResponse,
+  UserCreateResponse,
   UserUpdateResponse,
+  CreateUserDto,
   UpdateUserDto,
   UsersQueryParams
 } from '../model/user-types';
@@ -34,6 +36,13 @@ export const getUsers = async (params?: UsersQueryParams): Promise<UsersListResp
 /** GET /users/{userId} */
 export const getUserDetail = async (id: string): Promise<UserDetailResponse['data']> => {
   const { data } = await apiClient.get<UserDetailResponse>(`/users/${id}`);
+  return data.data;
+};
+
+/** 新しいユーザーを作成 */
+/** POST /users */
+export const createUser = async (userData: CreateUserDto): Promise<UserCreateResponse['data']> => {
+  const { data } = await apiClient.post<UserCreateResponse>('/users', userData);
   return data.data;
 };
 

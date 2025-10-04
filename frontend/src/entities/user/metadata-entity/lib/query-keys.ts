@@ -10,5 +10,6 @@ export const metadataKeys = {
   all: ['metadata'] as const,
   details: () => [...metadataKeys.all, 'detail'] as const,
   detail: (userId: string) => [...metadataKeys.details(), userId] as const,
+  create: (userId: string) => [...metadataKeys.all, 'create', userId] as const,
   update: (userId: string) => [...metadataKeys.all, 'update', userId] as const,
 } as const;

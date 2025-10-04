@@ -10,11 +10,11 @@
 export interface UserMetadata {
   id: string;
   userId: string;
-  displayName: string;
-  profileImageUrl: string;
-  tagline: string;
-  bio: string;
-  vision: string;
+  displayName: string | null;
+  profileImageUrl: string | null;
+  tagline: string | null;
+  bio: string | null;
+  vision: string | null;
   visionPublic: boolean;
   timezone: string;
   skills: string[];
@@ -32,22 +32,33 @@ export interface UserMetadataDetailResponse {
   timestamp: string;
 }
 
+// === POST /users/{userId}/metadata レスポンス ===
+export interface UserMetadataCreateResponse {
+  data: UserMetadata;
+  message: string;
+  timestamp: string;
+}
+
 // === PUT /users/{userId}/metadata レスポンス ===
 export interface UserMetadataUpdateResponse {
-  data: {
-    id: string;
-    displayName: string;
-    tagline: string;
-    visionPublic: boolean;
-    skills: string[];
-    interests: string[];
-    updatedAt: string;
-  };
+  data: UserMetadata;
   message: string;
   timestamp: string;
 }
 
 // === DTO Types（API送信用） ===
+export interface CreateUserMetadataDto {
+  displayName?: string;
+  profileImageUrl?: string;
+  tagline?: string;
+  bio?: string;
+  vision?: string;
+  visionPublic?: boolean;
+  timezone?: string;
+  skills?: string[];
+  interests?: string[];
+}
+
 export interface UpdateUserMetadataDto {
   displayName?: string;
   profileImageUrl?: string;
