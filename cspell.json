@@ -18,7 +18,13 @@
     "achievedAt",
     "createdAt",
     "updatedAt",
-    "deletedAt"
+    "deletedAt",
+    "usecase",
+    "shadcn",
+    "supabase",
+    "varchar",
+    "index",
+    "gorm"
   ],
   "flagWords": []
 }

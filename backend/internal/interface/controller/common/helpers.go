@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
+	domainTitle "ghoona-camp-backend/internal/domain/title"
 	domainUser "ghoona-camp-backend/internal/domain/user"
 	"ghoona-camp-backend/internal/domain/user/repository"
 	"ghoona-camp-backend/internal/infrastructure/clerk"
@@ -61,6 +62,32 @@ func RespondWithError(ctx *gin.Context, err error) {
 	
 	// ドメインエラーをHTTPステータスコードにマッピング
 	switch {
+	// Title Domain Errors
+	case errors.Is(err, domainTitle.ErrTitleNotFound):
+		statusCode = http.StatusNotFound
+		errorCode = "TITLE_NOT_FOUND"
+	case errors.Is(err, domainTitle.ErrTitleInactive):
+		statusCode = http.StatusUnprocessableEntity
+		errorCode = "TITLE_INACTIVE"
+	case errors.Is(err, domainTitle.ErrTitleNotAchieved):
+		statusCode = http.StatusForbidden
+		errorCode = "TITLE_NOT_ACHIEVED"
+	case errors.Is(err, domainTitle.ErrTitleAlreadyCurrent):
+		statusCode = http.StatusConflict
+		errorCode = "TITLE_ALREADY_CURRENT"
+	case errors.Is(err, domainTitle.ErrAchievementNotFound):
+		statusCode = http.StatusNotFound
+		errorCode = "ACHIEVEMENT_NOT_FOUND"
+	case errors.Is(err, domainTitle.ErrAchievementAlreadyExists):
+		statusCode = http.StatusConflict
+		errorCode = "DUPLICATE_ACHIEVEMENT"
+	case errors.Is(err, domainTitle.ErrMultipleCurrentTitles):
+		statusCode = http.StatusConflict
+		errorCode = "MULTIPLE_CURRENT_TITLES"
+	case errors.Is(err, domainTitle.ErrInvalidTitleLevel):
+		statusCode = http.StatusUnprocessableEntity
+		errorCode = "INVALID_TITLE_LEVEL"
+	// User Domain Errors
 	case errors.Is(err, domainUser.ErrUserNotFound):
 		statusCode = http.StatusNotFound
 		errorCode = "USER_NOT_FOUND"
@@ -168,6 +195,8 @@ func HandleUUIDParamError(ctx *gin.Context, paramName string, err error) {
 	switch paramName {
 	case "userId":
 		errorCode = "INVALID_USER_ID"
+	case "titleId":
+		errorCode = "INVALID_TITLE_ID"
 	case "linkId":
 		errorCode = "INVALID_LINK_ID"
 	case "rivalId":

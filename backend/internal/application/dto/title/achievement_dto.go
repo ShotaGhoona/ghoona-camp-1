@@ -66,6 +66,20 @@ func AchievementListFromEntities(achievements []*entity.TitleAchievement, titles
 	return responses
 }
 
+// UserAchievementsResponse はユーザー情報と称号獲得履歴のレスポンスDTO（API仕様準拠）
+type UserAchievementsResponse struct {
+	User         UserInfo                `json:"user"`
+	Achievements []AchievementResponse   `json:"achievements"`
+}
+
+// UserInfo はユーザー基本情報DTO（称号API用）
+type UserInfo struct {
+	ID          common.UUID `json:"id"`
+	DisplayName string      `json:"displayName"`
+	Username    *string     `json:"username"`
+	AvatarURL   *string     `json:"avatarUrl"`
+}
+
 // BuildAchievementListResponse は獲得記録リストと称号マップからレスポンスを構築する
 func BuildAchievementListResponse(userID common.UUID, achievements []*entity.TitleAchievement, titlesMap map[common.UUID]*entity.Title) *AchievementListResponse {
 	achievementResponses := AchievementListFromEntities(achievements, titlesMap)

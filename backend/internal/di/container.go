@@ -14,6 +14,7 @@ import (
 	"ghoona-camp-backend/internal/infrastructure/config"
 	"ghoona-camp-backend/internal/infrastructure/discord"
 	gormRepo "ghoona-camp-backend/internal/infrastructure/gorm/repository"
+	titleController "ghoona-camp-backend/internal/interface/controller/title"
 	userController "ghoona-camp-backend/internal/interface/controller/user"
 )
 
@@ -62,6 +63,10 @@ type Container struct {
 	UserMetadataController *userController.UserMetadataController
 	UserSocialController   *userController.UserSocialController
 	UserRivalController    *userController.UserRivalController
+
+	// Title Controllers
+	TitleController            *titleController.TitleController
+	TitleAchievementController *titleController.TitleAchievementController
 
 	// TODO: 他のドメインで追加予定
 	// AttendanceRepo   attendanceRepo.AttendanceRepository
@@ -113,6 +118,9 @@ func NewContainer(db *gorm.DB, cfg *config.Config) *Container {
 
 	// Initialize controllers
 	c.initUserControllers()
+
+	// Initialize title controllers
+	c.initTitleControllers()
 
 	// TODO: 他のドメインで実装予定
 	// c.initAttendanceComponents()
@@ -215,6 +223,7 @@ func (c *Container) initTitleUseCases() {
 	// Title achievement operations
 	c.TitleAchievementUseCase = titleUsecase.NewTitleAchievementUseCase(
 		c.UserRepo,
+		c.UserMetadataRepo,
 		c.TitleRepo,
 		c.TitleAchievementRepo,
 		c.TitleService,
@@ -229,6 +238,15 @@ func (c *Container) initTitleUseCases() {
 		c.TitleAchievementRepo,
 		c.TitleService,
 		nil, // 将来の出席サービス統合まではnil
+	)
+}
+
+func (c *Container) initTitleControllers() {
+	c.TitleController = titleController.NewTitleController(c.TitleUseCase)
+	
+	c.TitleAchievementController = titleController.NewTitleAchievementController(
+		c.TitleAchievementUseCase,
+		c.UserRepo,
 	)
 }
 
