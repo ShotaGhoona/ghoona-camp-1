@@ -3,8 +3,7 @@ package user
 import (
 	"time"
 
-	"github.com/google/uuid"
-
+	"ghoona-camp-backend/internal/domain/common"
 	"ghoona-camp-backend/internal/domain/user/entity"
 )
 
@@ -36,19 +35,19 @@ type CreateUserMetadataRequest struct {
 
 // UserMetadataResponse はユーザーメタデータのレスポンスDTO
 type UserMetadataResponse struct {
-	ID               uuid.UUID `json:"id"`
-	UserID           uuid.UUID `json:"userId"`
-	DisplayName      *string   `json:"displayName"`
-	ProfileImageURL  *string   `json:"profileImageUrl"`
-	Tagline          *string   `json:"tagline"`
-	Bio              *string   `json:"bio"`
-	Vision           *string   `json:"vision"`
-	VisionPublic     bool      `json:"visionPublic"`
-	Timezone         string    `json:"timezone"`
-	Skills           []string  `json:"skills"`
-	Interests        []string  `json:"interests"`
-	CreatedAt        time.Time `json:"createdAt"`
-	UpdatedAt        time.Time `json:"updatedAt"`
+	ID               common.UUID `json:"id"`
+	UserID           common.UUID `json:"userId"`
+	DisplayName      *string     `json:"displayName"`
+	ProfileImageURL  *string     `json:"profileImageUrl"`
+	Tagline          *string     `json:"tagline"`
+	Bio              *string     `json:"bio"`
+	Vision           *string     `json:"vision"`
+	VisionPublic     bool        `json:"visionPublic"`
+	Timezone         string      `json:"timezone"`
+	Skills           []string    `json:"skills"`
+	Interests        []string    `json:"interests"`
+	CreatedAt        time.Time   `json:"createdAt"`
+	UpdatedAt        time.Time   `json:"updatedAt"`
 }
 
 // UserMetadataResponseFromEntity はエンティティからレスポンスDTOに変換する

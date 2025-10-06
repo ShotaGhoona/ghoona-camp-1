@@ -1,27 +1,21 @@
 package entity
 
 import (
-	"time"
-
-	"github.com/google/uuid"
+	"ghoona-camp-backend/internal/domain/common"
 )
 
 // UserRival はユーザー間のライバル関係を表す
 type UserRival struct {
-	ID          uuid.UUID // 関係ID
-	UserID      uuid.UUID // ユーザーID（外部キー）
-	RivalUserID uuid.UUID // ライバルのユーザーID（外部キー）
-	CreatedAt   time.Time // 作成日時
-	UpdatedAt   time.Time // 更新日時
+	common.BaseEntity               // 共通フィールド (ID, CreatedAt, UpdatedAt)
+	UserID      common.UUID         // ユーザーID（外部キー）
+	RivalUserID common.UUID         // ライバルのユーザーID（外部キー）
 }
 
 // NewUserRival は新しいUserRivalエンティティを作成する
-func NewUserRival(userID, rivalUserID uuid.UUID) *UserRival {
+func NewUserRival(userID, rivalUserID common.UUID) *UserRival {
 	return &UserRival{
-		ID:          uuid.New(),
+		BaseEntity:  common.NewBaseEntity(),
 		UserID:      userID,
 		RivalUserID: rivalUserID,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
 	}
 }

@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/google/uuid"
+	"ghoona-camp-backend/internal/domain/common"
 	"ghoona-camp-backend/internal/domain/user"
 	"ghoona-camp-backend/internal/domain/user/repository"
 )
@@ -21,7 +21,7 @@ func NewRivalService(userRivalRepo repository.UserRivalRepository) *RivalService
 }
 
 // CanSetRival はユーザーが他のユーザーをライバルに設定できるかチェックする
-func (s *RivalService) CanSetRival(ctx context.Context, userID, rivalUserID uuid.UUID) error {
+func (s *RivalService) CanSetRival(ctx context.Context, userID, rivalUserID common.UUID) error {
 	if userID == rivalUserID {
 		return user.ErrCannotRivalSelf
 	}

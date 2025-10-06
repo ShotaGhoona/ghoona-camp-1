@@ -1,0 +1,31 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "gorm",
+    "ghoona",
+    "uuid",
+    "Ghoona",
+    "titleid",
+    "userid",
+    "isCurrent",
+    "isActive",
+    "nameJp",
+    "nameEn",
+    "requiredDays",
+    "imageUrl",
+    "colorTheme",
+    "achievedAt",
+    "createdAt",
+    "updatedAt",
+    "deletedAt",
+    "usecase",
+    "shadcn",
+    "supabase",
+    "varchar",
+    "index",
+    "gorm"
+  ],
+  "flagWords": []
+}
+

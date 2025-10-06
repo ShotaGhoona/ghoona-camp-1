@@ -15,7 +15,7 @@
 - **アーキテクチャ**: DDD × Onion Architecture
 - **フレームワーク**: Gin
 - **ORM**: GORM
-- **認証**: JWT
+- **認証**: Clerk
 
 ### Database
 - **プラットフォーム**: Supabase
@@ -81,8 +81,8 @@ internal/
 
 ## セキュリティ
 
-- Discord OAuth認証
-- JWT token管理
+- Clerk認証システム
+- JWT token管理（Clerk発行）
 - API rate limiting
 - CORS設定
 - 環境変数による秘匿情報管理

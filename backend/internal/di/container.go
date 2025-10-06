@@ -5,12 +5,16 @@ import (
 
 	"ghoona-camp-backend/internal/application/transaction"
 	userUsecase "ghoona-camp-backend/internal/application/usecase/user"
+	titleUsecase "ghoona-camp-backend/internal/application/usecase/title"
 	"ghoona-camp-backend/internal/domain/user/repository"
 	"ghoona-camp-backend/internal/domain/user/service"
+	titleRepository "ghoona-camp-backend/internal/domain/title/repository"
+	titleService "ghoona-camp-backend/internal/domain/title/service"
 	"ghoona-camp-backend/internal/infrastructure/clerk"
 	"ghoona-camp-backend/internal/infrastructure/config"
 	"ghoona-camp-backend/internal/infrastructure/discord"
 	gormRepo "ghoona-camp-backend/internal/infrastructure/gorm/repository"
+	titleController "ghoona-camp-backend/internal/interface/controller/title"
 	userController "ghoona-camp-backend/internal/interface/controller/user"
 )
 
@@ -36,17 +40,33 @@ type Container struct {
 	SocialLinkRepo   repository.UserSocialLinkRepository
 	RivalRepo        repository.UserRivalRepository
 
+	// Title Repositories
+	TitleRepo            titleRepository.TitleRepository
+	TitleAchievementRepo titleRepository.TitleAchievementRepository
+
 	// Services/UseCases
 	UserUseCase         userUsecase.UserUseCase
 	UserMetadataUseCase userUsecase.UserMetadataUseCase
 	UserSocialUseCase   userUsecase.UserSocialUseCase
 	UserRivalUseCase    userUsecase.UserRivalUseCase
 
+	// Title Services
+	TitleService *titleService.TitleService
+
+	// Title UseCases
+	TitleUseCase            titleUsecase.TitleUseCase
+	TitleAchievementUseCase titleUsecase.TitleAchievementUseCase
+	TitleProgressUseCase    titleUsecase.TitleProgressUseCase
+
 	// Controllers
 	UserController         *userController.UserController
 	UserMetadataController *userController.UserMetadataController
 	UserSocialController   *userController.UserSocialController
 	UserRivalController    *userController.UserRivalController
+
+	// Title Controllers
+	TitleController            *titleController.TitleController
+	TitleAchievementController *titleController.TitleAchievementController
 
 	// TODO: 他のドメインで追加予定
 	// AttendanceRepo   attendanceRepo.AttendanceRepository
@@ -83,11 +103,24 @@ func NewContainer(db *gorm.DB, cfg *config.Config) *Container {
 	// Initialize repositories
 	c.initUserRepositories()
 
+	// BE-07-title-02で実装済み
+	// Initialize title repositories
+	c.initTitleRepositories()
+
 	// Initialize services
 	c.initUserServices()
 
+	// Initialize title services
+	c.initTitleServices()
+
+	// Initialize title use cases
+	c.initTitleUseCases()
+
 	// Initialize controllers
 	c.initUserControllers()
+
+	// Initialize title controllers
+	c.initTitleControllers()
 
 	// TODO: 他のドメインで実装予定
 	// c.initAttendanceComponents()
@@ -161,6 +194,60 @@ func (c *Container) initUserControllers() {
 	c.UserMetadataController = userController.NewUserMetadataController(c.UserMetadataUseCase, c.UserRepo)
 	c.UserSocialController = userController.NewUserSocialController(c.UserSocialUseCase, c.UserRepo)
 	c.UserRivalController = userController.NewUserRivalController(c.UserRivalUseCase, c.UserRepo)
+}
+
+// BE-07-title-02で実装済み
+func (c *Container) initTitleRepositories() {
+	c.TitleRepo = gormRepo.NewTitleRepository(c.DB)
+	c.TitleAchievementRepo = gormRepo.NewTitleAchievementRepository(c.DB)
+}
+
+func (c *Container) initTitleServices() {
+	// Domain services
+	c.TitleService = titleService.NewTitleService()
+}
+
+func (c *Container) initTitleUseCases() {
+	// Title validation service
+	titleValidationService := titleService.NewTitleValidationService(
+		c.TitleRepo,
+		c.TitleAchievementRepo,
+	)
+
+	// Basic title operations
+	c.TitleUseCase = titleUsecase.NewTitleUseCase(
+		c.TitleRepo,
+		titleValidationService,
+	)
+
+	// Title achievement operations
+	c.TitleAchievementUseCase = titleUsecase.NewTitleAchievementUseCase(
+		c.UserRepo,
+		c.UserMetadataRepo,
+		c.TitleRepo,
+		c.TitleAchievementRepo,
+		c.TitleService,
+		titleValidationService,
+		c.TxManager,
+	)
+
+	// Title progress operations (with nil attendance provider for now)
+	c.TitleProgressUseCase = titleUsecase.NewTitleProgressUseCase(
+		c.UserRepo,
+		c.TitleRepo,
+		c.TitleAchievementRepo,
+		c.TitleService,
+		nil, // 将来の出席サービス統合まではnil
+	)
+}
+
+func (c *Container) initTitleControllers() {
+	c.TitleController = titleController.NewTitleController(c.TitleUseCase)
+	
+	c.TitleAchievementController = titleController.NewTitleAchievementController(
+		c.TitleAchievementUseCase,
+		c.UserRepo,
+	)
 }
 
 // TODO: 他のドメインで実装予定

@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/google/uuid"
+	"ghoona-camp-backend/internal/domain/common"
 	"ghoona-camp-backend/internal/domain/user"
 	"ghoona-camp-backend/internal/domain/user/entity"
 	"ghoona-camp-backend/internal/domain/user/repository"
@@ -81,7 +81,7 @@ func (s *UserValidationService) ValidateUserRival(ur *entity.UserRival) error {
 }
 
 // ValidateUserSocialLinkUniqueness はユーザーがプラットフォーム用のソーシャルリンクを追加できるかチェックする
-func (s *UserValidationService) ValidateUserSocialLinkUniqueness(ctx context.Context, userID uuid.UUID, platform string) error {
+func (s *UserValidationService) ValidateUserSocialLinkUniqueness(ctx context.Context, userID common.UUID, platform string) error {
 	existingLinks, err := s.socialLinkRepo.GetByUserID(ctx, userID)
 	if err != nil {
 		return err

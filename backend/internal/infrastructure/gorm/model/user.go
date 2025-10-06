@@ -7,6 +7,7 @@ import (
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 
+	"ghoona-camp-backend/internal/domain/common"
 	"ghoona-camp-backend/internal/domain/user/entity"
 	"ghoona-camp-backend/internal/domain/user/value"
 )
@@ -92,22 +93,24 @@ func (u *User) ToEntity() (*entity.User, error) {
 	}
 
 	return &entity.User{
-		ID:        u.ID,
+		BaseEntity: common.BaseEntity{
+			ID:        common.UUID(u.ID),
+			CreatedAt: u.CreatedAt,
+			UpdatedAt: u.UpdatedAt,
+		},
 		ClerkID:   u.ClerkID,
 		Email:     u.Email,
 		Username:  u.Username,
 		AvatarURL: u.AvatarURL,
 		DiscordID: u.DiscordID,
 		Status:    status,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
 	}, nil
 }
 
 // FromEntity はドメインエンティティからGORMモデルへ変換します
 func FromEntity(domainUser *entity.User) *User {
 	return &User{
-		ID:        domainUser.ID,
+		ID:        uuid.UUID(domainUser.ID),
 		ClerkID:   domainUser.ClerkID,
 		Email:     domainUser.Email,
 		Username:  domainUser.Username,
@@ -127,8 +130,12 @@ func (um *UserMetadata) ToEntity() (*entity.UserMetadata, error) {
 	}
 
 	return &entity.UserMetadata{
-		ID:               um.ID,
-		UserID:           um.UserID,
+		BaseEntity: common.BaseEntity{
+			ID:        common.UUID(um.ID),
+			CreatedAt: um.CreatedAt,
+			UpdatedAt: um.UpdatedAt,
+		},
+		UserID:           common.UUID(um.UserID),
 		DisplayName:      um.DisplayName,
 		ProfileImageURL:  um.ProfileImageURL,
 		Tagline:          um.Tagline,
@@ -138,16 +145,14 @@ func (um *UserMetadata) ToEntity() (*entity.UserMetadata, error) {
 		Timezone:         um.Timezone,
 		Skills:           []string(um.Skills),
 		Interests:        []string(um.Interests),
-		CreatedAt:        um.CreatedAt,
-		UpdatedAt:        um.UpdatedAt,
 	}, nil
 }
 
 // FromEntityUserMetadata はドメインエンティティからGORMモデルへ変換します
 func FromEntityUserMetadata(domainMetadata *entity.UserMetadata) *UserMetadata {
 	return &UserMetadata{
-		ID:               domainMetadata.ID,
-		UserID:           domainMetadata.UserID,
+		ID:               uuid.UUID(domainMetadata.ID),
+		UserID:           uuid.UUID(domainMetadata.UserID),
 		DisplayName:      domainMetadata.DisplayName,
 		ProfileImageURL:  domainMetadata.ProfileImageURL,
 		Tagline:          domainMetadata.Tagline,
@@ -172,22 +177,24 @@ func (usl *UserSocialLink) ToEntity() (*entity.UserSocialLink, error) {
 	}
 
 	return &entity.UserSocialLink{
-		ID:        usl.ID,
-		UserID:    usl.UserID,
+		BaseEntity: common.BaseEntity{
+			ID:        common.UUID(usl.ID),
+			CreatedAt: usl.CreatedAt,
+			UpdatedAt: usl.UpdatedAt,
+		},
+		UserID:    common.UUID(usl.UserID),
 		Platform:  platform,
 		URL:       usl.URL,
 		Title:     usl.Title,
 		IsPublic:  isPublic,
-		CreatedAt: usl.CreatedAt,
-		UpdatedAt: usl.UpdatedAt,
 	}, nil
 }
 
 // FromEntityUserSocialLink はドメインエンティティからGORMモデルへ変換します
 func FromEntityUserSocialLink(domainLink *entity.UserSocialLink) *UserSocialLink {
 	return &UserSocialLink{
-		ID:        domainLink.ID,
-		UserID:    domainLink.UserID,
+		ID:        uuid.UUID(domainLink.ID),
+		UserID:    uuid.UUID(domainLink.UserID),
 		Platform:  domainLink.Platform.String(),
 		URL:       domainLink.URL,
 		Title:     domainLink.Title,
@@ -200,20 +207,22 @@ func FromEntityUserSocialLink(domainLink *entity.UserSocialLink) *UserSocialLink
 // ToEntity はGORMモデルからドメインエンティティへ変換します
 func (ur *UserRival) ToEntity() (*entity.UserRival, error) {
 	return &entity.UserRival{
-		ID:          ur.ID,
-		UserID:      ur.UserID,
-		RivalUserID: ur.RivalUserID,
-		CreatedAt:   ur.CreatedAt,
-		UpdatedAt:   ur.UpdatedAt,
+		BaseEntity: common.BaseEntity{
+			ID:        common.UUID(ur.ID),
+			CreatedAt: ur.CreatedAt,
+			UpdatedAt: ur.UpdatedAt,
+		},
+		UserID:      common.UUID(ur.UserID),
+		RivalUserID: common.UUID(ur.RivalUserID),
 	}, nil
 }
 
 // FromEntityUserRival はドメインエンティティからGORMモデルへ変換します
 func FromEntityUserRival(domainRival *entity.UserRival) *UserRival {
 	return &UserRival{
-		ID:          domainRival.ID,
-		UserID:      domainRival.UserID,
-		RivalUserID: domainRival.RivalUserID,
+		ID:          uuid.UUID(domainRival.ID),
+		UserID:      uuid.UUID(domainRival.UserID),
+		RivalUserID: uuid.UUID(domainRival.RivalUserID),
 		CreatedAt:   domainRival.CreatedAt,
 		UpdatedAt:   domainRival.UpdatedAt,
 	}

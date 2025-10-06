@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
+	"ghoona-camp-backend/internal/domain/common"
 	"ghoona-camp-backend/internal/domain/user/entity"
 	"ghoona-camp-backend/internal/domain/user/repository"
 	baseGorm "ghoona-camp-backend/internal/infrastructure/gorm"
@@ -26,10 +27,10 @@ func NewUserRepository(db *gorm.DB) repository.UserRepository {
 }
 
 // GetByID はIDでユーザーを取得する
-func (r *userRepository) GetByID(ctx context.Context, id uuid.UUID) (*entity.User, error) {
+func (r *userRepository) GetByID(ctx context.Context, id common.UUID) (*entity.User, error) {
 	var gormUser model.User
 	db := r.GetDB(ctx)
-	err := db.Where("id = ?", id).First(&gormUser).Error
+	err := db.Where("id = ?", uuid.UUID(id)).First(&gormUser).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -76,7 +77,7 @@ func (r *userRepository) Create(ctx context.Context, user *entity.User) error {
 		return err
 	}
 	// 作成後のIDを反映
-	user.ID = gormUser.ID
+	user.ID = common.UUID(gormUser.ID)
 	return nil
 }
 
@@ -112,9 +113,9 @@ func (r *userRepository) GetAll(ctx context.Context) ([]*entity.User, error) {
 }
 
 // Delete はユーザーを削除する
-func (r *userRepository) Delete(ctx context.Context, id uuid.UUID) error {
+func (r *userRepository) Delete(ctx context.Context, id common.UUID) error {
 	db := r.GetDB(ctx)
-	return db.Delete(&model.User{}, id).Error
+	return db.Delete(&model.User{}, uuid.UUID(id)).Error
 }
 
 // userMetadataRepository はUserMetadataRepositoryインターフェースの実装
@@ -130,10 +131,10 @@ func NewUserMetadataRepository(db *gorm.DB) repository.UserMetadataRepository {
 }
 
 // GetByUserID はユーザーIDでメタデータを取得する
-func (r *userMetadataRepository) GetByUserID(ctx context.Context, userID uuid.UUID) (*entity.UserMetadata, error) {
+func (r *userMetadataRepository) GetByUserID(ctx context.Context, userID common.UUID) (*entity.UserMetadata, error) {
 	var gormMetadata model.UserMetadata
 	db := r.GetDB(ctx)
-	err := db.Where("user_id = ?", userID).First(&gormMetadata).Error
+	err := db.Where("user_id = ?", uuid.UUID(userID)).First(&gormMetadata).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -151,7 +152,7 @@ func (r *userMetadataRepository) Create(ctx context.Context, metadata *entity.Us
 	if err != nil {
 		return err
 	}
-	metadata.ID = gormMetadata.ID
+	metadata.ID = common.UUID(gormMetadata.ID)
 	return nil
 }
 
@@ -163,9 +164,9 @@ func (r *userMetadataRepository) Update(ctx context.Context, metadata *entity.Us
 }
 
 // Delete はメタデータを削除する
-func (r *userMetadataRepository) Delete(ctx context.Context, userID uuid.UUID) error {
+func (r *userMetadataRepository) Delete(ctx context.Context, userID common.UUID) error {
 	db := r.GetDB(ctx)
-	return db.Where("user_id = ?", userID).Delete(&model.UserMetadata{}).Error
+	return db.Where("user_id = ?", uuid.UUID(userID)).Delete(&model.UserMetadata{}).Error
 }
 
 // userSocialLinkRepository はUserSocialLinkRepositoryインターフェースの実装
@@ -181,10 +182,10 @@ func NewUserSocialLinkRepository(db *gorm.DB) repository.UserSocialLinkRepositor
 }
 
 // GetByUserID はユーザーIDでソーシャルリンク一覧を取得する
-func (r *userSocialLinkRepository) GetByUserID(ctx context.Context, userID uuid.UUID) ([]*entity.UserSocialLink, error) {
+func (r *userSocialLinkRepository) GetByUserID(ctx context.Context, userID common.UUID) ([]*entity.UserSocialLink, error) {
 	var gormLinks []model.UserSocialLink
 	db := r.GetDB(ctx)
-	err := db.Where("user_id = ?", userID).Find(&gormLinks).Error
+	err := db.Where("user_id = ?", uuid.UUID(userID)).Find(&gormLinks).Error
 	if err != nil {
 		return nil, err
 	}
@@ -201,10 +202,10 @@ func (r *userSocialLinkRepository) GetByUserID(ctx context.Context, userID uuid.
 }
 
 // GetByID はIDでソーシャルリンクを取得する
-func (r *userSocialLinkRepository) GetByID(ctx context.Context, id uuid.UUID) (*entity.UserSocialLink, error) {
+func (r *userSocialLinkRepository) GetByID(ctx context.Context, id common.UUID) (*entity.UserSocialLink, error) {
 	var gormLink model.UserSocialLink
 	db := r.GetDB(ctx)
-	err := db.Where("id = ?", id).First(&gormLink).Error
+	err := db.Where("id = ?", uuid.UUID(id)).First(&gormLink).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -222,7 +223,7 @@ func (r *userSocialLinkRepository) Create(ctx context.Context, link *entity.User
 	if err != nil {
 		return err
 	}
-	link.ID = gormLink.ID
+	link.ID = common.UUID(gormLink.ID)
 	return nil
 }
 
@@ -234,9 +235,9 @@ func (r *userSocialLinkRepository) Update(ctx context.Context, link *entity.User
 }
 
 // Delete はソーシャルリンクを削除する
-func (r *userSocialLinkRepository) Delete(ctx context.Context, id uuid.UUID) error {
+func (r *userSocialLinkRepository) Delete(ctx context.Context, id common.UUID) error {
 	db := r.GetDB(ctx)
-	return db.Delete(&model.UserSocialLink{}, id).Error
+	return db.Delete(&model.UserSocialLink{}, uuid.UUID(id)).Error
 }
 
 // userRivalRepository はUserRivalRepositoryインターフェースの実装
@@ -252,10 +253,10 @@ func NewUserRivalRepository(db *gorm.DB) repository.UserRivalRepository {
 }
 
 // GetByUserID はユーザーIDでライバル一覧を取得する
-func (r *userRivalRepository) GetByUserID(ctx context.Context, userID uuid.UUID) ([]*entity.UserRival, error) {
+func (r *userRivalRepository) GetByUserID(ctx context.Context, userID common.UUID) ([]*entity.UserRival, error) {
 	var gormRivals []model.UserRival
 	db := r.GetDB(ctx)
-	err := db.Where("user_id = ?", userID).Find(&gormRivals).Error
+	err := db.Where("user_id = ?", uuid.UUID(userID)).Find(&gormRivals).Error
 	if err != nil {
 		return nil, err
 	}
@@ -272,10 +273,10 @@ func (r *userRivalRepository) GetByUserID(ctx context.Context, userID uuid.UUID)
 }
 
 // CountByUserID はユーザーIDでライバル数をカウントする
-func (r *userRivalRepository) CountByUserID(ctx context.Context, userID uuid.UUID) (int, error) {
+func (r *userRivalRepository) CountByUserID(ctx context.Context, userID common.UUID) (int, error) {
 	var count int64
 	db := r.GetDB(ctx)
-	err := db.Model(&model.UserRival{}).Where("user_id = ?", userID).Count(&count).Error
+	err := db.Model(&model.UserRival{}).Where("user_id = ?", uuid.UUID(userID)).Count(&count).Error
 	return int(count), err
 }
 
@@ -287,12 +288,12 @@ func (r *userRivalRepository) Create(ctx context.Context, rival *entity.UserRiva
 	if err != nil {
 		return err
 	}
-	rival.ID = gormRival.ID
+	rival.ID = common.UUID(gormRival.ID)
 	return nil
 }
 
 // Delete はライバル関係を削除する
-func (r *userRivalRepository) Delete(ctx context.Context, id uuid.UUID) error {
+func (r *userRivalRepository) Delete(ctx context.Context, id common.UUID) error {
 	db := r.GetDB(ctx)
-	return db.Delete(&model.UserRival{}, id).Error
+	return db.Delete(&model.UserRival{}, uuid.UUID(id)).Error
 }

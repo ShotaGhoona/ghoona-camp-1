@@ -4,10 +4,9 @@ import (
 	"context"
 	"log"
 
-	"github.com/google/uuid"
-
 	"ghoona-camp-backend/internal/application/dto/user"
 	"ghoona-camp-backend/internal/application/transaction"
+	"ghoona-camp-backend/internal/domain/common"
 	domainUser "ghoona-camp-backend/internal/domain/user"
 	"ghoona-camp-backend/internal/domain/user/entity"
 	"ghoona-camp-backend/internal/domain/user/repository"
@@ -17,9 +16,9 @@ import (
 
 // UserMetadataUseCase ユーザーメタデータ操作のユースケース
 type UserMetadataUseCase interface {
-	GetUserMetadata(ctx context.Context, userID uuid.UUID) (*user.UserMetadataResponse, error)
-	CreateUserMetadata(ctx context.Context, userID uuid.UUID, req *user.CreateUserMetadataRequest) (*user.UserMetadataResponse, error)
-	UpdateUserMetadata(ctx context.Context, userID uuid.UUID, req *user.UpdateUserMetadataRequest) (*user.UserMetadataResponse, error)
+	GetUserMetadata(ctx context.Context, userID common.UUID) (*user.UserMetadataResponse, error)
+	CreateUserMetadata(ctx context.Context, userID common.UUID, req *user.CreateUserMetadataRequest) (*user.UserMetadataResponse, error)
+	UpdateUserMetadata(ctx context.Context, userID common.UUID, req *user.UpdateUserMetadataRequest) (*user.UserMetadataResponse, error)
 }
 
 type userMetadataUseCase struct {
@@ -45,7 +44,7 @@ func NewUserMetadataUseCase(
 }
 
 // GetUserMetadata ユーザーメタデータを取得
-func (u *userMetadataUseCase) GetUserMetadata(ctx context.Context, userID uuid.UUID) (*user.UserMetadataResponse, error) {
+func (u *userMetadataUseCase) GetUserMetadata(ctx context.Context, userID common.UUID) (*user.UserMetadataResponse, error) {
 	// ユーザーの存在確認
 	userEntity, err := u.userRepo.GetByID(ctx, userID)
 	if err != nil {
@@ -67,7 +66,7 @@ func (u *userMetadataUseCase) GetUserMetadata(ctx context.Context, userID uuid.U
 }
 
 // CreateUserMetadata ユーザーメタデータを作成
-func (u *userMetadataUseCase) CreateUserMetadata(ctx context.Context, userID uuid.UUID, req *user.CreateUserMetadataRequest) (*user.UserMetadataResponse, error) {
+func (u *userMetadataUseCase) CreateUserMetadata(ctx context.Context, userID common.UUID, req *user.CreateUserMetadataRequest) (*user.UserMetadataResponse, error) {
 	var response *user.UserMetadataResponse
 	
 	err := u.txManager.ExecuteInTx(ctx, func(txCtx context.Context) error {
@@ -158,7 +157,7 @@ func (u *userMetadataUseCase) CreateUserMetadata(ctx context.Context, userID uui
 }
 
 // UpdateUserMetadata ユーザーメタデータを更新
-func (u *userMetadataUseCase) UpdateUserMetadata(ctx context.Context, userID uuid.UUID, req *user.UpdateUserMetadataRequest) (*user.UserMetadataResponse, error) {
+func (u *userMetadataUseCase) UpdateUserMetadata(ctx context.Context, userID common.UUID, req *user.UpdateUserMetadataRequest) (*user.UserMetadataResponse, error) {
 	var response *user.UserMetadataResponse
 	
 	err := u.txManager.ExecuteInTx(ctx, func(txCtx context.Context) error {

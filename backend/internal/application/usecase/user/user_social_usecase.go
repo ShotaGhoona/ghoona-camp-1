@@ -3,10 +3,9 @@ package user
 import (
 	"context"
 
-	"github.com/google/uuid"
-
 	"ghoona-camp-backend/internal/application/dto/user"
 	"ghoona-camp-backend/internal/application/transaction"
+	"ghoona-camp-backend/internal/domain/common"
 	domainUser "ghoona-camp-backend/internal/domain/user"
 	"ghoona-camp-backend/internal/domain/user/entity"
 	"ghoona-camp-backend/internal/domain/user/repository"
@@ -16,10 +15,10 @@ import (
 
 // UserSocialUseCase ユーザーソーシャルリンク操作のユースケース
 type UserSocialUseCase interface {
-	GetUserSocialLinks(ctx context.Context, userID uuid.UUID) (*user.SocialLinkListResponse, error)
-	CreateSocialLink(ctx context.Context, userID uuid.UUID, req *user.CreateSocialLinkRequest) (*user.SocialLinkResponse, error)
-	UpdateSocialLink(ctx context.Context, linkID uuid.UUID, req *user.UpdateSocialLinkRequest) (*user.SocialLinkResponse, error)
-	DeleteSocialLink(ctx context.Context, linkID uuid.UUID) error
+	GetUserSocialLinks(ctx context.Context, userID common.UUID) (*user.SocialLinkListResponse, error)
+	CreateSocialLink(ctx context.Context, userID common.UUID, req *user.CreateSocialLinkRequest) (*user.SocialLinkResponse, error)
+	UpdateSocialLink(ctx context.Context, linkID common.UUID, req *user.UpdateSocialLinkRequest) (*user.SocialLinkResponse, error)
+	DeleteSocialLink(ctx context.Context, linkID common.UUID) error
 }
 
 type userSocialUseCase struct {
@@ -48,7 +47,7 @@ func NewUserSocialUseCase(
 }
 
 // GetUserSocialLinks ユーザーのソーシャルリンクを取得
-func (u *userSocialUseCase) GetUserSocialLinks(ctx context.Context, userID uuid.UUID) (*user.SocialLinkListResponse, error) {
+func (u *userSocialUseCase) GetUserSocialLinks(ctx context.Context, userID common.UUID) (*user.SocialLinkListResponse, error) {
 	// ユーザーの存在確認
 	userEntity, err := u.userRepo.GetByID(ctx, userID)
 	if err != nil {
@@ -70,7 +69,7 @@ func (u *userSocialUseCase) GetUserSocialLinks(ctx context.Context, userID uuid.
 }
 
 // CreateSocialLink ソーシャルリンクを作成
-func (u *userSocialUseCase) CreateSocialLink(ctx context.Context, userID uuid.UUID, req *user.CreateSocialLinkRequest) (*user.SocialLinkResponse, error) {
+func (u *userSocialUseCase) CreateSocialLink(ctx context.Context, userID common.UUID, req *user.CreateSocialLinkRequest) (*user.SocialLinkResponse, error) {
 	var response *user.SocialLinkResponse
 	
 	err := u.txManager.ExecuteInTx(ctx, func(txCtx context.Context) error {
@@ -137,7 +136,7 @@ func (u *userSocialUseCase) CreateSocialLink(ctx context.Context, userID uuid.UU
 }
 
 // UpdateSocialLink ソーシャルリンクを更新
-func (u *userSocialUseCase) UpdateSocialLink(ctx context.Context, linkID uuid.UUID, req *user.UpdateSocialLinkRequest) (*user.SocialLinkResponse, error) {
+func (u *userSocialUseCase) UpdateSocialLink(ctx context.Context, linkID common.UUID, req *user.UpdateSocialLinkRequest) (*user.SocialLinkResponse, error) {
 	var response *user.SocialLinkResponse
 	
 	err := u.txManager.ExecuteInTx(ctx, func(txCtx context.Context) error {
@@ -192,7 +191,7 @@ func (u *userSocialUseCase) UpdateSocialLink(ctx context.Context, linkID uuid.UU
 }
 
 // DeleteSocialLink ソーシャルリンクを削除
-func (u *userSocialUseCase) DeleteSocialLink(ctx context.Context, linkID uuid.UUID) error {
+func (u *userSocialUseCase) DeleteSocialLink(ctx context.Context, linkID common.UUID) error {
 	return u.txManager.ExecuteInTx(ctx, func(txCtx context.Context) error {
 		// ソーシャルリンクの存在確認
 		link, err := u.socialLinkRepo.GetByID(txCtx, linkID)

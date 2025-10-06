@@ -46,11 +46,13 @@ func (r *Router) Setup() *gin.Engine {
 		// BE-03-user-04で実装済み
 		r.setupUserRoutes(v1)
 		
+		// BE-07-title-04で実装済み
+		r.setupTitleRoutes(v1)
+		
 		// TODO: 他のドメインのルート追加
 		// r.setupAttendanceRoutes(v1)
 		// r.setupGoalRoutes(v1)
 		// r.setupEventRoutes(v1)
-		// r.setupTitleRoutes(v1)
 		// r.setupNotificationRoutes(v1)
 	}
 
