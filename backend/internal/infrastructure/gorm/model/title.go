@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 
 	"ghoona-camp-backend/internal/domain/common"
 	"ghoona-camp-backend/internal/domain/title/entity"
@@ -24,7 +23,6 @@ type Title struct {
 	IsActive     bool       `gorm:"default:true" json:"isActive"`
 	CreatedAt    time.Time  `json:"createdAt"`
 	UpdatedAt    time.Time  `json:"updatedAt"`
-	DeletedAt    gorm.DeletedAt `gorm:"index" json:"deletedAt"`
 }
 
 // TitleAchievement はユーザー称号獲得実績のGORMモデル
