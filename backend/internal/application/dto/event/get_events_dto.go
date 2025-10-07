@@ -1,8 +1,6 @@
 // Package dto GET /events API用のDTO定義
 package dto
 
-import "ghoona-camp-backend/internal/application/dto/event/shared"
-
 // GetEventsResponse イベント一覧取得レスポンス
 type GetEventsResponse struct {
 	Data      []GetEventsDataItem `json:"data"`
@@ -13,7 +11,7 @@ type GetEventsResponse struct {
 // GetEventsDataItem イベント一覧の個別アイテム
 type GetEventsDataItem struct {
 	ID                string           `json:"id"`
-	Creator           shared.CreatorDTO `json:"creator"`
+	Creator           CreatorDTO        `json:"creator"`
 	Title             string           `json:"title"`
 	Description       string           `json:"description"`
 	EventType         string           `json:"event_type"`

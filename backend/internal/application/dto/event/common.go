@@ -1,6 +1,6 @@
 // Package shared イベントDTO間で共通利用される構造体を定義する
 // 複数のAPIエンドポイントで使用される共通データ構造を集約
-package shared
+package dto
 
 // CreatorDTO イベント作成者情報
 type CreatorDTO struct {

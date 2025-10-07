@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"ghoona-camp-backend/internal/application/dto/event"
-	"ghoona-camp-backend/internal/application/dto/event/shared"
 	"ghoona-camp-backend/internal/domain/event/entity"
 	"ghoona-camp-backend/internal/domain/event/repository"
 	"ghoona-camp-backend/internal/domain/event/value"
@@ -92,7 +91,7 @@ func parseSearchTerm(search *string) *string {
 func eventToListItem(event *entity.Event, participantCount int, isUserRegistered bool) dto.GetEventsDataItem {
 	return dto.GetEventsDataItem{
 		ID: event.ID.String(),
-		Creator: shared.CreatorDTO{
+		Creator: dto.CreatorDTO{
 			ID:          event.CreatorID.String(),
 			DisplayName: "User " + event.CreatorID.String()[:8],
 			Username:    "user_" + event.CreatorID.String()[:8],

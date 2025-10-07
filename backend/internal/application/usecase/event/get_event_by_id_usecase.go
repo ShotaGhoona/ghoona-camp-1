@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"ghoona-camp-backend/internal/application/dto/event"
-	"ghoona-camp-backend/internal/application/dto/event/shared"
 	"ghoona-camp-backend/internal/domain/common"
 	domainEvent "ghoona-camp-backend/internal/domain/event"
 	"ghoona-camp-backend/internal/domain/event/repository"
@@ -53,7 +52,7 @@ func (u *getEventByIDUseCase) Execute(ctx context.Context, eventID common.UUID, 
 	// レスポンス作成
 	return &dto.GetEventByIDData{
 		ID: event.ID.String(),
-		Creator: shared.CreatorDTO{
+		Creator: dto.CreatorDTO{
 			ID:          event.CreatorID.String(),
 			DisplayName: "User " + event.CreatorID.String()[:8],
 			Username:    "user_" + event.CreatorID.String()[:8],

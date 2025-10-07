@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"ghoona-camp-backend/internal/application/dto/event"
-	"ghoona-camp-backend/internal/application/dto/event/shared"
 	"ghoona-camp-backend/internal/domain/common"
 	domainEvent "ghoona-camp-backend/internal/domain/event"
 	"ghoona-camp-backend/internal/domain/event/entity"
@@ -70,7 +69,7 @@ func (u *getEventParticipantsUseCase) Execute(ctx context.Context, eventID commo
 	for i, participant := range filteredParticipants {
 		result[i] = dto.GetEventParticipantsDataItem{
 			ID: participant.ID.String(),
-			User: shared.UserDTO{
+			User: dto.UserDTO{
 				ID:          participant.UserID.String(),
 				DisplayName: "User " + participant.UserID.String()[:8],
 				Username:    "user_" + participant.UserID.String()[:8],
