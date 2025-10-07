@@ -1,20 +1,40 @@
+// Package event イベントドメインで使用するエラーを定義する
+// ドメイン固有のエラーによりビジネスルール違反を明確に表現する
 package event
 
 import "errors"
 
-// TODO: BE-03-event-01で実装予定
-// イベント管理ドメイン固有のエラー定義
-
+// イベント関連エラー
 var (
-	// イベント関連エラー（実装予定）
-	ErrEventNotFound           = errors.New("イベントが見つかりません")
-	ErrEventFull              = errors.New("イベントが満員です")
-	ErrDuplicateRegistration  = errors.New("既に参加登録済みです")
-	ErrRegistrationDeadline   = errors.New("参加登録期限を過ぎています")
-	ErrCancellationDeadline   = errors.New("キャンセル期限を過ぎています")
-	ErrInvalidEventType       = errors.New("無効なイベントタイプです")
-	ErrInvalidTimeRange       = errors.New("開始時間は終了時間より前である必要があります")
-	ErrPastEventDate          = errors.New("過去の日付にはイベントを作成できません")
+	ErrEventNotFound      = errors.New("イベントが見つかりません")
+	ErrEventAlreadyExists = errors.New("イベントが既に存在します")
+	ErrEventCancelled     = errors.New("イベントはキャンセルされています")
+	ErrEventCompleted     = errors.New("イベントは既に完了しています")
+	ErrEventInactive      = errors.New("イベントは無効です")
 )
 
-// TODO: 詳細なエラー定義とエラーハンドリング実装は後続タスクで行う
+// イベント作成・更新関連エラー
+var (
+	ErrInvalidTitle       = errors.New("タイトルは必須です")
+	ErrTitleTooLong       = errors.New("タイトルは200文字以内で入力してください")
+	ErrDescriptionTooLong = errors.New("説明は2000文字以内で入力してください")
+	ErrInvalidEventType   = errors.New("無効なイベントタイプです")
+	ErrInvalidTimeSlot    = errors.New("終了時間は開始時間より後である必要があります")
+	ErrInvalidCapacity    = errors.New("最大参加者数は1-100の範囲で設定してください")
+)
+
+// 参加者関連エラー
+var (
+	ErrParticipantNotFound        = errors.New("参加者が見つかりません")
+	ErrParticipantAlreadyExists   = errors.New("既に参加登録済みです")
+	ErrInvalidParticipantStatus   = errors.New("無効な参加ステータスです")
+	ErrEventFull                  = errors.New("イベントが満員です")
+	ErrRegistrationClosed         = errors.New("参加登録は締め切られています")
+	ErrCannotReduceCapacity       = errors.New("現在の参加者数より少ない定員には変更できません")
+)
+
+// 権限関連エラー
+var (
+	ErrUnauthorized    = errors.New("権限がありません")
+	ErrNotEventCreator = errors.New("この操作はイベント作成者のみ実行できます")
+)

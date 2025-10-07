@@ -71,8 +71,7 @@ Authorization: Bearer <clerk_token>
 | DELETE | `/events/{eventId}` | イベントを削除。作成者のみが実行可能 | 👑 |
 | GET | `/events/{eventId}/participants` | イベント参加者一覧を取得。参加状況確認で使用 | 🔐 |
 | POST | `/events/{eventId}/participants` | イベントに参加申込を行う。定員チェックも実行 | 🔐 |
-| PUT | `/events/{eventId}/participants/{userId}` | 参加ステータスを更新（参加→キャンセル等） | 👤 |
-| DELETE | `/events/{eventId}/participants/{userId}` | イベント参加をキャンセル | 👤 |
+| PUT | `/events/{eventId}/participants/{userId}` | 参加ステータスを更新（registered ↔ cancelled）。履歴保持 | 👤 |
 
 ### Title Management
 称号・バッジ管理関連のエンドポイント

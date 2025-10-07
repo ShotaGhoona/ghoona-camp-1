@@ -344,15 +344,15 @@ POST /events/{eventId}/participants
 }
 ```
 
-### イベント参加キャンセル
+### イベント参加ステータス更新
 
 ```
-DELETE /events/{eventId}/participants/{userId}
+PUT /events/{eventId}/participants/{userId}
 ```
 
 **権限**: 👤 本人のみ
 
-**説明**: イベント参加をキャンセル
+**説明**: イベント参加ステータスを更新（参加 ↔ キャンセル）
 
 **パラメータ:**
 
@@ -361,11 +361,32 @@ DELETE /events/{eventId}/participants/{userId}
 | eventId | UUID | Yes | イベントID |
 | userId | UUID | Yes | ユーザーID |
 
+**リクエスト:**
+
+```json
+{
+  "status": "cancelled"
+}
+```
+
+**バリデーション:**
+
+| フィールド | 制約 |
+|-----------|------|
+| status | 必須、enum(registered, cancelled) |
+
 **レスポンス:**
 
 ```json
 {
-  "message": "Event participation cancelled successfully",
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440302",
+    "event_id": "550e8400-e29b-41d4-a716-446655440200",
+    "user_id": "550e8400-e29b-41d4-a716-446655440002",
+    "status": "cancelled",
+    "updated_at": "2025-01-21T10:00:00Z"
+  },
+  "message": "Participation status updated successfully",
   "timestamp": "2025-01-21T10:00:00Z"
 }
 ```
@@ -408,10 +429,11 @@ DELETE /events/{eventId}/participants/{userId}
 
 ### 参加システム
 - **参加登録**: 事前の参加意思表示
+- **ステータス管理**: `registered` ↔ `cancelled` での状態変更（履歴保持）
 - **実際の参加**: Discord参加ログで自動記録（attendance_logsテーブル）
 - **定員管理**: max_participantsによる事前登録制限
 
 ### アクセス制御
 - **全ユーザー**: イベント一覧・詳細閲覧、参加申込可能
 - **作成者**: イベント編集・削除権限
-- **参加者**: 自分の参加状況管理
+- **参加者**: 自分の参加ステータス変更権限
