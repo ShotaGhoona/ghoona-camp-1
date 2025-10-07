@@ -49,10 +49,12 @@ func (r *Router) Setup() *gin.Engine {
 		// BE-07-title-04で実装済み
 		r.setupTitleRoutes(v1)
 		
+		// BE-07-event-04で実装済み
+		r.setupEventRoutes(v1)
+		
 		// TODO: 他のドメインのルート追加
 		// r.setupAttendanceRoutes(v1)
 		// r.setupGoalRoutes(v1)
-		// r.setupEventRoutes(v1)
 		// r.setupNotificationRoutes(v1)
 	}
 
@@ -249,3 +251,4 @@ func (r *Router) GetEngine() *gin.Engine {
 //         users.PUT("/:userId/notification-settings", r.container.NotificationController.UpdateNotificationSettings)
 //     }
 // }
+

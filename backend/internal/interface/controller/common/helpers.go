@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
+	domainEvent "ghoona-camp-backend/internal/domain/event"
 	domainTitle "ghoona-camp-backend/internal/domain/title"
 	domainUser "ghoona-camp-backend/internal/domain/user"
 	"ghoona-camp-backend/internal/domain/user/repository"
@@ -124,6 +125,40 @@ func RespondWithError(ctx *gin.Context, err error) {
 	case errors.Is(err, domainUser.ErrInvalidPlatform):
 		statusCode = http.StatusUnprocessableEntity
 		errorCode = "INVALID_PLATFORM"
+	// Event Domain Errors
+	case errors.Is(err, domainEvent.ErrEventNotFound):
+		statusCode = http.StatusNotFound
+		errorCode = "EVENT_NOT_FOUND"
+	case errors.Is(err, domainEvent.ErrUnauthorized):
+		statusCode = http.StatusForbidden
+		errorCode = "UNAUTHORIZED"
+	case errors.Is(err, domainEvent.ErrParticipantAlreadyExists):
+		statusCode = http.StatusConflict
+		errorCode = "PARTICIPANT_ALREADY_EXISTS"
+	case errors.Is(err, domainEvent.ErrEventFull):
+		statusCode = http.StatusConflict
+		errorCode = "EVENT_FULL"
+	case errors.Is(err, domainEvent.ErrParticipantNotFound):
+		statusCode = http.StatusNotFound
+		errorCode = "PARTICIPANT_NOT_FOUND"
+	case errors.Is(err, domainEvent.ErrCannotReduceCapacity):
+		statusCode = http.StatusBadRequest
+		errorCode = "CANNOT_REDUCE_CAPACITY"
+	case errors.Is(err, domainEvent.ErrInvalidTimeSlot):
+		statusCode = http.StatusBadRequest
+		errorCode = "INVALID_TIME_SLOT"
+	case errors.Is(err, domainEvent.ErrEventAlreadyExists):
+		statusCode = http.StatusConflict
+		errorCode = "EVENT_ALREADY_EXISTS"
+	case errors.Is(err, domainEvent.ErrInvalidTitle):
+		statusCode = http.StatusBadRequest
+		errorCode = "INVALID_TITLE"
+	case errors.Is(err, domainEvent.ErrInvalidEventType):
+		statusCode = http.StatusBadRequest
+		errorCode = "INVALID_EVENT_TYPE"
+	case errors.Is(err, domainEvent.ErrInvalidCapacity):
+		statusCode = http.StatusBadRequest
+		errorCode = "INVALID_CAPACITY"
 	default:
 		statusCode = http.StatusInternalServerError
 		errorCode = "INTERNAL_SERVER_ERROR"
@@ -201,6 +236,8 @@ func HandleUUIDParamError(ctx *gin.Context, paramName string, err error) {
 		errorCode = "INVALID_LINK_ID"
 	case "rivalId":
 		errorCode = "INVALID_RIVAL_ID"
+	case "eventId":
+		errorCode = "INVALID_EVENT_ID"
 	default:
 		errorCode = "INVALID_PARAMETER"
 	}

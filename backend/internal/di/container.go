@@ -4,16 +4,19 @@ import (
 	"gorm.io/gorm"
 
 	"ghoona-camp-backend/internal/application/transaction"
-	userUsecase "ghoona-camp-backend/internal/application/usecase/user"
+	eventUsecase "ghoona-camp-backend/internal/application/usecase/event"
 	titleUsecase "ghoona-camp-backend/internal/application/usecase/title"
-	"ghoona-camp-backend/internal/domain/user/repository"
-	"ghoona-camp-backend/internal/domain/user/service"
+	userUsecase "ghoona-camp-backend/internal/application/usecase/user"
+	eventRepository "ghoona-camp-backend/internal/domain/event/repository"
 	titleRepository "ghoona-camp-backend/internal/domain/title/repository"
 	titleService "ghoona-camp-backend/internal/domain/title/service"
+	"ghoona-camp-backend/internal/domain/user/repository"
+	"ghoona-camp-backend/internal/domain/user/service"
 	"ghoona-camp-backend/internal/infrastructure/clerk"
 	"ghoona-camp-backend/internal/infrastructure/config"
 	"ghoona-camp-backend/internal/infrastructure/discord"
 	gormRepo "ghoona-camp-backend/internal/infrastructure/gorm/repository"
+	"ghoona-camp-backend/internal/interface/controller"
 	titleController "ghoona-camp-backend/internal/interface/controller/title"
 	userController "ghoona-camp-backend/internal/interface/controller/user"
 )
@@ -44,6 +47,10 @@ type Container struct {
 	TitleRepo            titleRepository.TitleRepository
 	TitleAchievementRepo titleRepository.TitleAchievementRepository
 
+	// Event Repositories
+	EventRepo            eventRepository.EventRepository
+	EventParticipantRepo eventRepository.EventParticipantRepository
+
 	// Services/UseCases
 	UserUseCase         userUsecase.UserUseCase
 	UserMetadataUseCase userUsecase.UserMetadataUseCase
@@ -58,6 +65,16 @@ type Container struct {
 	TitleAchievementUseCase titleUsecase.TitleAchievementUseCase
 	TitleProgressUseCase    titleUsecase.TitleProgressUseCase
 
+	// Event UseCases
+	GetEventsUseCase             eventUsecase.GetEventsUseCase
+	PostEventsUseCase            eventUsecase.PostEventsUseCase
+	GetEventByIDUseCase          eventUsecase.GetEventByIDUseCase
+	PutEventByIDUseCase          eventUsecase.PutEventByIDUseCase
+	DeleteEventByIDUseCase       eventUsecase.DeleteEventByIDUseCase
+	GetEventParticipantsUseCase  eventUsecase.GetEventParticipantsUseCase
+	PostEventParticipantsUseCase eventUsecase.PostEventParticipantsUseCase
+	PutEventParticipantUseCase   eventUsecase.PutEventParticipantUseCase
+
 	// Controllers
 	UserController         *userController.UserController
 	UserMetadataController *userController.UserMetadataController
@@ -67,6 +84,9 @@ type Container struct {
 	// Title Controllers
 	TitleController            *titleController.TitleController
 	TitleAchievementController *titleController.TitleAchievementController
+
+	// Event Controllers
+	EventController *controller.EventController
 
 	// TODO: 他のドメインで追加予定
 	// AttendanceRepo   attendanceRepo.AttendanceRepository
@@ -107,6 +127,9 @@ func NewContainer(db *gorm.DB, cfg *config.Config) *Container {
 	// Initialize title repositories
 	c.initTitleRepositories()
 
+	// Initialize event repositories
+	c.initEventRepositories()
+
 	// Initialize services
 	c.initUserServices()
 
@@ -116,11 +139,17 @@ func NewContainer(db *gorm.DB, cfg *config.Config) *Container {
 	// Initialize title use cases
 	c.initTitleUseCases()
 
+	// Initialize event use cases
+	c.initEventUseCases()
+
 	// Initialize controllers
 	c.initUserControllers()
 
 	// Initialize title controllers
 	c.initTitleControllers()
+
+	// Initialize event controllers
+	c.initEventControllers()
 
 	// TODO: 他のドメインで実装予定
 	// c.initAttendanceComponents()
@@ -135,7 +164,7 @@ func NewContainer(db *gorm.DB, cfg *config.Config) *Container {
 func (c *Container) initExternalServices() {
 	// TODO: BE-02-arch-03でClerk設定追加時に実装
 	c.ClerkService = clerk.NewAuthService(c.Config)
-	
+
 	// TODO: BE-05-discord-*でDiscord設定追加時に実装
 	c.DiscordService = discord.NewWebhookService(c.Config)
 }
@@ -164,14 +193,14 @@ func (c *Container) initUserServices() {
 		validationService,
 		c.TxManager,
 	)
-	
+
 	c.UserMetadataUseCase = userUsecase.NewUserMetadataUseCase(
 		c.UserRepo,
 		c.UserMetadataRepo,
 		validationService,
 		c.TxManager,
 	)
-	
+
 	c.UserSocialUseCase = userUsecase.NewUserSocialUseCase(
 		c.UserRepo,
 		c.SocialLinkRepo,
@@ -179,7 +208,7 @@ func (c *Container) initUserServices() {
 		validationService,
 		c.TxManager,
 	)
-	
+
 	c.UserRivalUseCase = userUsecase.NewUserRivalUseCase(
 		c.UserRepo,
 		c.RivalRepo,
@@ -243,10 +272,74 @@ func (c *Container) initTitleUseCases() {
 
 func (c *Container) initTitleControllers() {
 	c.TitleController = titleController.NewTitleController(c.TitleUseCase)
-	
+
 	c.TitleAchievementController = titleController.NewTitleAchievementController(
 		c.TitleAchievementUseCase,
 		c.UserRepo,
+	)
+}
+
+func (c *Container) initEventRepositories() {
+	c.EventRepo = gormRepo.NewEventRepository(c.DB)
+	c.EventParticipantRepo = gormRepo.NewEventParticipantRepository(c.DB)
+}
+
+func (c *Container) initEventUseCases() {
+	// Initialize all 8 event use cases
+	c.GetEventsUseCase = eventUsecase.NewGetEventsUseCase(
+		c.EventRepo,
+		c.EventParticipantRepo,
+	)
+
+	c.PostEventsUseCase = eventUsecase.NewPostEventsUseCase(
+		c.EventRepo,
+		c.TxManager,
+	)
+
+	c.GetEventByIDUseCase = eventUsecase.NewGetEventByIDUseCase(
+		c.EventRepo,
+		c.EventParticipantRepo,
+	)
+
+	c.PutEventByIDUseCase = eventUsecase.NewPutEventByIDUseCase(
+		c.EventRepo,
+		c.EventParticipantRepo,
+		c.TxManager,
+	)
+
+	c.DeleteEventByIDUseCase = eventUsecase.NewDeleteEventByIDUseCase(
+		c.EventRepo,
+		c.TxManager,
+	)
+
+	c.GetEventParticipantsUseCase = eventUsecase.NewGetEventParticipantsUseCase(
+		c.EventRepo,
+		c.EventParticipantRepo,
+	)
+
+	c.PostEventParticipantsUseCase = eventUsecase.NewPostEventParticipantsUseCase(
+		c.EventRepo,
+		c.EventParticipantRepo,
+		c.TxManager,
+	)
+
+	c.PutEventParticipantUseCase = eventUsecase.NewPutEventParticipantUseCase(
+		c.EventRepo,
+		c.EventParticipantRepo,
+		c.TxManager,
+	)
+}
+
+func (c *Container) initEventControllers() {
+	c.EventController = controller.NewEventController(
+		c.GetEventsUseCase,
+		c.PostEventsUseCase,
+		c.GetEventByIDUseCase,
+		c.PutEventByIDUseCase,
+		c.DeleteEventByIDUseCase,
+		c.GetEventParticipantsUseCase,
+		c.PostEventParticipantsUseCase,
+		c.PutEventParticipantUseCase,
 	)
 }
 
