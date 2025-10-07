@@ -38,8 +38,8 @@
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
-| ◻️ | BE-04-attend-01 | Domain層実装 | AttendanceLogエンティティ、AttendanceSummary、AttendanceStatistics、値オブジェクト、リポジトリI/F | 5時間 | 🔴 |
-| ◻️ | BE-04-attend-02 | Infrastructure層実装 | GORMモデル（3テーブル）、リポジトリ実装、Discord連携基盤 | 6時間 | 🔴 |
+| 🌀 | BE-04-attend-01 | Domain層実装 | AttendanceLogエンティティ、AttendanceSummary、AttendanceStatistics、値オブジェクト、リポジトリI/F | 5時間 | 🔴 |
+| 🌀 | BE-04-attend-02 | Infrastructure層実装 | GORMモデル（3テーブル）、リポジトリ実装、Discord連携基盤 | 6時間 | 🔴 |
 | ◻️ | BE-04-attend-03 | Application層実装 | DTO、出席記録・統計・ランキングユースケース | 6時間 | 🔴 |
 | ◻️ | BE-04-attend-04 | Interface層実装 | コントローラー、ルーティング設定 | 4時間 | 🔴 |
 | ◻️ | BE-04-attend-05 | 統合・動作確認 | Discord Bot連携、統計計算バッチ、API動作確認、テスト | 4時間 | 🔴 |
@@ -58,9 +58,9 @@
 
 | ステータス | ID | タスク名 | 内容 | 工数見積 | 優先度 |
 |---|---|---|---|---|---|
-| ✅ | BE-06-goal-01 | Domain層実装 | Goalエンティティ、GoalProgressエンティティ、値オブジェクト、リポジトリI/F | 4時間 | 🟡 |
-| ✅ | BE-06-goal-02 | Infrastructure層実装 | GORMモデル（2テーブル）、リポジトリ実装 | 3時間 | 🟡 |
-| ✅ | BE-06-goal-03 | Application層実装 | DTO、目標管理・進捗管理・統計ユースケース | 5時間 | 🟡 |
+| ◻️ | BE-06-goal-01 | Domain層実装 | Goalエンティティ、GoalProgressエンティティ、値オブジェクト、リポジトリI/F | 4時間 | 🟡 |
+| ◻️ | BE-06-goal-02 | Infrastructure層実装 | GORMモデル（2テーブル）、リポジトリ実装 | 3時間 | 🟡 |
+| ◻️ | BE-06-goal-03 | Application層実装 | DTO、目標管理・進捗管理・統計ユースケース | 5時間 | 🟡 |
 | ◻️ | BE-06-goal-04 | Interface層実装 | コントローラー、ルーティング設定 | 4時間 | 🟡 |
 | ◻️ | BE-06-goal-05 | 統合・動作確認 | 公開設定管理、進捗自動計算、API動作確認、テスト | 3時間 | 🟡 |
 
