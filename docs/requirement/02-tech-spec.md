@@ -47,18 +47,15 @@ internal/
 ├── domain/               # ビジネスロジック
 ├── application/          # ユースケース
 ├── infrastructure/       # 外部連携
-└── interface/            # HTTP層
+└── presentation/         # HTTP層
 ```
 
 ## 主要技術選定理由
 
-### Discord連携
-- **ライブラリ**: Discord.js / Go Discord API
-- **機能**: 参加ログ記録、ボイスチャンネル管理
 
 ### 参加ログ管理
 - **記録対象**: Discord参加時間、継続時間
-- **自動化**: Discord Bot経由での自動記録
+- **自動化**: Discord Bot経由での自動記録（スコープ外）
 - **可視化**: 参加履歴ダッシュボード
 
 ### リアルタイム機能
