@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"errors"
 
 	"github.com/google/uuid"
+	"ghoona-camp-backend/internal/domain/user"
 	"ghoona-camp-backend/internal/domain/user/entity"
 	"ghoona-camp-backend/internal/domain/user/repository"
 )
@@ -27,7 +27,7 @@ const MaxRivalsPerUser = 3
 func (s *RivalManagementService) CanAddRival(ctx context.Context, userID, rivalUserID uuid.UUID) error {
 	// 1. 自分自身をライバルに設定することの禁止
 	if userID == rivalUserID {
-		return errors.New("自分自身をライバルに設定することはできません")
+		return user.ErrCannotAddSelfAsRival
 	}
 
 	// 2. 現在のライバル数を取得
@@ -38,7 +38,7 @@ func (s *RivalManagementService) CanAddRival(ctx context.Context, userID, rivalU
 
 	// 3. 3人制限チェック
 	if currentCount >= MaxRivalsPerUser {
-		return errors.New("ライバルは最大3人までしか設定できません")
+		return user.ErrMaxRivalsLimitExceeded
 	}
 
 	// 4. 既存ライバル一覧を取得して重複チェック
@@ -50,7 +50,7 @@ func (s *RivalManagementService) CanAddRival(ctx context.Context, userID, rivalU
 	// 5. 重複ライバル登録防止
 	for _, rival := range existingRivals {
 		if rival.RivalUserID() == rivalUserID {
-			return errors.New("このユーザーは既にライバルに設定されています")
+			return user.ErrRivalAlreadyExists
 		}
 	}
 

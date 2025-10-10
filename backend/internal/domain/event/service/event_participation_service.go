@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"errors"
 
 	"github.com/google/uuid"
+	"ghoona-camp-backend/internal/domain/event"
 	"ghoona-camp-backend/internal/domain/event/entity"
 	"ghoona-camp-backend/internal/domain/event/repository"
 	"ghoona-camp-backend/internal/domain/event/vo"
@@ -30,7 +30,7 @@ func NewEventParticipationService(
 // CanJoinEvent イベント参加が可能かチェックする
 func (s *EventParticipationService) CanJoinEvent(ctx context.Context, eventID, userID uuid.UUID) error {
 	// 1. イベントを取得
-	event, err := s.eventRepo.GetByID(ctx, eventID)
+	eventEntity, err := s.eventRepo.GetByID(ctx, eventID)
 	if err != nil {
 		return err
 	}
@@ -40,12 +40,12 @@ func (s *EventParticipationService) CanJoinEvent(ctx context.Context, eventID, u
 	if err == nil && existingParticipant != nil {
 		// キャンセル状態でない場合は重複参加とみなす
 		if existingParticipant.Status() == vo.ParticipantStatusRegistered {
-			return errors.New("既にこのイベントに参加登録済みです")
+			return event.ErrEventParticipantAlreadyRegistered
 		}
 	}
 
 	// 3. 定員チェック（max_participantsが設定されている場合）
-	maxParticipants := event.MaxParticipants()
+	maxParticipants := eventEntity.MaxParticipants()
 	if maxParticipants != nil {
 		// 現在の登録済み参加者数を取得
 		currentCount, err := s.eventParticipantRepo.CountByEventIDAndStatus(ctx, eventID, vo.ParticipantStatusRegistered)
@@ -55,7 +55,7 @@ func (s *EventParticipationService) CanJoinEvent(ctx context.Context, eventID, u
 
 		// 定員オーバーチェック
 		if currentCount >= *maxParticipants {
-			return errors.New("イベントの定員に達しています")
+			return event.ErrEventCapacityFull
 		}
 	}
 

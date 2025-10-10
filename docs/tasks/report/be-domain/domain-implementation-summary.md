@@ -4,6 +4,7 @@
 
 | バージョン | 日付 | 変更内容 | 担当者 |
 |-----------|------|---------|--------|
+| v1.2 | 2025-01-21 | ドメインエラーハンドリング実装 - カスタムエラー型とリファクタリング | Claude |
 | v1.1 | 2025-01-21 | Domain Services追加 - 必要最小限のビジネスロジック実装 | Claude |
 | v1.0 | 2025-01-21 | 初版作成 - ドメイン層完全実装完了 | Claude |
 
@@ -18,6 +19,7 @@ Ghoona Camp朝活コミュニティアプリのバックエンドにおいて、
 - 15個のEntities（ビジネスロジック）
 - 15個のRepository Interfaces（データアクセス抽象化）
 - 2個のDomain Services（複雑なビジネスルール管理）
+- 6個のDomain Error Files（カスタムエラーハンドリング）
 
 ## 実装内容
 
@@ -35,7 +37,8 @@ backend/internal/domain/
 ├── entity/     (ビジネスロジック)
 ├── repository/ (データアクセス抽象化)
 ├── vo/         (制約・ルール)
-└── service/    (複合ビジネスロジック) ※User・Eventのみ
+├── service/    (複合ビジネスロジック) ※User・Eventのみ
+└── error.go    (ドメイン固有エラー定義)
 ```
 
 ### 🔒 主要なValue Objects制約
@@ -141,6 +144,32 @@ CanJoinEvent(ctx context.Context, eventID, userID uuid.UUID) error
 JoinEvent(ctx context.Context, eventID, userID uuid.UUID) (*entity.EventParticipant, error)
 ```
 
+### 🚨 ドメインエラーハンドリング
+
+#### カスタムエラー型の設計
+```go
+// User Domain例
+var (
+    ErrCannotAddSelfAsRival    = errors.New("自分自身をライバルに設定することはできません")
+    ErrMaxRivalsLimitExceeded  = errors.New("ライバルは最大3人までしか設定できません")
+    ErrRivalAlreadyExists      = errors.New("このユーザーは既にライバルに設定されています")
+)
+```
+
+#### エラーメッセージの国際化対応
+- **日本語メッセージ**: ユーザー向けエラーメッセージは日本語で統一
+- **定数化**: エラーメッセージの変更時の影響範囲を限定
+- **ドメイン分離**: 各ドメインのerror.goで独立したエラー管理
+
+#### Domain Servicesでの活用
+```go
+// Before: インラインエラー
+return errors.New("自分自身をライバルに設定することはできません")
+
+// After: ドメインエラー使用
+return user.ErrCannotAddSelfAsRival
+```
+
 ## 共通パターン・ガイドライン
 
 ### Value Object実装パターン
@@ -226,6 +255,7 @@ func (s *SomeService) PerformAction(ctx context.Context, params...) (*entity.Res
 - **テスタビリティ**: Repository抽象化による単体テスト容易性
 - **パフォーマンス**: Value Objectによる早期バリデーション
 - **ビジネスルール集約**: Domain Serviceによる制約の一元管理
+- **エラーハンドリング**: カスタムドメインエラーによる一貫性と保守性向上
 
 ## 備考・注意事項
 
@@ -246,4 +276,10 @@ func (s *SomeService) PerformAction(ctx context.Context, params...) (*entity.Res
 - **単体テスト**: Repository Mockを使用したビジネスロジックテスト
 - **エラーハンドリング**: 日本語メッセージをそのままAPI応答に利用可能
 
-このドメイン層実装により、Ghoona Campアプリケーションは「技術的に堅牢で、ビジネス要求に忠実な」基盤を獲得しました。
+### ドメインエラーの運用指針
+- **一貫性**: 全ドメインで統一されたエラーハンドリングパターン
+- **保守性**: エラーメッセージ変更時の影響範囲の局所化
+- **可読性**: ドメイン固有の意味を持つエラー名称
+- **国際化**: 日本語メッセージによるユーザビリティ向上
+
+このドメイン層実装により、Ghoona Campアプリケーションは「技術的に堅牢で、ビジネス要求に忠実で、エラーハンドリングが一貫した」基盤を獲得しました。
