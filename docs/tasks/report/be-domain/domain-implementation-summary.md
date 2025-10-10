@@ -4,6 +4,7 @@
 
 | バージョン | 日付 | 変更内容 | 担当者 |
 |-----------|------|---------|--------|
+| v1.1 | 2025-01-21 | Domain Services追加 - 必要最小限のビジネスロジック実装 | Claude |
 | v1.0 | 2025-01-21 | 初版作成 - ドメイン層完全実装完了 | Claude |
 
 ## 概要
@@ -16,6 +17,7 @@ Ghoona Camp朝活コミュニティアプリのバックエンドにおいて、
 - 22個のValue Objects（制約実装）
 - 15個のEntities（ビジネスロジック）
 - 15個のRepository Interfaces（データアクセス抽象化）
+- 2個のDomain Services（複雑なビジネスルール管理）
 
 ## 実装内容
 
@@ -32,7 +34,8 @@ backend/internal/domain/
 各ドメイン内:
 ├── entity/     (ビジネスロジック)
 ├── repository/ (データアクセス抽象化)
-└── vo/         (制約・ルール)
+├── vo/         (制約・ルール)
+└── service/    (複合ビジネスロジック) ※User・Eventのみ
 ```
 
 ### 🔒 主要なValue Objects制約
@@ -112,6 +115,32 @@ GetRankingByTotalDays(ctx context.Context, limit, offset int) ([]*entity.Attenda
 SearchByUserID(ctx context.Context, userID uuid.UUID, query string, limit, offset int) ([]*entity.Goal, error)
 ```
 
+### 🔧 Domain Services設計
+
+#### RivalManagementService (User Domain)
+```go
+// ライバル管理のビジネスルール
+- 自分自身をライバルに設定することの禁止
+- ライバル登録の3人制限チェック
+- ユーザーの重複ライバル登録防止
+
+// 主要メソッド
+CanAddRival(ctx context.Context, userID, rivalUserID uuid.UUID) error
+AddRival(ctx context.Context, userID, rivalUserID uuid.UUID) (*entity.UserRival, error)
+```
+
+#### EventParticipationService (Event Domain)
+```go
+// イベント参加のビジネスルール
+- イベント参加者数の上限チェック（max_participantsに対して）
+- 同一ユーザーの重複参加防止
+- キャンセル済み参加者の再参加対応
+
+// 主要メソッド
+CanJoinEvent(ctx context.Context, eventID, userID uuid.UUID) error
+JoinEvent(ctx context.Context, eventID, userID uuid.UUID) (*entity.EventParticipant, error)
+```
+
 ## 共通パターン・ガイドライン
 
 ### Value Object実装パターン
@@ -159,6 +188,30 @@ func (e *Entity) ID() uuid.UUID { return e.id }
 - **ページネーション**: `limit, offset int`で統一
 - **型安全性**: UUIDは`uuid.UUID`型、enumは専用VO型使用
 
+### Domain Service設計パターン
+```go
+// 1. 単一責任の原則
+type SomeService struct {
+    specificRepo repository.SpecificRepository  // 必要最小限の依存
+}
+
+// 2. ビジネスルールチェックメソッド
+func (s *SomeService) CanPerformAction(ctx context.Context, params...) error {
+    // 複数の制約をチェック
+    // エラーメッセージは日本語で具体的に
+}
+
+// 3. アクション実行メソッド（チェック付き）
+func (s *SomeService) PerformAction(ctx context.Context, params...) (*entity.Result, error) {
+    // 1. ビジネスルールチェック
+    if err := s.CanPerformAction(ctx, params...); err != nil {
+        return nil, err
+    }
+    // 2. エンティティ作成・操作
+    // 3. リポジトリ保存
+}
+```
+
 ## 技術的成果・効果
 
 ### 🎯 ビジネス価値の実現
@@ -172,6 +225,7 @@ func (e *Entity) ID() uuid.UUID { return e.id }
 - **拡張性**: Interface分離による段階的機能追加
 - **テスタビリティ**: Repository抽象化による単体テスト容易性
 - **パフォーマンス**: Value Objectによる早期バリデーション
+- **ビジネスルール集約**: Domain Serviceによる制約の一元管理
 
 ## 備考・注意事項
 
@@ -182,9 +236,14 @@ func (e *Entity) ID() uuid.UUID { return e.id }
 4. **パフォーマンス**: N+1問題の回避とクエリ最適化
 
 ### 今後の拡張ポイント
-- **ドメインサービス**: 複雑なビジネスロジック（ライバル推薦アルゴリズム等）
+- **追加ドメインサービス**: 称号判定、ランキング計算、ライバル推薦等
 - **ドメインイベント**: 非同期処理（通知送信、統計更新等）
 - **仕様パターン**: 複雑な検索・フィルタ条件
 - **集約ルート**: トランザクション境界の明確化
+
+### 実装済みDomain Servicesの活用
+- **Application層**: UseCaseでDomain Serviceを呼び出し
+- **単体テスト**: Repository Mockを使用したビジネスロジックテスト
+- **エラーハンドリング**: 日本語メッセージをそのままAPI応答に利用可能
 
 このドメイン層実装により、Ghoona Campアプリケーションは「技術的に堅牢で、ビジネス要求に忠実な」基盤を獲得しました。
