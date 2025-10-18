@@ -27,8 +27,8 @@ func (ec *EventController) GetEvents(c *gin.Context) {
 		PaginationQuery
 		Status   string `form:"status" binding:"omitempty,oneof=upcoming ongoing past"`
 		Creator  string `form:"creator"`
-		DateFrom string `form:"date_from" binding:"omitempty,datetime=2006-01-02T15:04:05Z07:00"`
-		DateTo   string `form:"date_to" binding:"omitempty,datetime=2006-01-02T15:04:05Z07:00"`
+		DateFrom string `form:"date_from" binding:"omitempty"`
+		DateTo   string `form:"date_to" binding:"omitempty"`
 	}
 
 	if err := c.ShouldBindQuery(&query); err != nil {

@@ -24,7 +24,8 @@
     "supabase",
     "varchar",
     "index",
-    "gorm"
+    "gorm",
+    "gonic",
   ],
   "flagWords": []
 }

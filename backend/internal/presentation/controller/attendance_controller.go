@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,7 +22,7 @@ func NewAttendanceController( /* TODO: UseCase追加 */ ) *AttendanceController 
 func (ac *AttendanceController) GetRankingMonthly(c *gin.Context) {
 	// クエリパラメータ取得
 	var query struct {
-		PaginationQuery
+		RankingPaginationQuery
 		Month int `form:"month" binding:"omitempty,min=1,max=12"`
 	}
 
@@ -58,7 +56,7 @@ func (ac *AttendanceController) GetRankingMonthly(c *gin.Context) {
 // GET /ranking/total?limit=&offset=
 func (ac *AttendanceController) GetRankingTotal(c *gin.Context) {
 	// クエリパラメータ取得
-	var query PaginationQuery
+	var query RankingPaginationQuery
 	if err := c.ShouldBindQuery(&query); err != nil {
 		SendValidationError(c, "Invalid query parameters")
 		return
@@ -88,7 +86,7 @@ func (ac *AttendanceController) GetRankingTotal(c *gin.Context) {
 // GET /ranking/streak?limit=&offset=
 func (ac *AttendanceController) GetRankingStreak(c *gin.Context) {
 	// クエリパラメータ取得
-	var query PaginationQuery
+	var query RankingPaginationQuery
 	if err := c.ShouldBindQuery(&query); err != nil {
 		SendValidationError(c, "Invalid query parameters")
 		return

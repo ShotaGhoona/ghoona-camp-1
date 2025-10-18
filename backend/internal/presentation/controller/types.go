@@ -14,6 +14,12 @@ type PaginationQuery struct {
 	Offset int `form:"offset,default=0" binding:"min=0"`
 }
 
+// RankingPaginationQuery ランキング用ページネーション（デフォルトlimit=50）
+type RankingPaginationQuery struct {
+	Limit  int `form:"limit,default=50" binding:"min=1,max=100"`
+	Offset int `form:"offset,default=0" binding:"min=0"`
+}
+
 // DateRangeQuery 日付範囲指定用クエリパラメータ
 type DateRangeQuery struct {
 	DateFrom string `form:"date_from" binding:"omitempty,datetime=2006-01-02"`
